@@ -1,5 +1,6 @@
 import Database from "@tauri-apps/plugin-sql";
-import type { TableParams } from "./DatabaseExtention.TableParams.interface";
+import type { TableParams, InputParams } from "./DatabaseExtention.TableParams.interface";
+
 
 class ExtendedDatabase { 
     url : string;
@@ -18,7 +19,7 @@ class ExtendedDatabase {
         )
         return false;
     }
-
+    // TODO: test this function!
     SelectTable<T>(tableName: string, variable?: string): Promise<T[]> {
         const url = this.url;
         const selectStatement = variable ? `SELECT ${variable}` : 'SELECT *';
@@ -40,6 +41,7 @@ class ExtendedDatabase {
         });
     }
 
+    // TODO: Test this function
     RemoveTable(tableName: string, column?: number, row?: number): void {
         Database.load(this.url)
           .then((db: Database) => {
@@ -88,10 +90,30 @@ class ExtendedDatabase {
     
         return { columns, values };
     }
-    
-    AppendTable(tableName: string, params: TableParams): void {
-        const { columns, values } = this.mapParamsToStrings(params);
-    
+    private mappingToColVals(columns : string, values : string, between? : string) : string {
+        const cols : string[] = columns.split(",");
+        const vals : string[] = values.split(",");
+
+        const combinedData: string[] = [];
+
+        for (let i = 0; i < cols.length; i++) {
+            if (between !== undefined )  {
+                combinedData.push(`${cols[i]} ${between} ${vals[i]}`);
+            }else {
+            combinedData.push(`${cols[i]} ${vals[i]}`);
+
+            }
+        }
+
+        const result: string = combinedData.join(",");
+
+        return result;
+    } 
+
+// TODO: Test this function
+    AppendTable(tableName: string, params: InputParams): void {
+        const { columns, values } = params;
+
         Database.load(this.url)
           .then((db: Database) => {
             const executeStatement = `INSERT INTO ${tableName} (${columns}) VALUES (${values})`;
@@ -103,24 +125,37 @@ class ExtendedDatabase {
     }
     
     CreateTable(tableName: string, params: TableParams): void {
-        const { columns } = this.mapParamsToStrings(params);
-    
+        const { columns,values } = this.mapParamsToStrings(params);
+
+        const columnString = this.mappingToColVals(columns,values);
+
         Database.load(this.url)
           .then((db: Database) => {
-            const executeStatement = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns})`;
+            const executeStatement = `CREATE TABLE IF NOT EXISTS ${tableName} (${columnString})`;
             db.execute(executeStatement);
+
+            console.log("Succeeded in executing command: " + executeStatement);
           })
           .catch((error: any) => {
             console.error("An error occurred while creating the table:", error);
           });
     }
-    
-    UpdateTable(tableName: string, params: TableParams): void {
-        const setStatements = this.mapParamsToStrings(params);
-    
+    // TODO: Test this function
+    UpdateTable(tableName: string, params: InputParams): void {
+        const paramStrings = Object.entries(params).map(([name, value]) => {
+            if (typeof value === "string") {
+                return `${name} = '${value}'`;
+              } else {
+                return `${name} = ${value}`;
+              }
+          });
+        
+        //   TODO: work further on testing all functions!
+          console.table(paramStrings);
+
         Database.load(this.url)
           .then((db: Database) => {
-            const executeStatement = `UPDATE ${tableName} SET ${setStatements}`;
+            const executeStatement = `UPDATE ${tableName} SET ${paramStrings}`;
             db.execute(executeStatement);
           })
           .catch((error: any) => {
