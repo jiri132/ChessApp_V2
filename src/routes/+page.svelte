@@ -7,12 +7,22 @@
   const db = new ExtendedDatabase(url);
     
   const exampleData : TableParams = {
-    name: "VARCHAR (255)",
-    age: "INT (3)",
-    email: "VARCHAR (255)",
+    id: {
+      type: "INT(10)",
+      primaryKey: true,
+      autoIncrement: true,
+      unique: true,
+    },
+    displayName: {type:"VARCHAR(255)"},
+    userName: {
+      type:"VARCHAR(255)",
+      unique: true,
+    },
+    age: {type:"INT(3)"},
+    email: {type:"VARCHAR(255)"},
   }
  
-  db.CreateTable('humans', exampleData)
+  db.CreateTable('humans', exampleData);
 
 </script>
   
