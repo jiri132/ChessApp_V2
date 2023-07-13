@@ -1,28 +1,19 @@
 <script lang="ts">
-    import Greet from '../lib/Greet.svelte'
-    import Database from "@tauri-apps/plugin-sql";
+  import Greet from '../lib/Greet.svelte'
+  import ExtendedDatabase from '$lib/DatabseExtention/DatabaseExtention';
+  import type { TableParams } from '$lib/DatabseExtention/DatabaseExtention.TableParams.interface';
 
-    const url = "mysql://user:mypassword@localhost:3306/testdb";
+  const url = "mysql://user:mypassword@localhost:3306/testdb";
+  const db = new ExtendedDatabase(url);
+    
+  const exampleData : TableParams = {
+    name: "VARCHAR (255)",
+    age: "INT (3)",
+    email: "VARCHAR (255)",
+  }
+ 
+  db.CreateTable('humans', exampleData)
 
-    const db : Promise<Database> = Database.load(url);
-      db.then((database : Database) => {
-        // Adding a new column to the db
-        database.execute(`CREATE TABLE IF NOT EXISTS users (
-            ID INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) UNIQUE,
-            username VARCHAR(255),
-            email_address VARCHAR(255) UNIQUE,
-            password VARCHAR(255)
-          );
-        `);
-
-        // Selecting a column
-        database.select(
-          "SELECT id from users"
-        ).then((result) => {
-          console.log(result);
-        });
-      });
 </script>
   
 <h1>Welcome to SvelteKit</h1>
