@@ -140,7 +140,7 @@ class ExtendedDatabase {
             console.error("An error occurred while creating the table:", error);
           });
     }
-    // TODO: Test this function
+
     UpdateTable(tableName: string, params: InputParams): void {
         const paramStrings = Object.entries(params).map(([name, value]) => {
             if (typeof value === "string") {
