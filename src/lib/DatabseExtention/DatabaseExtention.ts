@@ -4,10 +4,13 @@ import type { TableParams, InputParams } from "./DatabaseExtention.TableParams.i
 
 class ExtendedDatabase { 
     url : string;
+    selected_db : string;
     can_connect : boolean = false; 
     
-    constructor(_url : string) {
-        this.url = _url;
+
+    constructor(_url : string, _db : string) {
+        this.url = _url + _db;
+        this.selected_db = _db;
         this.can_connect = this.ConnectionGuard();
     }
     
@@ -19,7 +22,7 @@ class ExtendedDatabase {
         )
         return false;
     }
-    // TODO: test this function!
+
     SelectTable<T>(tableName: string, variable?: string): Promise<T[]> {
         const url = this.url;
         const selectStatement = variable ? `SELECT ${variable}` : 'SELECT *';
@@ -110,23 +113,29 @@ class ExtendedDatabase {
         return result;
     } 
 
-// TODO: Test this function
     AppendTable(tableName: string, params: InputParams): void {
-        const { columns, values } = params;
+        const columnNames = Object.keys(params).join(", ");
+        const valueSets = Object.entries(params)
+            .map(([columnName, value]) => {
+                const formattedValue = typeof value === "string" ? `'${value}'` : value;
+                return `${formattedValue}`;
+            }
+        ).join(", ");
 
         Database.load(this.url)
-          .then((db: Database) => {
-            const executeStatement = `INSERT INTO ${tableName} (${columns}) VALUES (${values})`;
-            db.execute(executeStatement);
-          })
-          .catch((error: any) => {
-            console.error("An error occurred while appending to the table:", error);
-          });
+            .then((db: Database) => {
+                    const executeStatement = `INSERT INTO ${tableName} (${columnNames}) VALUES (${valueSets})`;
+                    console.log(executeStatement);
+                    db.execute(executeStatement);
+                }
+            ).catch((error: any) => {
+                console.error("An error occurred while appending to the table:", error);
+            }
+        );
     }
     
     CreateTable(tableName: string, params: TableParams): void {
         const { columns,values } = this.mapParamsToStrings(params);
-
         const columnString = this.mappingToColVals(columns,values);
 
         Database.load(this.url)
@@ -135,27 +144,25 @@ class ExtendedDatabase {
             db.execute(executeStatement);
 
             console.log("Succeeded in executing command: " + executeStatement);
-          })
+        })
           .catch((error: any) => {
             console.error("An error occurred while creating the table:", error);
           });
     }
 
-    UpdateTable(tableName: string, params: InputParams): void {
-        const paramStrings = Object.entries(params).map(([name, value]) => {
+    UpdateTable(tableName: string, params: InputParams, id : number): void {
+        const paramStrings : string = Object.entries(params).map(([name, value]) => {
             if (typeof value === "string") {
                 return `${name} = '${value}'`;
-              } else {
+            } else {
                 return `${name} = ${value}`;
-              }
-          });
-        
-        //   TODO: work further on testing all functions!
-          console.table(paramStrings);
+            }
+        }).join(", ")
 
         Database.load(this.url)
           .then((db: Database) => {
-            const executeStatement = `UPDATE ${tableName} SET ${paramStrings}`;
+            const executeStatement = `UPDATE ${tableName} SET ${paramStrings} WHERE id = ${id}`;
+            console.log(executeStatement)
             db.execute(executeStatement);
           })
           .catch((error: any) => {
