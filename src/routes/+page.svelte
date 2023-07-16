@@ -1,10 +1,10 @@
 <script lang="ts">
   import Greet from '../lib/Greet.svelte'
   import ExtendedDatabase from '$lib/DatabseExtention/DatabaseExtention';
-  import type { TableParams } from '$lib/DatabseExtention/DatabaseExtention.TableParams.interface';
+  import type { InputParams, TableParams } from '$lib/DatabseExtention/DatabaseExtention.TableParams.interface';
 
   const url = "mysql://user:mypassword@localhost:3306/testdb";
-  const db = new ExtendedDatabase(url);
+  const db = new ExtendedDatabase(url, 'testdb');
     
   const exampleData : TableParams = {
     id: {
@@ -24,6 +24,25 @@
  
   db.CreateTable('humans', exampleData);
 
+  const exampleData2 : InputParams = {
+    displayName: "x",
+    username: "xx",
+    age: 3,
+    email: "jiri28beurskens@gmail.com"
+  };
+
+  db.AppendTable('humans', exampleData2)
+
+  db.SelectTable('humans').then((value) => {
+    console.log(value)
+  });
+
+  // const exampleData2 : InputParams = { 
+  //   displayName: "HelloMyMan"
+  // }
+
+
+  // db.UpdateTable('humans',exampleData2, 0);
 </script>
   
 <h1>Welcome to SvelteKit</h1>
