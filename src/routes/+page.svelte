@@ -3,7 +3,7 @@
   import ExtendedDatabase from '$lib/DatabseExtention/DatabaseExtention';
   import type { InputParams, TableParams } from '$lib/DatabseExtention/DatabaseExtention.TableParams.interface';
 
-  const url = "mysql://user:mypassword@localhost:3306/testdb";
+  const url = "mysql://user:mypassword@localhost:3306/";
   const db = new ExtendedDatabase(url, 'testdb');
     
   const exampleData : TableParams = {
