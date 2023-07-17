@@ -28,7 +28,7 @@
   const db = new ExtendedDatabase(import.meta.env.VITE_URL,import.meta.env.VITE_DB)
 
   const handleSignUp = () => {
-    db.AppendTable('humans', transformFormParamsToInputParams(data));
+    db.AppendTable('users', transformFormParamsToInputParams(data));
   };
 
 </script>
