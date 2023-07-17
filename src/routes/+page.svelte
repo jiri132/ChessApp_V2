@@ -45,5 +45,4 @@
   // db.UpdateTable('humans',exampleData2, 0);
 </script>
   
-<h1>Welcome to SvelteKit</h1>
-<Greet />
+<h1>Welcome to HSDV chess application</h1>
