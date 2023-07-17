@@ -63,7 +63,7 @@ class ExtendedDatabase {
     RemoveTable(tableName: string, column?: number, row?: number): void {
         Database.load(this.url)
           .then((db: Database) => {
-            let executeStatement : string = `DROP TABLE ${tableName}`;
+            let executeStatement : string = `DROP TABLE IF EXISTS ${tableName}`;
             if (column !== undefined && row !== undefined) {
               // If column and row are provided, add appropriate conditions to the execute statement
               executeStatement += ` WHERE column = ${column} AND row = ${row}`;
