@@ -45,35 +45,7 @@ class ExtendedDatabase {
         });
     }
 
-    // TODO: Test this function
-
-     /**
-     * **Removing a Table or Data**
-     *
-     * A function used to remove data  or tables from the connected database form `url`
-     *
-     * This has been made as an layer on top of the easy to use tauri::database::api 
-     * 
-     * @example
-     * ```ts
-     * const db = new extendedDatabase("url","selected_db");
-     * db.RemoveTable("exampleTable", column?: <location>, row?: <location>);
-     * ```
-     */
-    RemoveTable(tableName: string, column?: number, row?: number): void {
-        Database.load(this.url)
-          .then((db: Database) => {
-            let executeStatement : string = `DROP TABLE IF EXISTS ${tableName}`;
-            if (column !== undefined && row !== undefined) {
-              // If column and row are provided, add appropriate conditions to the execute statement
-              executeStatement += ` WHERE column = ${column} AND row = ${row}`;
-            }
-            db.execute(executeStatement);
-          })
-          .catch((error: any) => {
-            console.error("An error occurred while removing the table:", error);
-          });
-    }
+    
     //#region Just some mapping functions
     private mapParamsToStrings(params: TableParams): { columns: string; values: string } {
         const columns = Object.keys(params).join(", ");
@@ -128,6 +100,35 @@ class ExtendedDatabase {
         return result;
     } 
     //#endregion
+
+
+     /**
+     * **Removing a Table or Data**
+     *
+     * A function used to remove data  or tables from the connected database form `url`
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.RemoveTable("exampleTable", column?: <location>, row?: <location>);
+     * ```
+     */
+     RemoveTable(tableName: string, column?: number, row?: number): void {
+      Database.load(this.url)
+        .then((db: Database) => {
+          let executeStatement : string = `DROP TABLE IF EXISTS ${tableName}`;
+          if (column !== undefined && row !== undefined) {
+            // If column and row are provided, add appropriate conditions to the execute statement
+            executeStatement += ` WHERE column = ${column} AND row = ${row}`;
+          }
+          db.execute(executeStatement);
+        })
+        .catch((error: any) => {
+          console.error("An error occurred while removing the table:", error);
+        });
+  }
 
      /**
      * **Appending to Table**
@@ -242,13 +243,13 @@ class ExtendedDatabase {
      */
     Login(tableName: string, conditions?: Condition[]): Promise<boolean> {
       const url = this.url;
-      const selectStatement = conditions ? this.generateSelectStatementWithConditions(conditions) : 'SELECT 1';
+      const selectStatement = conditions ? this.generateSelectStatementWithConditions(tableName,conditions) : 'SELECT 1';
   
       return new Promise<boolean>((resolve, reject) => {
         Database.load(url)
           .then((db: Database) => {
             db.select(selectStatement)
-              .then((result: any[]) => {
+              .then((result : unknown) => {
                 resolve(result.length > 0);
               })
               .catch((error: any) => {
@@ -261,7 +262,7 @@ class ExtendedDatabase {
       });
     }
   
-    private generateSelectStatementWithConditions(conditions: Condition[]): string {
+    private generateSelectStatementWithConditions(tableName :string,conditions: Condition[]): string {
       const conditionStatements = conditions.map((condition) => {
         const formattedValue = typeof condition.value === 'string' ? `'${condition.value}'` : condition.value;
         return `${condition.column} ${condition.operator} ${formattedValue}`;
