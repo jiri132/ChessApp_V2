@@ -1,26 +1,27 @@
 import Database from "@tauri-apps/plugin-sql";
-import type { TableParams, InputParams } from "./DatabaseExtention.TableParams.interface";
+import type { TableParams, InputParams } from "./interfaces/DatabaseExtention.TableParams.interface";
 
 
 class ExtendedDatabase { 
     url : string;
     selected_db : string;
-    can_connect : boolean = false; 
+    can_connect : Promise<boolean>; 
     
 
     constructor(_url : string, _db : string) {
         this.url = _url + _db;
         this.selected_db = _db;
+
         this.can_connect = this.ConnectionGuard();
     }
     
-    ConnectionGuard() : boolean {
-        Database.load(this.url)
-            .then((db) => {
-                return true;
-            }
-        )
+    async ConnectionGuard(): Promise<boolean> {
+      try {
+        const db = await Database.load(this.url);
+        return true;
+      } catch (error) {
         return false;
+      }
     }
 
     SelectTable<T>(tableName: string, variable?: string): Promise<T[]> {
@@ -116,7 +117,7 @@ class ExtendedDatabase {
     AppendTable(tableName: string, params: InputParams): void {
         const columnNames = Object.keys(params).join(", ");
         const valueSets = Object.entries(params)
-            .map(([columnName, value]) => {
+            .map(([column, value]) => {
                 const formattedValue = typeof value === "string" ? `'${value}'` : value;
                 return `${formattedValue}`;
             }
