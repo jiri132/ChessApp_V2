@@ -1,0 +1,45 @@
+html {
+    font-family: "Inter", monospace !important;
+    background-color: #111 !important;
+    color: #a0a0a0;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+body {
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    /* justify-content: center; */
+    /* padding: 160px 24px 160px 24px; */
+    margin: 0;
+    overflow-x: hidden;
+  
+    font-family: "Inter", monospace !important;
+    color: #a0a0a0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3 {
+  color: #ededed;
+}
+
+a {
+  color: #539bf5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+#app {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  padding: 0rem 2rem;
+  /* text-align: center; */
+}
