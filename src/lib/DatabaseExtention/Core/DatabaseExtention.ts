@@ -1,6 +1,6 @@
 import Database from "@tauri-apps/plugin-sql";
 import type { TableParams, InputParams } from "./interfaces/DatabaseExtention.TableParams.interface";
-
+import type { Condition } from "./interfaces/DatabaseExtention.Condition.interface";
 
 class ExtendedDatabase { 
     url : string;
@@ -46,6 +46,20 @@ class ExtendedDatabase {
     }
 
     // TODO: Test this function
+
+     /**
+     * **Removing a Table or Data**
+     *
+     * A function used to remove data  or tables from the connected database form `url`
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.RemoveTable("exampleTable", column?: <location>, row?: <location>);
+     * ```
+     */
     RemoveTable(tableName: string, column?: number, row?: number): void {
         Database.load(this.url)
           .then((db: Database) => {
@@ -60,7 +74,7 @@ class ExtendedDatabase {
             console.error("An error occurred while removing the table:", error);
           });
     }
-    
+    //#region Just some mapping functions
     private mapParamsToStrings(params: TableParams): { columns: string; values: string } {
         const columns = Object.keys(params).join(", ");
         const values = Object.values(params)
@@ -113,7 +127,21 @@ class ExtendedDatabase {
 
         return result;
     } 
+    //#endregion
 
+     /**
+     * **Appending to Table**
+     *
+     * A function used to append data to the connected database form `url`
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.AppendTable("exampleTable", {columnName: "value", ...});
+     * ```
+     */
     AppendTable(tableName: string, params: InputParams): void {
         const columnNames = Object.keys(params).join(", ");
         const valueSets = Object.entries(params)
@@ -135,6 +163,20 @@ class ExtendedDatabase {
         );
     }
     
+
+     /**
+     * **Creating Table**
+     *
+     * A function used to create a brand new table to the connected database form `url`
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.CreateTable("exampleTable", {columnName: {type: <mysql type>}, ...})
+     * ```
+     */
     CreateTable(tableName: string, params: TableParams): void {
         const { columns,values } = this.mapParamsToStrings(params);
         const columnString = this.mappingToColVals(columns,values);
@@ -151,6 +193,19 @@ class ExtendedDatabase {
           });
     }
 
+     /**
+     * **Updating on Table**
+     *
+     * A function used to update an record with new values to the connected database form `url`
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.UpdateTable("exampleTable", {columnName: <string | number>, ...}, id)
+     * ```
+     */
     UpdateTable(tableName: string, params: InputParams, id : number): void {
         const paramStrings : string = Object.entries(params).map(([name, value]) => {
             if (typeof value === "string") {
@@ -170,6 +225,51 @@ class ExtendedDatabase {
             console.error("An error occurred while updating the table:", error);
           });
     }
+
+
+    /**
+     * **Login to account**
+     *
+     * A function used to look up if you're details are correctly put in as how the connected database form `url` has it.
+     *
+     * This has been made as an layer on top of the easy to use tauri::database::api 
+     * 
+     * @example
+     * ```ts
+     * const db = new extendedDatabase("url","selected_db");
+     * db.Login("exampleTable", [{column: <columnName>, value: <string | number>, operator: <ComparisonOperator>}, ...])
+     * ```
+     */
+    Login(tableName: string, conditions?: Condition[]): Promise<boolean> {
+      const url = this.url;
+      const selectStatement = conditions ? this.generateSelectStatementWithConditions(conditions) : 'SELECT 1';
+  
+      return new Promise<boolean>((resolve, reject) => {
+        Database.load(url)
+          .then((db: Database) => {
+            db.select(selectStatement)
+              .then((result: any[]) => {
+                resolve(result.length > 0);
+              })
+              .catch((error: any) => {
+                reject(error);
+              });
+          })
+          .catch((error: any) => {
+            reject(error);
+          });
+      });
+    }
+  
+    private generateSelectStatementWithConditions(conditions: Condition[]): string {
+      const conditionStatements = conditions.map((condition) => {
+        const formattedValue = typeof condition.value === 'string' ? `'${condition.value}'` : condition.value;
+        return `${condition.column} ${condition.operator} ${formattedValue}`;
+      });
+  
+      return `SELECT 1 FROM ${tableName} WHERE ${conditionStatements.join(' AND ')}`;
+    }
+
 }
 
 export default ExtendedDatabase;
