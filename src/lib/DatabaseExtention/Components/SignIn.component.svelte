@@ -1,0 +1,127 @@
+<script lang="ts">
+    import ExtendedDatabase from "../Core/DatabaseExtention";
+    import type { InputParams } from "../Core/interfaces/DatabaseExtention.TableParams.interface";
+  
+  interface FormParams {
+    [columnName: string] : {
+      type: FormInputTypes,
+      value: string | number
+    }
+  }
+  type FormInputTypes =
+  | "text"
+  | "password"
+  | "checkbox"
+  | "radio"
+  | "submit"
+  | "reset"
+  | "button"
+  | "file"
+  | "hidden"
+  | "image"
+  | "number"
+  | "range"
+  | "date"
+  | "time"
+  | "datetime-local"
+  | "month"
+  | "week"
+  | "color"
+  | "email"
+  | "url"
+  | "tel"
+  | "search"
+  | "datetime"
+  | "timestamp"
+  | "time-local"
+  | "url"
+  | "month"
+  | "week"
+  | "tel"
+  | "search"
+  | "datetime"
+  | "timestamp"
+  | "time-local";
+
+  function transformFormParamsToInputParams(formParams: FormParams): InputParams {
+  const inputParams: InputParams = {};
+
+  for (const columnName in formParams) {
+    if (formParams.hasOwnProperty(columnName)) {
+      const { value } = formParams[columnName];
+      inputParams[columnName] = value;
+    }
+  }
+
+  return inputParams;
+}
+
+
+    let data : FormParams = {
+      displayName: {type: "text", value:""},
+      userName: {type: "text", value:""},
+      email: {type: "email", value:""},
+      age: {type: "number",value:0},
+    }
+
+    const db = new ExtendedDatabase(import.meta.env.VITE_URL,import.meta.env.VITE_DB)
+
+    console .log();
+
+    const handleSignUp = () => {
+      db.AppendTable('humans', transformFormParamsToInputParams(data));
+    };
+
+  </script>
+  
+  <form>
+    <h3>Sign up!</h3>
+    {#each Object.keys(data) as columName,i}
+      <div class="item">
+        <label>Input {columName}</label>
+        <input on:keydown={(value) => {
+            data[columName].value = value.srcElement.value; 
+            console.log(value.srcElement.value)}
+          } 
+
+          type={data[columName].type}
+        />
+      </div>  
+    {/each}
+    
+    <div class="action">
+      <button type="submit" on:click={handleSignUp}>Sign up</button>
+    </div>
+  </form>
+  
+
+<style lang="scss"> 
+  form {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 30px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+    .item {
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    h3 {
+      align-self: center;
+      font-size: 30px;
+      margin: 0px 0px 10px 0px;
+    }
+    .action {
+      flex-grow: 1;
+
+      button {
+        width: -webkit-fill-available;
+      }
+    }
+  }  
+  
+</style>
