@@ -33,8 +33,11 @@
 
   const data : BinaryGroup<8>[] = ["10101010","00001111"];
 
-  const ba = new BitArray(12,false,data);
-  
+  const ba = new BitArray(16,false,data);
+  ba.set(data)
+  ba.set(1,"0")
+  ba.set(5,"1")
+  console.log(ba.get());
 </script>
   
 <h1>Welcome to my chess application</h1>
