@@ -1,4 +1,4 @@
-import type { ComparisonOperator } from "../types/DatabaseExtention.ComparisonOperator.type"
+import type { ComparisonOperator } from "../Types/DatabaseExtension.ComparisonOperator.type"
 
 export interface Condition {
     column: string;

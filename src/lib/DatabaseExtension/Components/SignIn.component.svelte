@@ -1,37 +1,35 @@
 <script lang="ts">
-import ExtendedDatabase from "../Core/DatabaseExtention";
-import type { InputParams } from "../Core/interfaces/DatabaseExtention.TableParams.interface";
-import type { FormParams } from "./FormParams.interface";   
-  
+    import ExtendedDatabase from "../Core/DatabaseExtension";
+    import type { InputParams } from "../Core/Interfaces/DatabaseExtension.TableParams.interface";
+    import type { FormParams } from "./FormParams.interface";
 
-function transformFormParamsToInputParams(formParams: FormParams): InputParams {
-  const inputParams: InputParams = {};
 
-  for (const columnName in formParams) {
-    if (formParams.hasOwnProperty(columnName)) {
-      const { value } = formParams[columnName];
-      inputParams[columnName] = value;
+  function transformFormParamsToInputParams(formParams: FormParams): InputParams {
+    const inputParams: InputParams = {};
+
+    for (const columnName in formParams) {
+      if (formParams.hasOwnProperty(columnName)) {
+        const { value } = formParams[columnName];
+        inputParams[columnName] = value;
+      }
     }
+
+    return inputParams;
   }
 
-  return inputParams;
-}
 
+  let data : FormParams = {
+    displayName: {type: "text", value:""},
+    userName: {type: "text", value:""},
+    email: {type: "email", value:""},
+    age: {type: "number",value:0},
+  }
 
-let data : FormParams = {
-  displayName: {type: "text", value:""},
-  userName: {type: "text", value:""},
-  email: {type: "email", value:""},
-  age: {type: "number",value:0},
-}
+  const db = new ExtendedDatabase(import.meta.env.VITE_URL,import.meta.env.VITE_DB)
 
-const db = new ExtendedDatabase(import.meta.env.VITE_URL,import.meta.env.VITE_DB)
-
-console .log();
-
-const handleSignUp = () => {
-  db.AppendTable('humans', transformFormParamsToInputParams(data));
-};
+  const handleSignUp = () => {
+    db.AppendTable('users', transformFormParamsToInputParams(data));
+  };
 
 </script>
   

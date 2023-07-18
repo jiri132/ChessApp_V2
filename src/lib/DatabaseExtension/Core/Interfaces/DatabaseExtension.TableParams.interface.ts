@@ -1,4 +1,4 @@
-import type { MySQLColumnType } from "../types/DatabaseExtention.MySQLColumn.type";
+import type { MySQLColumnType } from "../Types/DatabaseExtension.MySQLColumn.type";
 
 export interface TableParams {
     [columnName: string]: ColumnDefinition;

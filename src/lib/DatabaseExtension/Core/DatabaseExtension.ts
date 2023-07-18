@@ -1,6 +1,6 @@
 import Database from "@tauri-apps/plugin-sql";
-import type { TableParams, InputParams } from "./interfaces/DatabaseExtention.TableParams.interface";
-import type { Condition } from "./interfaces/DatabaseExtention.Condition.interface";
+import type { TableParams, InputParams } from "./Interfaces/DatabaseExtension.TableParams.interface";
+import type { Condition } from "./Interfaces/DatabaseExtension.Condition.interface";
 
 class ExtendedDatabase { 
     url : string;
