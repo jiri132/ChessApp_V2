@@ -143,8 +143,15 @@ class BitArray implements IBitArray {
         
         return [elementIndex, bitIndex];
     }
+    private getBinaryNumber() : string {
+        let binaryString : string = ""; 
 
-    
+        this.storage.forEach((value: number) => {
+            binaryString += value.toString(2).padStart(this.bitLength, "0");
+        });
+        
+        return binaryString;
+    }    
     get(index?: number): BinaryDigit | BitArrayStorage {
         if (index === undefined) {
             return this.storage;
