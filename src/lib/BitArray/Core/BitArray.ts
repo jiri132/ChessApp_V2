@@ -1,7 +1,9 @@
 import type { IBitArray } from "./Interfaces/IBitArray.interface";
 import type { BitArrayStorage } from "./Types/BitArray.BitArrayStorage.type";
+import type { BinaryGroup } from "./Types/Binary/BinaryGroup.type";
 
 class BitArray implements IBitArray {
+    // The stored bits
     private readonly storage : BitArrayStorage;
     // Total bits that are left over
     private readonly buffer : number;
@@ -37,14 +39,28 @@ class BitArray implements IBitArray {
     *   const bit_arr = new BitArray(8);
     *   ```
     */
-    constructor(size: number, bitControl : boolean = false) {
+    constructor(size: number, bitControl : boolean = false, value? : string[]){
+        if (value !== undefined) {
+            const bitLength = value.join("").length;
+            if (bitLength > size) {
+                //@ts-ignore
+                return console.error(
+                `
+                The specified amount of bits you want to set: ${bitLength}bits 
+                Full value of setting bits: <${value.join(" ")}>
+
+                Aren't available in the requested bit length of ${size}bits
+                `);
+            }
+        }        
+
         // Getting the buffer values for each array type
         // To check for the most efficient way of storing values
         const [ba8b , ba32b] : [number, number] = calculateBufferSizes(size);
         
         const ba8l : number = size / 8;
         const ba32l : number = size / 32;
-       
+
         console.log(ba8b , ba32b)
         
         // The most upper value of ba<8,32>l (nitArray<8,32>Lenght) the amounts of bitarray<8,32> needed to function
@@ -53,6 +69,8 @@ class BitArray implements IBitArray {
 
         // Get the best type
         let baType : string = bitControl ? "Uint8Array" : getBestType();
+
+
 
         // Set the storage to the correct bitArray type
         switch (baType) {
@@ -80,8 +98,7 @@ class BitArray implements IBitArray {
         console.log("total buffer size  : " + this.buffer);
         console.log("array type         : " + this.bitArrayType);
         console.log("bit storage        : " + this.storage);
-
-        // Function to evaluate the best choice of uint type
+        
         function getBestType() : string {
             let ba8 : number = 0;
             let ba32 : number = 0;
@@ -109,8 +126,9 @@ class BitArray implements IBitArray {
 
             return [uint8Buffer, uint32Buffer];
         }
-
     }
+
+
 }
 
 export default BitArray;
