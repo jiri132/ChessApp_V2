@@ -1,6 +1,7 @@
 import type { IBitArray } from "./Interfaces/IBitArray.interface";
 import type { BitArrayStorage } from "./Types/BitArray.BitArrayStorage.type";
 import type { BinaryGroup } from "./Types/Binary/BinaryGroup.type";
+import type { BinaryDigit } from "./Types/Binary/BinaryDigit.type";
 
 class BitArray implements IBitArray {
     // The stored bits
@@ -27,6 +28,7 @@ class BitArray implements IBitArray {
     *   ``` 
     */
     private readonly bitArrayType : string; 
+    private readonly bitLength : number;
 
     /*
     *   **Constructor**
@@ -44,7 +46,7 @@ class BitArray implements IBitArray {
             const bitLength = value.join("").length;
             if (bitLength > size) {
                 //@ts-ignore
-                return console.error(
+                throw new Error(
                 `
                 The specified amount of bits you want to set: ${bitLength}bits 
                 Full value of setting bits: <${value.join(" ")}>
@@ -52,16 +54,13 @@ class BitArray implements IBitArray {
                 Aren't available in the requested bit length of ${size}bits
                 `);
             }
-        }        
-
+        }     
         // Getting the buffer values for each array type
         // To check for the most efficient way of storing values
         const [ba8b , ba32b] : [number, number] = calculateBufferSizes(size);
         
         const ba8l : number = size / 8;
         const ba32l : number = size / 32;
-
-        console.log(ba8b , ba32b)
         
         // The most upper value of ba<8,32>l (nitArray<8,32>Lenght) the amounts of bitarray<8,32> needed to function
         const ba8a : number = Math.ceil(ba8l);
@@ -70,21 +69,22 @@ class BitArray implements IBitArray {
         // Get the best type
         let baType : string = bitControl ? "Uint8Array" : getBestType();
 
-
-
         // Set the storage to the correct bitArray type
         switch (baType) {
             case "Uint8Array":
                 this.storage = new Uint8Array(ba8a);
-                this.buffer = ba8b;                
+                this.buffer = ba8b; 
+                this.bitLength = 8;               
             break;
             case "Uint32Array": 
                 this.storage = new Uint32Array(ba32a);
                 this.buffer = ba32b;
+                this.bitLength = 32;
             break;
             default: 
-                this.storage = new Uint8Array();
+                this.storage = new Uint8Array(0);
                 this.buffer = 0;
+                this.bitLength = 0;
             break;
         } 
 
@@ -93,12 +93,6 @@ class BitArray implements IBitArray {
         this.totalBitArraySize = size + this.buffer;
         this.bitArrayType = baType;
 
-        console.log("total bit length   : " + this.totalBitArraySize);
-        console.log("total usage length : " + this.bitArraySize);
-        console.log("total buffer size  : " + this.buffer);
-        console.log("array type         : " + this.bitArrayType);
-        console.log("bit storage        : " + this.storage);
-        
         function getBestType() : string {
             let ba8 : number = 0;
             let ba32 : number = 0;
@@ -126,6 +120,90 @@ class BitArray implements IBitArray {
 
             return [uint8Buffer, uint32Buffer];
         }
+    }
+    private checkIndex(index: number): void {
+        if (index < 0 || index >= this.bitArraySize) {
+          throw new Error('Index out of bounds');
+        }
+    }
+    private getElementAndBitIndex(index: number): [number, number] {
+        let elementIndex : number = 0;
+        let bitIndex : number = 0;
+        
+        switch (this.bitArrayType) {
+            case "Uint8Array": 
+                elementIndex = Math.floor(index/8);
+                bitIndex = index % 8;
+                break;
+            case "Uint32Array": 
+                elementIndex = Math.floor(index/32);
+                bitIndex = index % 32;
+                break;
+        }
+        
+        return [elementIndex, bitIndex];
+    }
+
+    
+    get(index?: number): BinaryDigit | BitArrayStorage {
+        if (index === undefined) {
+            return this.storage;
+        }else {
+            this.checkIndex(index);
+            const [elementIndex, bitIndex] = this.getElementAndBitIndex(index);
+            const element = this.storage[elementIndex];
+            return (element & (1 << bitIndex)) !== 0 ? "1" : "0";
+        }
+    };
+    
+    set(...args: [value: string[]] | [index: number, value: BinaryDigit]): void {
+        if (args.length === 1) {
+            const [value] : [string[]] = args;
+
+            // Handle value array
+            value.forEach((bitAdresses : string,i : number) => {
+                const converted = parseInt(bitAdresses, 2);
+                this.storage[i] = converted;
+            });
+            console.log(this.storage)
+        } else if (args.length === 2) {
+            const [index, value] = args;
+            let binaryAdress : string = "";
+            this.storage.forEach((binaryArray) => {
+                const binaryNumber : string = binaryArray.toString(2).padStart(this.bitLength, "0");
+                binaryAdress += binaryNumber;
+            });
+            let _ba : string[] = binaryAdress.split("").reverse();
+            
+            _ba[index] = value;
+            binaryAdress = _ba.reverse().join("");
+            if (this.bitLength === 8) {_ba = binaryAdress.split(/(.{8})/).filter(Boolean);}
+            else if (this.bitLength === 32) {_ba = binaryAdress.split(/(.{32})/).filter(Boolean);}
+            
+            
+            _ba.forEach((bitAdresses : string,i : number) => {
+                const converted = parseInt(bitAdresses, 2);
+                this.storage[i] = converted;
+            });
+          } else {
+            throw new Error("Invalid number of arguments");
+          }
+    }
+    toggle(index: number): void {
+        throw new Error("Method not implemented.");
+    }
+    clear(): void {
+        // remove the whole binary string
+        this.storage.forEach((value : number) => {
+            value = 0;
+        });
+    }
+    debugging(): void {
+        console.log("total bit length   : " + this.totalBitArraySize);
+        console.log("total usage length : " + this.bitArraySize);
+        console.log("total buffer size  : " + this.buffer);
+        console.log("array type         : " + this.bitArrayType);
+        console.log("bit storage        : " + this.storage);
     }
 
 
