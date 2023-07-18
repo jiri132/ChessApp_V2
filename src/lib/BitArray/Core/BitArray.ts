@@ -127,19 +127,8 @@ class BitArray implements IBitArray {
         }
     }
     private getElementAndBitIndex(index: number): [number, number] {
-        let elementIndex : number = 0;
-        let bitIndex : number = 0;
-        
-        switch (this.bitArrayType) {
-            case "Uint8Array": 
-                elementIndex = Math.floor(index/8);
-                bitIndex = index % 8;
-                break;
-            case "Uint32Array": 
-                elementIndex = Math.floor(index/32);
-                bitIndex = index % 32;
-                break;
-        }
+        let elementIndex : number = Math.floor(index/this.bitLength);
+        let bitIndex : number =this.bitLength - 1 - (index % this.bitLength);
         
         return [elementIndex, bitIndex];
     }
@@ -178,6 +167,8 @@ class BitArray implements IBitArray {
 
         } else if (args.length === 2) {
             const [index, value] = args;
+            this.checkIndex(index);
+
             let binaryAdress : string = this.getBinaryNumber();
             let _ba : string[] = binaryAdress.split("").reverse();
             
@@ -187,13 +178,26 @@ class BitArray implements IBitArray {
             else if (this.bitLength === 32) {_ba = binaryAdress.split(/(.{32})/).filter(Boolean);}
             
             this.setBinaryNumber(_ba);
-            
-          } else {
+
+        } else {
             throw new Error("Invalid number of arguments");
-          }
+        }
     }
     toggle(index: number): void {
-        throw new Error("Method not implemented.");
+        this.checkIndex(index);
+        // get the variables
+        let binaryAdress : string = this.getBinaryNumber();
+        let _ba : string[] = binaryAdress.split("").reverse();
+        
+        //replace and combine
+        _ba[index] = (_ba[index] === "0") ? "1" : "0";
+        binaryAdress = _ba.reverse().join("");
+
+        //setting _ba to a binary value
+        if (this.bitLength === 8) {_ba = binaryAdress.split(/(.{8})/).filter(Boolean);}
+        else if (this.bitLength === 32) {_ba = binaryAdress.split(/(.{32})/).filter(Boolean);}
+
+        this.setBinaryNumber(_ba);
     }
     clear(): void {
         // remove the whole binary string
