@@ -151,7 +151,14 @@ class BitArray implements IBitArray {
         });
         
         return binaryString;
-    }    
+    }  
+    private setBinaryNumber(binaryString : string[]) : void {
+        binaryString.forEach((bitAdresses : string,i : number) => {
+            const converted = parseInt(bitAdresses, 2);
+            this.storage[i] = converted;
+        });
+    }  
+
     get(index?: number): BinaryDigit | BitArrayStorage {
         if (index === undefined) {
             return this.storage;
@@ -167,19 +174,11 @@ class BitArray implements IBitArray {
         if (args.length === 1) {
             const [value] : [string[]] = args;
 
-            // Handle value array
-            value.forEach((bitAdresses : string,i : number) => {
-                const converted = parseInt(bitAdresses, 2);
-                this.storage[i] = converted;
-            });
-            console.log(this.storage)
+            this.setBinaryNumber(value);
+
         } else if (args.length === 2) {
             const [index, value] = args;
-            let binaryAdress : string = "";
-            this.storage.forEach((binaryArray) => {
-                const binaryNumber : string = binaryArray.toString(2).padStart(this.bitLength, "0");
-                binaryAdress += binaryNumber;
-            });
+            let binaryAdress : string = this.getBinaryNumber();
             let _ba : string[] = binaryAdress.split("").reverse();
             
             _ba[index] = value;
@@ -187,11 +186,8 @@ class BitArray implements IBitArray {
             if (this.bitLength === 8) {_ba = binaryAdress.split(/(.{8})/).filter(Boolean);}
             else if (this.bitLength === 32) {_ba = binaryAdress.split(/(.{32})/).filter(Boolean);}
             
+            this.setBinaryNumber(_ba);
             
-            _ba.forEach((bitAdresses : string,i : number) => {
-                const converted = parseInt(bitAdresses, 2);
-                this.storage[i] = converted;
-            });
           } else {
             throw new Error("Invalid number of arguments");
           }
