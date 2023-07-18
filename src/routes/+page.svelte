@@ -35,9 +35,14 @@
 
   const ba = new BitArray(16,false,data);
   ba.set(data)
-  ba.set(1,"0")
-  ba.set(5,"1")
-  console.log(ba.get());
+  // ba.set(1,"0")
+  // ba.set(5,"1")
+  let x : string = "";
+  for (let index = 0; index < 16; index++) {
+    x += ba.get(index);
+  }
+  console.log(x)
+  
 </script>
   
 <h1>Welcome to my chess application</h1>
