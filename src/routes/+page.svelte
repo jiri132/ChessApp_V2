@@ -27,6 +27,11 @@
   //   }
   // }
   // db.CreateTable('users',exampleData);
+
+  import BitArray from "$lib/BitArray/Core/BitArray"
+
+  const ba = new BitArray(1);
+  
 </script>
   
 <h1>Welcome to my chess application</h1>
