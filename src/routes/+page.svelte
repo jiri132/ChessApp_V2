@@ -29,8 +29,11 @@
   // db.CreateTable('users',exampleData);
 
   import BitArray from "$lib/BitArray/Core/BitArray"
+  import type {BinaryGroup} from "$lib/BitArray/Core/Types/Binary/BinaryGroup.type"
 
-  const ba = new BitArray(1);
+  const data : BinaryGroup<8>[] = ["10101010","00001111"];
+
+  const ba = new BitArray(12,false,data);
   
 </script>
   
