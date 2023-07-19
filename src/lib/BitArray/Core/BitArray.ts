@@ -42,19 +42,7 @@ class BitArray implements IBitArray {
     *   ```
     */
     constructor(size: number, bitControl : boolean = false, value? : string[]){
-        if (value !== undefined) {
-            const bitLength = value.join("").length;
-            if (bitLength > size) {
-                //@ts-ignore
-                throw new Error(
-                `
-                The specified amount of bits you want to set: ${bitLength}bits 
-                Full value of setting bits: <${value.join(" ")}>
-
-                Aren't available in the requested bit length of ${size}bits
-                `);
-            }
-        }     
+           
         // Getting the buffer values for each array type
         // To check for the most efficient way of storing values
         const [ba8b , ba32b] : [number, number] = calculateBufferSizes(size);
@@ -93,6 +81,22 @@ class BitArray implements IBitArray {
         this.totalBitArraySize = size + this.buffer;
         this.bitArrayType = baType;
 
+        if (value !== undefined) {
+            const bitLength = value.join("").length;
+            if (bitLength > size) {
+                //@ts-ignore
+                throw new Error(
+                `
+                The specified amount of bits you want to set: ${bitLength}bits 
+                Full value of setting bits: <${value.join(" ")}>
+
+                Aren't available in the requested bit length of ${size}bits
+                `);
+            }else {
+                this.set(value);
+            }
+
+        } 
         function getBestType() : string {
             let ba8 : number = 0;
             let ba32 : number = 0;
