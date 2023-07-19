@@ -151,17 +151,17 @@ class BitArray implements IBitArray {
             this.storage[i] = converted;
         });
     }  
+    get() : BitArrayStorage {
+        return this.storage;
+    }
+    
+    getAtIndex(index: number) : BinaryDigit {
+        this.checkIndex(index);
 
-    get(index?: number): BinaryDigit | BitArrayStorage {
-        if (index === undefined) {
-            return this.storage;
-        }else {
-            this.checkIndex(index);
-            const [elementIndex, bitIndex] = this.getElementAndBitIndex(index);
-            const element = this.storage[elementIndex];
-            return (element & (1 << bitIndex)) !== 0 ? "1" : "0";
-        }
-    };
+        const [elementIndex, bitIndex] = this.getElementAndBitIndex(index);
+        const element = this.storage[elementIndex];
+        return (element & (1 << bitIndex)) !== 0 ? "1" : "0";
+    }
     
     set(...args: [value: string[]] | [index: number, value: BinaryDigit]): void {
         if (args.length === 1) {
