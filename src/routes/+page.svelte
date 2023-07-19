@@ -28,21 +28,33 @@
   // }
   // db.CreateTable('users',exampleData);
 
-  import BitArray from "$lib/BitArray/Core/BitArray"
-  import type {BinaryGroup} from "$lib/BitArray/Core/Types/Binary/BinaryGroup.type"
+  //import BitArray from "$lib/BitArray/Core/BitArray"
+  //import type {BinaryGroup} from "$lib/BitArray/Core/Types/Binary/BinaryGroup.type"
+    
+  // const pawn_data : BinaryGroup<4>[] = [
+  //   "0000",
+  //   "1010",
+  //   "0000",
+  //   "1101",
+  // ];
 
-  const data : BinaryGroup<8>[] = ["10101010","00001111"];
+  // const board_data : BinaryGroup<8>[] = [
+  //   "11111111",
+  //   "11111111",
+  //   "00000000",
+  //   "00000000",
+  //   "00000000",
+  //   "00000000",
+  //   "11111111",
+  //   "11111111",
+  // ];
 
-  const ba = new BitArray(16,false,data);
-  ba.set(data)
-  // ba.set(1,"0")
-  // ba.set(5,"1")
-  let x : string = "";
-  for (let index = 0; index < 16; index++) {
-    x += ba.get(index);
-  }
-  console.log(x)
-  
+  // const ba = new BitArray(64,true,board_data);
+  // console.log(ba.get());
+
+    import ChessBoard from "$lib/ChessBoard/Core/Board";
+
+    const game = new ChessBoard();
 </script>
   
 <h1>Welcome to my chess application</h1>
