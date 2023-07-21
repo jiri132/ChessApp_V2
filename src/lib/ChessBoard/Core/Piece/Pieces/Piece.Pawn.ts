@@ -7,7 +7,7 @@ import { pieceTable } from "../enum/Pieces.table.enum";
 class Pawn implements IPiece {
     pieceData: pieceTable;
     pieceColor: colorTable; 
-    location: string;
+    location: move;
 
     constructor(color : colorTable,location : move) {
         this.pieceData = pieceTable.Pawn;

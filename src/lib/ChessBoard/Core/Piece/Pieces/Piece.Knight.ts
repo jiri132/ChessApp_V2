@@ -15,10 +15,10 @@ class Knight implements IPiece {
         this.location = location;
     }
 
-    isLegalMove(board : IPiece[][],move: move): boolean {
+    isLegalMove(board : ChessBoard,move: move): boolean {
         throw new Error("Method not implemented.");
     }
-    legalMoves(board : IPiece[][]): string[] {
+    legalMoves(board : ChessBoard): move[] {
         throw new Error("Method not implemented.");
     }
 
