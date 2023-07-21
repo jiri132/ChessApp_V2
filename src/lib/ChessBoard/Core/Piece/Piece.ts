@@ -9,5 +9,5 @@ export interface IPiece {
     pieceColor : colorTable;
     location : move;
     legalMoves(board : ChessBoard) : move[];            // Returns an array of legal moves @example `['f8','f7']`
-    isLegalMove(board : ChessBoard, move : string) : boolean;
+    isLegalMove(board : ChessBoard, move : move) : boolean;
 }
