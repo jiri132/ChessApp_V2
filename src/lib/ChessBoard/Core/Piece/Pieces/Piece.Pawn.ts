@@ -1,5 +1,6 @@
 import type ChessBoard from "../../Board";
 import type { IPiece } from "../Piece"
+import type { move } from "../../Moves/move.type"
 import { colorTable } from "../enum/Color.table.enum";
 import { pieceTable } from "../enum/Pieces.table.enum";
 
@@ -8,14 +9,17 @@ class Pawn implements IPiece {
     pieceColor: colorTable; 
     location: string;
 
-    constructor(color : colorTable,location : string) {
+    constructor(color : colorTable,location : move) {
         this.pieceData = pieceTable.Pawn;
         this.pieceColor = color;    
         this.location = location;
     }
 
-    legalMoves(board : ChessBoard): string[] {
-        const legalMoves: string[] = [];
+    isLegalMove(board: ChessBoard, move: string): boolean {
+        throw new Error("function not implemented")        
+    }
+    legalMoves(board : ChessBoard): move[] {
+        const legalMoves: move[] = [];
         const [file, rank] = this.location;
 
         // Determine the direction the pawn should move based on its color
@@ -38,7 +42,7 @@ class Pawn implements IPiece {
         }
 
         // Check captures diagonally
-        const captureMoves: string[] = [
+        const captureMoves: move[] = [
             String.fromCharCode(file.charCodeAt(0) + 1) + nextRank,
             String.fromCharCode(file.charCodeAt(0) - 1) + nextRank,
         ];

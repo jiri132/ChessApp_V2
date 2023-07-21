@@ -1,22 +1,24 @@
+import type ChessBoard from "../../Board";
 import type { IPiece } from "../Piece"
 import type { colorTable } from "../enum/Color.table.enum";
+import type { move } from "../../Moves/move.type"
 import { pieceTable } from "../enum/Pieces.table.enum";
 
 class Knight implements IPiece {
     pieceData: pieceTable;
     pieceColor: colorTable; 
-    location: string;
+    location: move;
 
-    constructor(color : colorTable,location : string) {
+    constructor(color : colorTable,location : move) {
         this.pieceData = pieceTable.Knight;
         this.pieceColor = color;    
         this.location = location;
     }
 
-    movePiece(move: string): void {
+    isLegalMove(board : IPiece[][],move: move): boolean {
         throw new Error("Method not implemented.");
     }
-    legalMoves(): string[] {
+    legalMoves(board : IPiece[][]): string[] {
         throw new Error("Method not implemented.");
     }
 
