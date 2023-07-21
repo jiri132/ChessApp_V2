@@ -15,8 +15,14 @@ class Pawn implements IPiece {
         this.location = location;
     }
 
-    isLegalMove(board: ChessBoard, move: string): boolean {
-        throw new Error("function not implemented")        
+    isLegalMove(board: ChessBoard, move: move): boolean {
+        if  (this.legalMoves(board).includes(move)) {
+            console.log(this.legalMoves(board))
+            return true;
+        } 
+        else {
+            return false;
+        }       
     }
     legalMoves(board : ChessBoard): move[] {
         const legalMoves: move[] = [];
@@ -27,7 +33,8 @@ class Pawn implements IPiece {
 
         // Check the single square in front of the pawn
         const nextRank = String.fromCharCode(rank.charCodeAt(0) + direction);
-        const nextSquare = `${file}${nextRank}`;
+        //@ts-ignore
+        const nextSquare : move= `${file}${nextRank}`;
         if (!board.getPieceAtPosition(nextSquare)) {
             legalMoves.push(nextSquare);
         }
@@ -35,7 +42,8 @@ class Pawn implements IPiece {
         // Check the double square move from the starting position
         if ((this.pieceColor === colorTable.white && rank === "2") || (this.pieceColor === colorTable.black && rank === "7")) {
             const doubleMoveRank = String.fromCharCode(rank.charCodeAt(0) + 2 * direction);
-            const doubleMoveSquare = `${file}${doubleMoveRank}`;
+            //@ts-ignore
+            const doubleMoveSquare : move = `${file}${doubleMoveRank}`;
             if (!board.getPieceAtPosition(doubleMoveSquare) && !board.getPieceAtPosition(nextSquare)) {
                 legalMoves.push(doubleMoveSquare);
             }
@@ -43,7 +51,9 @@ class Pawn implements IPiece {
 
         // Check captures diagonally
         const captureMoves: move[] = [
-            String.fromCharCode(file.charCodeAt(0) + 1) + nextRank,
+            // @ts-ignore
+            String.fromCharCode(file.charCodeAt(0) + 1) + nextRank, 
+            // @ts-ignore
             String.fromCharCode(file.charCodeAt(0) - 1) + nextRank,
         ];
 
@@ -56,7 +66,6 @@ class Pawn implements IPiece {
 
         return legalMoves;
     }
-
 }
 
 export default Pawn;

@@ -15,8 +15,14 @@ class King implements IPiece {
         this.location = location;
     }
 
-    isLegalMove(board : ChessBoard,move: move): boolean {
-        throw new Error("Method not implemented.");
+    isLegalMove(board: ChessBoard, move: move): boolean {
+        if  (this.legalMoves(board).includes(move)) {
+            console.log(this.legalMoves(board))
+            return true;
+        } 
+        else {
+            return false;
+        }       
     }
     legalMoves(board : ChessBoard): move[] {
         throw new Error("Method not implemented.");
