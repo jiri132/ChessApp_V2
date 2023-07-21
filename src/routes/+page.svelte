@@ -55,6 +55,11 @@
     import ChessBoard from "$lib/ChessBoard/Core/Board";
 
     const game = new ChessBoard();
+
+    console.log(game.getPieceAtPosition("A1"))
+    console.log(game.getPieceAtPosition("C8"))
+    console.log(game.getPieceAtPosition("F8"))
+    console.log(game.getPieceAtPosition("B1"))
 </script>
   
 <h1>Welcome to my chess application</h1>
