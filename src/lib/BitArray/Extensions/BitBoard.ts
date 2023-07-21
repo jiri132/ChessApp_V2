@@ -4,7 +4,6 @@ import type { BitArrayStorage } from "../Core/Types/BitArray.BitArrayStorage.typ
 
 function parseBinaryInput(input: string | number): number {
     const binaryString = typeof input === "string" ? input : input.toString(2).padStart(8, "0");
-    console.log(input)
     let decimalValue = 0;
   
     for (let i = binaryString.length - 1; i >= 0; i--) {
