@@ -56,8 +56,11 @@
 
     const game = new ChessBoard();
 
-    console.log(game.getPieceAtPosition("A2"))
-    game.movePiece("A2","A4");
+    console.log(game.getPieceAtPosition("B2"))
+    game.movePiece("D2","D4");
+    game.movePiece("D1","D3");
+    game.movePiece("D3","E4");
+    
     console.log(game.getPieceAtPosition("A4"))
 </script>
   
