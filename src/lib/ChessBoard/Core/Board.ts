@@ -53,7 +53,7 @@ class ChessBoard {
             // Remove the piece from the original position and place it at the new position
             this.game[toRank][toFile] = piece;
             this.game[fromRank][fromFile] = null!;
-        
+            console.log(this.game)
             // Update the piece's location
             piece.location = toPosition;
             return;
