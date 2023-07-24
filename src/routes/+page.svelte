@@ -56,12 +56,13 @@
 
     const game = new ChessBoard();
 
-    console.log(game.getPieceAtPosition("B2"))
-    game.movePiece("D2","D4");
-    game.movePiece("D1","D3");
-    game.movePiece("D3","E4");
+    // console.log(game.getPieceAtPosition("B2"))
+    // game.movePiece("D2","D4");
+    // game.movePiece("D1","D3");
+    // game.movePiece("D3","E4");
     
-    console.log(game.getPieceAtPosition("A4"))
+    // console.log(game.getPieceAtPosition("A4"))
+    game.getAllLegalMoves();
 </script>
   
 <h1>Welcome to my chess application</h1>
