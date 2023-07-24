@@ -62,7 +62,11 @@
     // game.movePiece("D3","E4");
     
     // console.log(game.getPieceAtPosition("A4"))
-    game.getAllLegalMoves();
+    // game.getYourLegalMoves();
+    game.playMove("A2A4");
+    game.playMove("A7A6");
+    game.playMove("B2B4");
+    game.playMove("B7B6");
 </script>
   
 <h1>Welcome to my chess application</h1>
