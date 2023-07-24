@@ -33,7 +33,29 @@ export interface IBoard {
     *       [["A4", <black move>], ...]
     *   ```
     */
-    readonly playedMoves : playedMoves[][];
+    readonly playedMoves : playedMoves[];
+
+    /*
+    *   **isWhiteToMove** 
+    *
+    *   This function is used to check if it is whites turn to play a move if it is not then it is blacks move
+    * 
+    *   @example
+    *   ```ts
+    *       board = new board();
+    *       console.log(board.isWhiteTurn); 
+    *       board.playMove("A2","A4");
+    *       console.log(board.isWhiteTurn); 
+    *   ``` 
+    *   
+    *   @result
+    *   ```ts
+    *       True
+    *       >> "White played the move `A2` to `A4` "
+    *       False
+    *   ```
+    */
+    readonly isWhiteToMove : boolean;
 
     /*
     *   **game** 
@@ -118,29 +140,9 @@ export interface IBoard {
     *       [["A2A4","A7A5"]]
     *   ```
     */
-    playMove(): void;
+    playMove(playedMove : playedMoves): void;
 
-    /*
-    *   **isWhiteTurn()** 
-    *
-    *   This function is used to check if it is whites turn to play a move if it is not then it is blacks move
-    * 
-    *   @example
-    *   ```ts
-    *       board = new board();
-    *       console.log(board.isWhiteTurn()); 
-    *       board.playMove("A2","A4");
-    *       console.log(board.isWhiteTurn()); 
-    *   ``` 
-    *   
-    *   @result
-    *   ```ts
-    *       True
-    *       >> "White played the move `A2` to `A4` "
-    *       False
-    *   ```
-    */
-    isWhiteTurn() : boolean;
+   
 
 
     /*
@@ -155,7 +157,7 @@ export interface IBoard {
     *   @example
     *   ```ts
     *       board = new board();
-    *       console.log(board.getAllLegalMoves()); 
+    *       console.log(board.getYourLegalMoves()); 
     *   ``` 
     *   
     *   @result -folded
@@ -163,8 +165,29 @@ export interface IBoard {
     *      ["A2A3", "A2A4", "B2B3", "B2B4", "C2C3", "C2C4", "D2D3", "D2D4", "E2E3", "E2E4", "F2F3", "F2F4", "G2G3", "G2G4", "H2H3", "H2H4", "B1A3", "B1C3", "G1F3", "G1H3"]
     *   ```
     */
-    getAllLegalMoves() : playedMoves[];
+    getYourLegalMoves() : playedMoves[];
 
+    /*
+    *   **getOpponentLegalMoves()** 
+    *
+    *   This function gives back all possible legal moves in the format of `playedMoves`
+    *   The format of `playedMoves` ensures that there will be no bugs with played moves for example
+    *   
+    *   @bug report
+    *   `B2 -> A3` was a possibility for the engine when it was in the format of `moves`
+    * 
+    *   @example
+    *   ```ts
+    *       board = new board();
+    *       console.log(board.getOpponentLegalMoves()); 
+    *   ``` 
+    *   
+    *   @result -folded
+    *   ```ts
+    *      ["A2A3", "A2A4", "B2B3", "B2B4", "C2C3", "C2C4", "D2D3", "D2D4", "E2E3", "E2E4", "F2F3", "F2F4", "G2G3", "G2G4", "H2H3", "H2H4", "B1A3", "B1C3", "G1F3", "G1H3"]
+    *   ```
+    */
+    getOpponentsLegalMoves() : playedMoves[];
     /*
     *   **getPieceAtPosition()** 
     *
