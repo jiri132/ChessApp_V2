@@ -11,16 +11,13 @@ import King from "./Piece/Pieces/Piece.King";
 import type { move } from "./Moves/move.type";
 import type { IBoard } from "./IBoard.interface";
 import type { playedMoves } from "./Moves/playedMoves.type";
+import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 
 class ChessBoard implements IBoard {
-    // private readonly whiteBitTable : Bitboard;
-    // private readonly blackBitTable : Bitboard;
-    // private readonly gameBitTable  : Bitboard;
 
-    public readonly playedMoves : playedMoves[][] = [];
-
-
-    // private readonly turn : colorTable = colorTable.white; 
+    public readonly playedMoves : playedMoves[] = [];
+    
+    public isWhiteToMove: boolean = true;
     public readonly game : IPiece[][] = [
         [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E7"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
         [new Pawn(colorTable.black, "A7"),new Pawn(colorTable.black, "B7"),new Pawn(colorTable.black, "C7"),new Pawn(colorTable.black, "D7"),new Pawn(colorTable.black, "E7"),new Pawn(colorTable.black, "F7"),new Pawn(colorTable.black, "G7"),new Pawn(colorTable.black, "H7")],
@@ -38,8 +35,21 @@ class ChessBoard implements IBoard {
     undoMove() : void {
         throw new Error("Method not implemented.");
     }
-    playMove(): void {
-        throw new Error("Method not implemented.");        
+    playMove(playingMove : playedMoves): void {
+        if (this.getYourLegalMoves().includes(playingMove)) {
+            this.isWhiteToMove = !this.isWhiteToMove;
+
+            if (this.isWhiteToMove) {
+                this.playedMoves.push(playingMove);
+
+            }else {
+                this.playedMoves.push(playingMove);
+            }
+            
+
+        }else {
+            throw new Error("This played move isn't valid!");
+        }
     }
     
     
@@ -55,9 +65,8 @@ class ChessBoard implements IBoard {
         return piece ? piece : null;
     }
 
-    public getAllLegalMoves() : playedMoves[] {
+    public getOpponentsLegalMoves() : playedMoves[] {
         const allMoves : playedMoves[] = [];
-        console.log(this.game)
 
         for (let i = 0; i < this.game.length; i++) {
             const rankPieces = this.game[i];
@@ -70,9 +79,14 @@ class ChessBoard implements IBoard {
             
                 // 0. evade the null!
                 if (piece === null) {return;}
+                
+                // 0.1. evade the kings? 
+                // Not sure if I need to do this and then create some logic for it that I can check that the king doesn't move next to the other king
+                // I don't know maybe?
+                if (piece.pieceData === pieceTable.King) {return;}
 
                 // 1. Check if the piece is a specific color
-                if (this.isWhiteTurn()  && piece.pieceColor === "0") {
+                if (this.isWhiteToMove && piece.pieceColor === "1") {
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
                     
@@ -81,7 +95,7 @@ class ChessBoard implements IBoard {
                         allMoves.push(file + rank + move);    
                     });
 
-                } else if (!this.isWhiteTurn()  && piece.pieceColor === "1"){
+                } else if (!this.isWhiteToMove && piece.pieceColor === "0"){
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
                                         
@@ -98,20 +112,56 @@ class ChessBoard implements IBoard {
         // 3. Return the legal moves into an array
         return allMoves;
     }
+    public getYourLegalMoves() : playedMoves[] {
+        const allMoves : playedMoves[] = [];
 
-    public isWhiteTurn() : boolean {
-        // When there hasn't been made a move since the game started
-        if (this.playedMoves.length === 0) {return true;}
-        
-        const whiteLatestMove = this.playedMoves[this.playedMoves.length === 0 ? 0 :this.playedMoves.length-1][0];
+        for (let i = 0; i < this.game.length; i++) {
+            const rankPieces = this.game[i];
+            const rank = 8 - i;
 
-        if (whiteLatestMove === undefined) {
+            rankPieces.forEach((piece : IPiece, index : number) => {
+                // -1. get number ot letter so that you can create the location of the piece
+                const letterCode = 65 + index;
+                const file = String.fromCharCode(letterCode);    
+            
+                // 0. evade the null!
+                if (piece === null) {return;}
+
+                // 1. Check if the piece is a specific color
+                if (this.isWhiteToMove && piece.pieceColor === "0") {
+                    // 2. Move on to getting the legal moves
+                    let moves : move[] = piece.legalMoves(this);
+                    
+                    moves.forEach((move : string) => {
+                        // @ts-ignore
+                        allMoves.push(file + rank + move);    
+                    });
+
+                } else if (!this.isWhiteToMove && piece.pieceColor === "1"){
+                    // 2. Move on to getting the legal moves
+                    let moves : move[] = piece.legalMoves(this);
+                                        
+                    moves.forEach((move : string) => {
+                        // @ts-ignore
+                        allMoves.push(file + rank + move);    
+                    });
+                }
+
+            });
+            
+        }
+        // 3. Return the legal moves into an array
+        return allMoves;
+    }
+    public isAttackedSquare(square : move) : boolean {
+        const mappedMoves = this.getOpponentsLegalMoves().map(move => move.substring(2, 4));
+
+        if (mappedMoves.includes(square)) {
             return true;
         }
 
         return false;
     }
-
 
 
     /*
@@ -152,6 +202,7 @@ class ChessBoard implements IBoard {
     //         throw new Error("Invalid Move");
     //     }
     // }
+    
 
     private getIndexFileRank(position : move) : [number, number] {
         const [file, rank] = position;
