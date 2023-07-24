@@ -67,7 +67,19 @@
     game.playMove("A7A6");
     game.playMove("B2B4");
     game.playMove("B7B6");
+
+    import Board from "$lib/ChessBoard/UI-Frameworks/board.svelte";
+
 </script>
   
 <h1>Welcome to my chess application</h1>
+<main>
+  <Board />
+</main>
 
+<style>
+  main {
+    display: flex;
+    justify-content: center;
+  }
+</style>
