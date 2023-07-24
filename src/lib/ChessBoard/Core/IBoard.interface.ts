@@ -1,7 +1,7 @@
 import type ChessBoard from "./Board";
 import type { move } from "./Moves/move.type";
 import type { playedMoves } from "./Moves/playedMoves.type";
-import type { IPiece } from "./Piece/Piece";
+import type { IPiece } from "./Piece/IPiece";
 import type { colorTable } from "./Piece/enum/Color.table.enum";
 
 export interface IBoard {

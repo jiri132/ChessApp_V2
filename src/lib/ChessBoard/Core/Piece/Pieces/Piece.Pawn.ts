@@ -1,5 +1,5 @@
 import type ChessBoard from "../../Board";
-import type { IPiece } from "../Piece"
+import type { IPiece } from "../IPiece"
 import type { move } from "../../Moves/move.type"
 import { colorTable } from "../enum/Color.table.enum";
 import { pieceTable } from "../enum/Pieces.table.enum";

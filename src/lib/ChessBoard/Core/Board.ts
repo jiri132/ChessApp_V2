@@ -1,7 +1,6 @@
 // import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import { colorTable } from "./Piece/enum/Color.table.enum";
 // import Bitboard from "$lib/BitArray/Extensions/BitBoard";
-import type {IPiece} from "./Piece/Piece";
 import Rook from "./Piece/Pieces/Piece.Rook";
 import Pawn from "./Piece/Pieces/Piece.Pawn";
 import Knight from "./Piece/Pieces/Piece.Knight";
@@ -12,6 +11,7 @@ import type { move } from "./Moves/move.type";
 import type { IBoard } from "./IBoard.interface";
 import type { playedMoves } from "./Moves/playedMoves.type";
 import { pieceTable } from "./Piece/enum/Pieces.table.enum";
+import type { IPiece } from "./Piece/IPiece";
 
 class ChessBoard implements IBoard {
 
