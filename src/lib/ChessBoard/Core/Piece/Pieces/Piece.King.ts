@@ -9,6 +9,8 @@ class King implements IPiece {
     pieceColor: colorTable; 
     location: move;
 
+    hasMoved:boolean = false;
+
     constructor(color : colorTable,location : move) {
         this.pieceData = pieceTable.King;
         this.pieceColor = color;    
@@ -25,7 +27,41 @@ class King implements IPiece {
         }       
     }
     legalMoves(board : ChessBoard): move[] {
-        throw new Error("Method not implemented.");
+        const [file, rank] = this.location;
+        const validMoves: move[] = [];
+
+        // All potential moves (up, down, left, right, and the four diagonal directions)
+        const allMoves = [
+        { fileOffset: 1, rankOffset: 0 }, // Right
+        { fileOffset: -1, rankOffset: 0 }, // Left
+        { fileOffset: 0, rankOffset: 1 }, // Up
+        { fileOffset: 0, rankOffset: -1 }, // Down
+        { fileOffset: 1, rankOffset: 1 }, // Up-right
+        { fileOffset: -1, rankOffset: 1 }, // Up-left
+        { fileOffset: 1, rankOffset: -1 }, // Down-right
+        { fileOffset: -1, rankOffset: -1 }, // Down-left
+        ];
+
+        for (const moveOffset of allMoves) {
+        const currentFile = file.charCodeAt(0) - "A".charCodeAt(0) + moveOffset.fileOffset;
+        const currentRank = parseInt(rank) + moveOffset.rankOffset;
+
+        if (currentFile >= 0 && currentFile <= 7 && currentRank >= 1 && currentRank <= 8) {
+            // @ts-ignore
+            const pieceAtPosition = board.getPieceAtPosition(String.fromCharCode(currentFile + 65) + currentRank.toString());
+
+            if (!pieceAtPosition || pieceAtPosition.pieceColor !== this.pieceColor) {
+            // Empty square or enemy piece, add it to valid moves
+            // @ts-ignore
+            validMoves.push(String.fromCharCode(currentFile + 65) + currentRank.toString());
+            }
+        }
+        }
+
+        // Check for castling opportunities (Kingside and Queenside)
+        // ... Implement castling logic here ...
+
+        return validMoves;
     }
 
 }
