@@ -60,34 +60,50 @@ class ChessBoard implements IBoard {
         console.log(this.game)
 
         for (let i = 0; i < this.game.length; i++) {
-            const rank = this.game[i];
-                
-            // 0. evade the null!
-            // 1. Check if the piece is a specific color
-            // 2. Move on to getting the legal moves
-            // 3. Return the legal moves into an array
-            rank.forEach((piece : IPiece, index : number) => {
-                const file = index;    
+            const rankPieces = this.game[i];
+            const rank = 8 - i;
 
+            rankPieces.forEach((piece : IPiece, index : number) => {
+                // -1. get number ot letter so that you can create the location of the piece
+                const letterCode = 65 + index;
+                const file = String.fromCharCode(letterCode);    
+            
+                // 0. evade the null!
                 if (piece === null) {return;}
 
-
+                // 1. Check if the piece is a specific color
                 if (this.isWhiteTurn()  && piece.pieceColor === "0") {
+                    // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
                     
+                    moves.forEach((move : string) => {
+                        // @ts-ignore
+                        allMoves.push(file + rank + move);    
+                    });
 
                 } else if (!this.isWhiteTurn()  && piece.pieceColor === "1"){
-
+                    // 2. Move on to getting the legal moves
+                    let moves : move[] = piece.legalMoves(this);
+                                        
+                    moves.forEach((move : string) => {
+                        // @ts-ignore
+                        allMoves.push(file + rank + move);    
+                    });
                 }
 
             });
             
         }
-        return null!;
+
+        // 3. Return the legal moves into an array
+        return allMoves;
     }
 
     public isWhiteTurn() : boolean {
-        const whiteLatestMove = this.playedMoves[this.playedMoves.length-1][0];
+        // When there hasn't been made a move since the game started
+        if (this.playedMoves.length === 0) {return true;}
+        
+        const whiteLatestMove = this.playedMoves[this.playedMoves.length === 0 ? 0 :this.playedMoves.length-1][0];
 
         if (whiteLatestMove === undefined) {
             return true;
