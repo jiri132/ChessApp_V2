@@ -5,7 +5,7 @@ import type { IPiece } from "$lib/ChessBoard/Core/Piece/IPiece";
 
 class Chess_API_Visuals {
     private readonly API : ChessBoard;
-
+    
     constructor(board : ChessBoard) {
         this.API = board;
     }
@@ -18,8 +18,6 @@ class Chess_API_Visuals {
              if (!webElement) {return;}
 
              webElement.style.backgroundColor = '#FF00007F';
-
-             console.log(webElement.style.backgroundColor, move);
         });
     }
 
@@ -31,8 +29,6 @@ class Chess_API_Visuals {
              if (!webElement) {return;}
 
              webElement.style.backgroundColor = '#FF000000';
-
-             console.log(webElement.style.backgroundColor, move);
         });
     }
 
@@ -56,9 +52,27 @@ class Chess_API_Visuals {
         })
     }
 
-
-    private RenderSingleSquare(square : move) : void {
+    public RenderSingleSquare(square : move) : void {
         const piece : IPiece | null  = this.API.getPieceAtPosition(square);
+        const webElement = document.getElementById(square);
+
+        if (!webElement)  {return;}
+                    
+        let url = "";
+        if (piece) { url = `/src/lib/assets/${piece.pieceColor+piece.pieceData}.png` }
+
+        webElement.style.backgroundImage = `url(${url})`;
+    }
+
+    static RenderPlayedMove(playedMove : playedMoves, API:ChessBoard) : void {
+        const position : move = playedMove.substring(0, 2) as move;
+        const to : move = playedMove.substring(2, 4) as move;
+
+        this.RenderSingleSquare(position, API);
+        this.RenderSingleSquare(to, API);
+    }
+    static RenderSingleSquare(square : move, API : ChessBoard) : void {
+        const piece : IPiece | null  = API.getPieceAtPosition(square);
         const webElement = document.getElementById(square);
 
         if (!webElement)  {return;}
