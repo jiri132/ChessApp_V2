@@ -1,7 +1,11 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import ChessBoard from "../Core/Board";
     import type { move } from "../Core/Moves/move.type";
+    import type { playedMoves } from "../Core/Moves/playedMoves.type";
     import type { IPiece } from "../Core/Piece/IPiece";
+    import { colorTable } from "../Core/Piece/enum/Color.table.enum";
+    import { draw } from "svelte/transition";
 
     const Board = new ChessBoard();
     
@@ -9,42 +13,140 @@
     let possibleMoves : move[] = [];
 
     function highlightPossibleMoves() : void {
-        console.log(movingPiece , possibleMoves)
+        // give the color to the squares
+        possibleMoves.forEach((move : move) => {
+             const webElement : HTMLElement | null = document.getElementById(move);
+             
+             if (!webElement) {return;}
+
+             webElement.style.backgroundColor = '#FF00007F';
+
+             console.log(webElement.style.backgroundColor, move);
+        });
+    }
+    function removeHighlightsPossibleMoves() : void {
+        // give the color to the squares
+        possibleMoves.forEach((move : move) => {
+             const webElement : HTMLElement | null = document.getElementById(move);
+             
+             if (!webElement) {return;}
+
+             webElement.style.backgroundColor = '#FF000000';
+
+             console.log(webElement.style.backgroundColor, move);
+        });
     }
 
+    function SelectedOwnPiece(piece : IPiece) : boolean {
+        if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
+            (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
+            // Remove coloring
+                removeHighlightsPossibleMoves();
+
+            // Assign pieces and moves
+            movingPiece = piece; 
+            possibleMoves = piece.legalMoves(Board);
+
+            // Highlight possible moves again
+            highlightPossibleMoves();
+
+            return true;
+        }
+        return false;
+    }
+
+    function movePiece(square : move) {
+        if (!possibleMoves.includes(square)) {return;}
+
+        // Move the piece and change turn
+        const PieceSquare : move = movingPiece.location;
+        const playingMove : playedMoves = (PieceSquare+square) as playedMoves;
+
+        // Play the move
+        Board.playMove(playingMove);
+
+        // Render Squares
+        DrawPlayedMove(playingMove);
+    }
+
+    function onClickLogic(e : PointerEvent) {
+        //@ts-ignore
+        const id : move = e.target.id;
+        const piece : IPiece | null = Board.getPieceAtPosition(id);
+        
+        if (piece) {
+            // Set Piece and legalMoves
+            if (!SelectedOwnPiece(piece)) {
+                // Play the  move if it is possible and otherwise remove selecion and highlights
+                movePiece(id);
+
+                reset();
+
+                return;
+            }
+
+            movingPiece = piece;
+            possibleMoves = piece.legalMoves(Board);
+
+            highlightPossibleMoves();
+        }else {
+            movePiece(id);
+            
+            reset();
+        }
+    }
+    function reset() {
+        removeHighlightsPossibleMoves();
+        movingPiece = null!;
+        possibleMoves = [];
+    }
+    //#region Drawing Board
+    function DrawAllSquares() {
+        // Get 1 array
+        Board.game.forEach((pieceArray : IPiece[], file) => {
+            // Get 1 element that array
+            pieceArray.forEach((piece : IPiece, rank) => {
+                const square : move =  String.fromCharCode(65 + rank) + (8-file).toString() as move;
+                DrawSingleSquare(square);
+            })
+        })
+    }
+
+    function DrawSingleSquare(square : move) {
+        const piece : IPiece | null  = Board.getPieceAtPosition(square);
+        const webElement = document.getElementById(square);
+
+        if (!webElement)  {return;}
+                
+        let url = "";
+        if (piece) { url = `/src/lib/assets/${piece.pieceColor+piece.pieceData}.png` }
+
+        webElement.style.backgroundImage = `url(${url})`;
+    }
+    function DrawPlayedMove(playedMove : playedMoves) {
+        const position : move = playedMove.substring(0, 2) as move;
+        const to : move = playedMove.substring(2, 4) as move;
+
+        DrawSingleSquare(position);
+        DrawSingleSquare(to);
+    }
+    //#endregion
+    
+    onMount(() => {
+        DrawAllSquares();
+    }) 
 </script>
 
 <div>
-    <svg viewBox="0 0 100 1000" class="coordinates">
-        <text x="0" y="1.5" font-size="2" class="coordinates-light">8</text>
-        <text x="0" y="6.75" font-size="2" class="coordinates-light">7</text>
-        <text x="0" y="11.75" font-size="2" class="coordinates-light">6</text>
-        <text x="0" y="16.75" font-size="2" class="coordinates-light">5</text>
-        <text x="0" y="21.75" font-size="2" class="coordinates-light">4</text>
-        <text x="0" y="26.75" font-size="2" class="coordinates-light">3</text>
-        <text x="0" y="31.75" font-size="2" class="coordinates-light">2</text>
-        <text x="0" y="36.75" font-size="2" class="coordinates-light">1</text>
-    </svg>
-
     <div class="container">
         {#each Board.game as row, file}
                 {#each Board.game[file] as piece, rank}
-                    <div id={8-file + String.fromCharCode(65 + rank)} class="card"
+                    <div id={String.fromCharCode(65 + rank) + (8-file).toString()} class="card"
                         on:click={(e) => {
-                            console.log(e)
+                            onClickLogic(e);
                         }}
-                    >
-                        {#if piece !== null}
-                            <div style="background-image:url(/src/lib/assets/{piece.pieceColor+piece.pieceData}.png); width: 100%; height: 100%;"
-                                on:mousedown={(e) => {
-                                    movingPiece = piece; 
-                                    possibleMoves = piece.legalMoves(Board);
-                                    highlightPossibleMoves();
-                                }}
-                            >
-                            </div>
-                        {/if}
-                    </div> 
+                        >
+                    </div>
                 {/each}
         {/each}
     </div>
