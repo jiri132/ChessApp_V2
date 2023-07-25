@@ -52,9 +52,9 @@
   // const ba = new BitArray(64,true,board_data);
   // console.log(ba.get());
 
-    import ChessBoard from "$lib/ChessBoard/Core/Board";
+    // import ChessBoard from "$lib/ChessBoard/Core/Board";
 
-    const game = new ChessBoard();
+    // const game = new ChessBoard();
 
     // console.log(game.getPieceAtPosition("B2"))
     // game.movePiece("D2","D4");
@@ -63,10 +63,10 @@
     
     // console.log(game.getPieceAtPosition("A4"))
     // game.getYourLegalMoves();
-    game.playMove("A2A4");
-    game.playMove("A7A6");
-    game.playMove("B2B4");
-    game.playMove("B7B6");
+    // game.playMove("A2A4");
+    // game.playMove("A7A6");
+    // game.playMove("B2B4");
+    // game.playMove("B7B6");
 
     import Board from "$lib/ChessBoard/UI-Frameworks/board.svelte";
 
