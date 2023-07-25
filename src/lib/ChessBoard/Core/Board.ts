@@ -37,16 +37,17 @@ class ChessBoard implements IBoard {
     }
     playMove(playingMove : playedMoves): void {
         if (this.getYourLegalMoves().includes(playingMove)) {
+            // Invert the boolean
             this.isWhiteToMove = !this.isWhiteToMove;
 
-            if (this.isWhiteToMove) {
-                this.playedMoves.push(playingMove);
+            // Push the played move into the array
+            this.playedMoves.push(playingMove);
 
-            }else {
-                this.playedMoves.push(playingMove);
-            }
+            // Separate the playingMove into position and to
+            const position = playingMove.substring(0, 2);
+            const to = playingMove.substring(2, 4);
             
-
+            this.movePiece(position,to);
         }else {
             throw new Error("This played move isn't valid!");
         }
@@ -172,36 +173,32 @@ class ChessBoard implements IBoard {
     *
     */
 
-    // private movePiece(fromPosition : move, toPosition : move) : IPiece[][] {
-    //     // Get piece from the virtual board
-    //     const piece = this.getPieceAtPosition(fromPosition);
+    private movePiece(fromPosition : move, toPosition : move) {
+        // Get piece from the virtual board
+        const piece = this.getPieceAtPosition(fromPosition);
 
-    //     // error if the virtual board doesn't have a piece there
-    //     if (!piece) {
-    //         throw new Error("No piece found at the specified position");
-    //     }
+        // error if the virtual board doesn't have a piece there
+        if (!piece) {
+            throw new Error("No piece found at the specified position");
+        }
 
 
-    //     if (piece.isLegalMove(this, toPosition)) {
-    //         // Move the piece internally
-    //         const [fromFile, fromRank] = this.getIndexFileRank(fromPosition);
-    //         const [toFile, toRank] = this.getIndexFileRank(toPosition);
+        if (piece.isLegalMove(this, toPosition)) {
+            // Move the piece internally
+            const [fromFile, fromRank] = this.getIndexFileRank(fromPosition);
+            const [toFile, toRank] = this.getIndexFileRank(toPosition);
 
-    //         // Remove the piece from the original position and place it at the new position
-    //         this.game[toRank][toFile] = piece;
-    //         this.game[fromRank][fromFile] = null!;
-    //         // console.log(board.game)
+            // Remove the piece from the original position and place it at the new position
+            this.game[fromRank][fromFile] = null!;
+            this.game[toRank][toFile] = piece;
 
-    //         // Update the piece's location
-    //         piece.location = toPosition;
-            
-    //         // return the new positions
-    //         return this.game;
-    //     } else {
-    //         // If move is invalid return null
-    //         throw new Error("Invalid Move");
-    //     }
-    // }
+            // Update the piece's location
+            piece.location = toPosition;
+        } else {
+            // If move is invalid return null
+            throw new Error("Invalid Move");
+        }
+    }
     
 
     private getIndexFileRank(position : move) : [number, number] {
