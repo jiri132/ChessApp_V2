@@ -12,43 +12,20 @@
     let movingPiece : IPiece;
     let possibleMoves : move[] = [];
 
-    function highlightPossibleMoves() : void {
-        // give the color to the squares
-        possibleMoves.forEach((move : move) => {
-             const webElement : HTMLElement | null = document.getElementById(move);
-             
-             if (!webElement) {return;}
-
-             webElement.style.backgroundColor = '#FF00007F';
-
-             console.log(webElement.style.backgroundColor, move);
-        });
-    }
-    function removeHighlightsPossibleMoves() : void {
-        // give the color to the squares
-        possibleMoves.forEach((move : move) => {
-             const webElement : HTMLElement | null = document.getElementById(move);
-             
-             if (!webElement) {return;}
-
-             webElement.style.backgroundColor = '#FF000000';
-
-             console.log(webElement.style.backgroundColor, move);
-        });
-    }
-
     function SelectedOwnPiece(piece : IPiece) : boolean {
         if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
             (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
             // Remove coloring
-                removeHighlightsPossibleMoves();
+            //TODO: Update with board_API_visuals
+                //removeHighlightsPossibleMoves();
 
             // Assign pieces and moves
             movingPiece = piece; 
             possibleMoves = piece.legalMoves(Board);
 
             // Highlight possible moves again
-            highlightPossibleMoves();
+            //TODO: Update with board_API_visuals
+                //highlightPossibleMoves();
 
             return true;
         }
@@ -65,8 +42,9 @@
         // Play the move
         Board.playMove(playingMove);
 
-        // Render Squares
-        DrawPlayedMove(playingMove);
+        // Render Squares 
+        // TODO: update with new board_API_visuals
+            //DrawPlayedMove(playingMove);
     }
 
     function onClickLogic(e : PointerEvent) {
@@ -96,44 +74,16 @@
         }
     }
     function reset() {
-        removeHighlightsPossibleMoves();
+        //TODO: Update with board_API_visuals
+            //removeHighlightsPossibleMoves();
         movingPiece = null!;
         possibleMoves = [];
     }
-    //#region Drawing Board
-    function DrawAllSquares() {
-        // Get 1 array
-        Board.game.forEach((pieceArray : IPiece[], file) => {
-            // Get 1 element that array
-            pieceArray.forEach((piece : IPiece, rank) => {
-                const square : move =  String.fromCharCode(65 + rank) + (8-file).toString() as move;
-                DrawSingleSquare(square);
-            })
-        })
-    }
-
-    function DrawSingleSquare(square : move) {
-        const piece : IPiece | null  = Board.getPieceAtPosition(square);
-        const webElement = document.getElementById(square);
-
-        if (!webElement)  {return;}
-                
-        let url = "";
-        if (piece) { url = `/src/lib/assets/${piece.pieceColor+piece.pieceData}.png` }
-
-        webElement.style.backgroundImage = `url(${url})`;
-    }
-    function DrawPlayedMove(playedMove : playedMoves) {
-        const position : move = playedMove.substring(0, 2) as move;
-        const to : move = playedMove.substring(2, 4) as move;
-
-        DrawSingleSquare(position);
-        DrawSingleSquare(to);
-    }
-    //#endregion
+    
     
     onMount(() => {
-        DrawAllSquares();
+        //TODO: update with new board_API_visuals 
+            //DrawAllSquares();
     }) 
 </script>
 
