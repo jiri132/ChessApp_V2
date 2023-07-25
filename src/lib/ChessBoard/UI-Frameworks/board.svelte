@@ -5,7 +5,6 @@
     import type { playedMoves } from "../Core/Moves/playedMoves.type";
     import type { IPiece } from "../Core/Piece/IPiece";
     import { colorTable } from "../Core/Piece/enum/Color.table.enum";
-    import { draw } from "svelte/transition";
     import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
 
     const Board = new ChessBoard();
