@@ -46,7 +46,7 @@
     }
 
 
-    function onClickLogic(e : PointerEvent) {
+    function onClickLogic(e : any) {
         //@ts-ignore
         const id : move = e.target.id as move;
         const piece : IPiece | null = Board.getPieceAtPosition(id);
@@ -89,6 +89,8 @@
     <div class="container">
         {#each Board.game as row, file}
                 {#each Board.game[file] as piece, rank}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div id={String.fromCharCode(65 + rank) + (8-file).toString()} class="card"
                         on:click={(e) => {
                             onClickLogic(e);
