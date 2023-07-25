@@ -12,10 +12,25 @@ import type { IBoard } from "./IBoard.interface";
 import type { playedMoves } from "./Moves/playedMoves.type";
 import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import type { IPiece } from "./Piece/IPiece";
+import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
 
 class ChessBoard implements IBoard {
 
-    public readonly playedMoves : playedMoves[] = [];
+    public readonly playedMoves : playedMoves[] = new Proxy<playedMoves[]>([], {
+        set: (target: playedMoves[], property : string, value: number) => {
+            if (property === "length") {
+                // Handle length property change (e.g., push)
+                // You can also add further checks if needed
+        
+                // Call the RenderPlayedMove function passing the value and the current ChessBoard API
+                console.log(target, property,value)
+                Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
+            }
+
+            return Reflect.set(target, property, value);
+        },
+    }) as playedMoves[]; // Cast the proxy to the desired type (playedMoves[])
+    
     
     public isWhiteToMove: boolean = true;
     public readonly game : IPiece[][] = [
