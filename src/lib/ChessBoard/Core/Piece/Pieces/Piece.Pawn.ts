@@ -17,7 +17,6 @@ class Pawn implements IPiece {
 
     isLegalMove(board: ChessBoard, move: move): boolean {
         if  (this.legalMoves(board).includes(move)) {
-            console.log(this.legalMoves(board))
             return true;
         } 
         else {
