@@ -6,9 +6,11 @@
     import type { IPiece } from "../Core/Piece/IPiece";
     import { colorTable } from "../Core/Piece/enum/Color.table.enum";
     import { draw } from "svelte/transition";
+    import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
 
     const Board = new ChessBoard();
-    
+    const API_visuals = new Chess_API_Visuals(Board);
+
     let movingPiece : IPiece;
     let possibleMoves : move[] = [];
 
@@ -16,16 +18,14 @@
         if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
             (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
             // Remove coloring
-            //TODO: Update with board_API_visuals
-                //removeHighlightsPossibleMoves();
+            API_visuals.removeHighlightsPossibleMoves(possibleMoves);
 
             // Assign pieces and moves
             movingPiece = piece; 
             possibleMoves = piece.legalMoves(Board);
 
             // Highlight possible moves again
-            //TODO: Update with board_API_visuals
-                //highlightPossibleMoves();
+            API_visuals.highlightPossibleMoves(possibleMoves);
 
             return true;
         }
@@ -43,19 +43,19 @@
         Board.playMove(playingMove);
 
         // Render Squares 
-        // TODO: update with new board_API_visuals
-            //DrawPlayedMove(playingMove);
+        API_visuals.RenderPlayedMove(playingMove);
     }
+
 
     function onClickLogic(e : PointerEvent) {
         //@ts-ignore
-        const id : move = e.target.id;
+        const id : move = e.target.id as move;
         const piece : IPiece | null = Board.getPieceAtPosition(id);
         
         if (piece) {
             // Set Piece and legalMoves
             if (!SelectedOwnPiece(piece)) {
-                // Play the  move if it is possible and otherwise remove selecion and highlights
+                // Play the  move if it is possible and otherwise remove selection and highlights
                 movePiece(id);
 
                 reset();
@@ -66,7 +66,7 @@
             movingPiece = piece;
             possibleMoves = piece.legalMoves(Board);
 
-            highlightPossibleMoves();
+            API_visuals.highlightPossibleMoves(possibleMoves);
         }else {
             movePiece(id);
             
@@ -74,16 +74,15 @@
         }
     }
     function reset() {
-        //TODO: Update with board_API_visuals
-            //removeHighlightsPossibleMoves();
+        API_visuals.removeHighlightsPossibleMoves(possibleMoves);
+
         movingPiece = null!;
         possibleMoves = [];
     }
     
     
     onMount(() => {
-        //TODO: update with new board_API_visuals 
-            //DrawAllSquares();
+        API_visuals.RenderAllSquares();
     }) 
 </script>
 
@@ -121,19 +120,4 @@
 		width: 60px;
         height: 60px;
 	}
-
-    .coordinates {
-        // left: 0;
-        position: absolute;
-        // top: 0;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-    }
-    .coordinate-dark, .coordinate-light {
-        font-weight: 600;
-    }
-    .coordinate-light {
-        fill: #779952;
-    }
 </style>
