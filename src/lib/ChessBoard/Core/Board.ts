@@ -44,8 +44,8 @@ class ChessBoard implements IBoard {
             this.playedMoves.push(playingMove);
 
             // Separate the playingMove into position and to
-            const position = playingMove.substring(0, 2);
-            const to = playingMove.substring(2, 4);
+            const position : move = playingMove.substring(0, 2) as move;
+            const to : move = playingMove.substring(2, 4) as move;
             
             this.movePiece(position,to);
         }else {
@@ -92,8 +92,7 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                     
                     moves.forEach((move : string) => {
-                        // @ts-ignore
-                        allMoves.push(file + rank + move);    
+                        allMoves.push((file + rank + move) as playedMoves);    
                     });
 
                 } else if (!this.isWhiteToMove && piece.pieceColor === "0"){
@@ -101,8 +100,7 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                                         
                     moves.forEach((move : string) => {
-                        // @ts-ignore
-                        allMoves.push(file + rank + move);    
+                        allMoves.push((file + rank + move) as playedMoves);    
                     });
                 }
 
@@ -134,8 +132,7 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                     
                     moves.forEach((move : string) => {
-                        // @ts-ignore
-                        allMoves.push(file + rank + move);    
+                        allMoves.push((file + rank + move) as playedMoves);    
                     });
 
                 } else if (!this.isWhiteToMove && piece.pieceColor === "1"){
@@ -143,8 +140,7 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                                         
                     moves.forEach((move : string) => {
-                        // @ts-ignore
-                        allMoves.push(file + rank + move);    
+                        allMoves.push((file + rank + move) as playedMoves);    
                     });
                 }
 
@@ -155,7 +151,7 @@ class ChessBoard implements IBoard {
         return allMoves;
     }
     public isAttackedSquare(square : move) : boolean {
-        const mappedMoves = this.getOpponentsLegalMoves().map(move => move.substring(2, 4));
+        const mappedMoves : move[] = this.getOpponentsLegalMoves().map(move => move.substring(2, 4)) as move[];
 
         if (mappedMoves.includes(square)) {
             return true;
