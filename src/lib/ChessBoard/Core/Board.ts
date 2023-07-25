@@ -13,6 +13,7 @@ import type { playedMoves } from "./Moves/playedMoves.type";
 import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import type { IPiece } from "./Piece/IPiece";
 import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
+import myBot from "$lib/ChessEngine/myBot";
 
 class ChessBoard implements IBoard {
 
@@ -31,7 +32,7 @@ class ChessBoard implements IBoard {
         },
     }) as playedMoves[]; // Cast the proxy to the desired type (playedMoves[])
     
-    
+    private bot : myBot = new myBot(this);
     public isWhiteToMove: boolean = true;
     public readonly game : IPiece[][] = [
         [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E7"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
@@ -44,6 +45,8 @@ class ChessBoard implements IBoard {
         [new Rook(colorTable.white,"A1"), new Knight(colorTable.white,"B1"), new Bishop(colorTable.white,"C1"), new Queen(colorTable.white, "D1"), new King(colorTable.white, "E1"), new Bishop(colorTable.white, "F1"),new Knight(colorTable.white, "G1"),new Rook(colorTable.white,"H1")]
     ]
 
+    
+
     makeMove(): void {
         throw new Error("Method not implemented.");
     }
@@ -51,23 +54,28 @@ class ChessBoard implements IBoard {
         throw new Error("Method not implemented.");
     }
     playMove(playingMove : playedMoves): void {
-        if (this.getYourLegalMoves().includes(playingMove)) {
+        const position : move = playingMove.substring(0, 2) as move;
+        const to : move = playingMove.substring(2, 4) as move;
+        const pieceAtPosition = this.getPieceAtPosition(position);
+
+        if (pieceAtPosition === null) { return;}
+
+        if (pieceAtPosition.legalMoves(this).includes(to)) {
             // Invert the boolean
             this.isWhiteToMove = !this.isWhiteToMove;
 
             // Push the played move into the array
-            this.playedMoves.push(playingMove);
+            //this.playedMoves.push(playingMove);
 
             // Separate the playingMove into position and to
-            const position : move = playingMove.substring(0, 2) as move;
-            const to : move = playingMove.substring(2, 4) as move;
+            
             
             this.movePiece(position,to);
+            if (!this.isWhiteToMove) { const x = this.bot.Think(); console.log(x); this.playMove(x)}
         }else {
-            throw new Error("This played move isn't valid!");
+            throw new Error(`This ${playingMove} played move isn't valid! Turn: ${this.isWhiteToMove}`);
         }
     }
-    
     
     public getPieceAtPosition(position: move): IPiece | null {
         // Implement logic to find and return the piece at the specified position.
@@ -184,6 +192,8 @@ class ChessBoard implements IBoard {
     *
     */
 
+    
+
     private movePiece(fromPosition : move, toPosition : move) {
         // Get piece from the virtual board
         const piece = this.getPieceAtPosition(fromPosition);
@@ -203,6 +213,8 @@ class ChessBoard implements IBoard {
             this.game[fromRank][fromFile] = null!;
             this.game[toRank][toFile] = piece;
 
+            this.playedMoves.push((fromPosition+toPosition) as playedMoves);
+
             // Update the piece's location
             piece.location = toPosition;
         } else {
@@ -214,7 +226,7 @@ class ChessBoard implements IBoard {
 
     private getIndexFileRank(position : move) : [number, number] {
         const [file, rank] = position;
-
+        // console.log(position, file , rank)
          // Find the indices for the 'game' array based on the file and rank
         const fileIndex = file.charCodeAt(0) - "A".charCodeAt(0);
         const rankIndex =  8 - parseInt(rank);
