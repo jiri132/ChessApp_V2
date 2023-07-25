@@ -5,7 +5,7 @@ import type { IPiece } from "$lib/ChessBoard/Core/Piece/IPiece";
 
 class Chess_API_Visuals {
     private readonly API : ChessBoard;
-    
+
     constructor(board : ChessBoard) {
         this.API = board;
     }
@@ -74,6 +74,8 @@ class Chess_API_Visuals {
     static RenderSingleSquare(square : move, API : ChessBoard) : void {
         const piece : IPiece | null  = API.getPieceAtPosition(square);
         const webElement = document.getElementById(square);
+
+        console.log(piece, webElement);
 
         if (!webElement)  {return;}
                     
