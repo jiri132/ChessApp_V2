@@ -13,9 +13,23 @@ import type { playedMoves } from "./Moves/playedMoves.type";
 import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import type { IPiece } from "./Piece/IPiece";
 import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
-import myBot from "$lib/ChessEngine/myBot";
+import myBot from "$lib/ChessEngine/devBot";
+import type { ImyBot } from "$lib/ChessEngine/ImyBot";
+import type Chess_API_Humans from "../API/Interactions/Board.API.humans";
+import { playStyles } from "./PlayStyles/Board.PlayStyles.enum";
+import devBot from "$lib/ChessEngine/devBot";
 
 class ChessBoard implements IBoard {
+
+    private userBot : ImyBot = new myBot(this);
+    private devBot : ImyBot = new devBot(this);
+
+        //@ts-ignore
+    private playstyle : playStyles;
+        //@ts-ignore
+    private blackPlayer : ImyBot | string;
+        //@ts-ignore
+    private whitePlayer : ImyBot | string;
 
     public readonly playedMoves : playedMoves[] = new Proxy<playedMoves[]>([], {
         set: (target: playedMoves[], property : string, value: number) => {
@@ -25,6 +39,7 @@ class ChessBoard implements IBoard {
         
                 // Call the RenderPlayedMove function passing the value and the current ChessBoard API
                 console.log(target, property,value)
+                Chess_API_Visuals.RenderPlayedMoves(this);
                 Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
             }
 
@@ -32,7 +47,6 @@ class ChessBoard implements IBoard {
         },
     }) as playedMoves[]; // Cast the proxy to the desired type (playedMoves[])
     
-    private bot : myBot = new myBot(this);
     public isWhiteToMove: boolean = true;
     public readonly game : IPiece[][] = [
         [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E7"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
@@ -44,8 +58,66 @@ class ChessBoard implements IBoard {
         [new Pawn(colorTable.white, "A2"),new Pawn(colorTable.white, "B2"),new Pawn(colorTable.white, "C2"),new Pawn(colorTable.white, "D2"),new Pawn(colorTable.white, "E2"),new Pawn(colorTable.white, "F2"),new Pawn(colorTable.white, "G2"),new Pawn(colorTable.white, "H2")],
         [new Rook(colorTable.white,"A1"), new Knight(colorTable.white,"B1"), new Bishop(colorTable.white,"C1"), new Queen(colorTable.white, "D1"), new King(colorTable.white, "E1"), new Bishop(colorTable.white, "F1"),new Knight(colorTable.white, "G1"),new Rook(colorTable.white,"H1")]
     ]
+    constructor(playstyle : playStyles) {
+        Chess_API_Visuals.RenderNewPLayedMovesContainer();
+        this.startGame(playstyle);
+    }
 
-    
+    public startGame(playstyle : playStyles) : void {
+        function getRandomInteger(min : number, max: number) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        this.playstyle = playstyle;
+
+        // When the playstyle is mybot_vs_mybot
+        // Start the match don't care if it is black or white
+        if (this.playstyle === playStyles.MyBot_vs_MyBot) {
+            this.blackPlayer = this.userBot; 
+            this.whitePlayer = this.userBot; 
+
+            this.playMove(this.whitePlayer.Think());
+
+            return;
+        }
+
+        // This represents YOU || You're bot
+        const yourColor = getRandomInteger(0,1);
+
+        if (yourColor === 0) {
+            switch (this.playstyle) {
+                case playStyles.Human_vs_MyBot:
+                    this.whitePlayer = "Human";
+                    this.blackPlayer = this.userBot;
+                    break;
+
+                case playStyles.MyBot_vs_DevBot:
+                    this.whitePlayer = this.userBot;
+                    this.blackPlayer = this.devBot;
+
+                    this.playMove(this.whitePlayer.Think());
+                    break;
+            }
+        }else {
+            switch (this.playstyle) {
+                case playStyles.Human_vs_MyBot:
+                    this.whitePlayer = this.userBot;
+                    this.blackPlayer = "Human";
+
+                    this.playMove(this.whitePlayer.Think());
+
+                    break;
+
+                case playStyles.MyBot_vs_DevBot:
+                    this.whitePlayer = this.devBot;
+                    this.blackPlayer = this.userBot;
+
+                    this.playMove(this.whitePlayer.Think());
+
+                    break;
+            }
+        }
+    }
 
     makeMove(): void {
         throw new Error("Method not implemented.");
@@ -53,10 +125,10 @@ class ChessBoard implements IBoard {
     undoMove() : void {
         throw new Error("Method not implemented.");
     }
-    playMove(playingMove : playedMoves): void {
+    playMove(playingMove : playedMoves):void {
         const position : move = playingMove.substring(0, 2) as move;
         const to : move = playingMove.substring(2, 4) as move;
-        const pieceAtPosition = this.getPieceAtPosition(position);
+        const pieceAtPosition : IPiece | null = this.getPieceAtPosition(position);
 
         if (pieceAtPosition === null) { return;}
 
@@ -69,14 +141,34 @@ class ChessBoard implements IBoard {
 
             // Separate the playingMove into position and to
             
-            
             this.movePiece(position,to);
-            if (!this.isWhiteToMove) { const x = this.bot.Think(); console.log(x); this.playMove(x)}
+
+            
+
+            if (!this.isWhiteToMove) {
+                if (this.blackPlayer === "Human") { return;}
+
+                const bot : myBot = this.blackPlayer as myBot;
+
+                
+
+                setTimeout(() => this.playMove(bot.Think()),100);
+            }else {
+                if (this.whitePlayer === "Human") { return;}
+                
+                const bot : myBot= this.whitePlayer as myBot;
+                
+                
+
+                setTimeout(() => this.playMove(bot.Think()),100);
+            }
         }else {
             throw new Error(`This ${playingMove} played move isn't valid! Turn: ${this.isWhiteToMove}`);
         }
     }
     
+
+
     public getPieceAtPosition(position: move): IPiece | null {
         // Implement logic to find and return the piece at the specified position.
         // If no piece is found, return null.
@@ -182,6 +274,22 @@ class ChessBoard implements IBoard {
 
         return false;
     }
+    
+    public hasQueenSideCastling() : boolean{
+        let king : IPiece = this.isWhiteToMove ? this.getKing("E1") : this.getKing("E8");
+        let rook : IPiece = this.isWhiteToMove ? this.getRook("A1") : this.getRook("A8");
+
+        if (king && rook) {return true;}
+
+        return false;
+    }
+    public hasKingSideCastling() : boolean {
+        let king : IPiece = this.isWhiteToMove ? this.getKing("E1") : this.getKing("E8");
+        let rook : IPiece = this.isWhiteToMove ? this.getRook("H1") : this.getRook("H8");
+        if (king && rook) {return true;}
+
+        return false;
+    }
 
 
     /*
@@ -193,7 +301,22 @@ class ChessBoard implements IBoard {
     */
 
     
+    private getRook(square : move) : IPiece {
+        const rook  = this.getPieceAtPosition(square);
 
+            if (!rook) { return null!;}
+            if (parseInt(rook.pieceData,2) !== 3) { return null!;}
+
+        return rook;
+    }
+    private getKing(square : move) : IPiece {
+        const king = this.getPieceAtPosition(square);
+
+            if (!king) {return null!;}
+            if (parseInt(king.pieceData) !== 5) {return null!;}
+
+        return king;
+    }
     private movePiece(fromPosition : move, toPosition : move) {
         // Get piece from the virtual board
         const piece = this.getPieceAtPosition(fromPosition);
