@@ -72,15 +72,14 @@ class Chess_API_Visuals {
         const newElement = document.createElement('div')
 
         if (playedMoves.length % 2 === 1) {
-            console.log(playedMoves.length % 2)
             const numElement = document.createElement('div');
+
             numElement.innerText = (playedMoves.length / 2 + 0.5).toString();
             webElement.appendChild(numElement);
         }
 
         newElement.innerHTML = playedMoves[playedMoves.length-1];
         webElement.appendChild(newElement);
-        // console.log(playedMoves[playedMoves.length-1]);
     }
     
     static RenderNewPLayedMovesContainer() : void{
