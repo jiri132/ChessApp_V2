@@ -18,6 +18,7 @@ import type { ImyBot } from "$lib/ChessEngine/ImyBot";
 import type Chess_API_Humans from "../API/Interactions/Board.API.humans";
 import { playStyles } from "./PlayStyles/Board.PlayStyles.enum";
 import devBot from "$lib/ChessEngine/devBot";
+import BoardHelper from "./BoardHelper";
 
 class ChessBoard implements IBoard {
 
@@ -38,7 +39,6 @@ class ChessBoard implements IBoard {
                 // You can also add further checks if needed
         
                 // Call the RenderPlayedMove function passing the value and the current ChessBoard API
-                console.log(target, property,value)
                 Chess_API_Visuals.RenderPlayedMoves(this);
                 Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
             }
@@ -49,7 +49,7 @@ class ChessBoard implements IBoard {
     
     public isWhiteToMove: boolean = true;
     public readonly game : IPiece[][] = [
-        [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E7"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
+        [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E8"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
         [new Pawn(colorTable.black, "A7"),new Pawn(colorTable.black, "B7"),new Pawn(colorTable.black, "C7"),new Pawn(colorTable.black, "D7"),new Pawn(colorTable.black, "E7"),new Pawn(colorTable.black, "F7"),new Pawn(colorTable.black, "G7"),new Pawn(colorTable.black, "H7")],
         [null!, null!, null!, null!, null!, null!, null!, null!],
         [null!, null!, null!, null!, null!, null!, null!, null!],
@@ -206,6 +206,11 @@ class ChessBoard implements IBoard {
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
                     
+                    if (piece.pieceData === pieceTable.Pawn) {
+                        const _piece : Pawn = piece as Pawn;
+                        moves = _piece.attackingSquares(this);
+                    }
+
                     moves.forEach((move : string) => {
                         allMoves.push((file + rank + move) as playedMoves);    
                     });
@@ -213,7 +218,11 @@ class ChessBoard implements IBoard {
                 } else if (!this.isWhiteToMove && piece.pieceColor === "0"){
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
-                                        
+                    
+                    if (piece.pieceData === pieceTable.Pawn) {
+                        const _piece : Pawn = piece as Pawn;
+                        moves = _piece.attackingSquares(this);
+                    }               
                     moves.forEach((move : string) => {
                         allMoves.push((file + rank + move) as playedMoves);    
                     });
@@ -232,6 +241,8 @@ class ChessBoard implements IBoard {
         for (let i = 0; i < this.game.length; i++) {
             const rankPieces = this.game[i];
             const rank = 8 - i;
+
+            BoardHelper.isInCheck(this);
 
             rankPieces.forEach((piece : IPiece, index : number) => {
                 // -1. get number ot letter so that you can create the location of the piece
@@ -327,7 +338,7 @@ class ChessBoard implements IBoard {
         }
 
 
-        if (piece.isLegalMove(this, toPosition)) {
+        // if (piece.isLegalMove(this, toPosition)) {
             // Move the piece internally
             const [fromFile, fromRank] = this.getIndexFileRank(fromPosition);
             const [toFile, toRank] = this.getIndexFileRank(toPosition);
@@ -340,10 +351,10 @@ class ChessBoard implements IBoard {
 
             // Update the piece's location
             piece.location = toPosition;
-        } else {
+        // } else {
             // If move is invalid return null
-            throw new Error("Invalid Move");
-        }
+            // throw new Error("Invalid Move");
+        // }
     }
     
 
