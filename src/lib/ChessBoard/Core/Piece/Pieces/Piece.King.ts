@@ -51,7 +51,7 @@ class King implements IPiece {
                 const tile : move = String.fromCharCode(currentFile + 65) + currentRank.toString();
                 const pieceAtPosition = board.getPieceAtPosition(tile);
 
-                if (pieceAtPosition === null) {continue;}
+                
 
                 // console.log(tile)
                 if (board.isAttackedSquare(tile)) {continue;}
