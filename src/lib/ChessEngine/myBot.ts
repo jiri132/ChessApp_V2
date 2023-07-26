@@ -9,12 +9,13 @@ class myBot extends Chess_API_Bots implements ImyBot {
     Think(): playedMoves {
         // Variable that gets given back
         let playingMove : playedMoves;
+        let allMoves = this.API.getYourLegalMoves();
 
         // Get a random number between 0 and the possibler moves
         let randomNum = getRandomInteger(0, this.API.getYourLegalMoves().length)
         
         // Set the playing move to the random selected move
-        playingMove = this.API.getYourLegalMoves()[randomNum];
+        playingMove = allMoves[randomNum];
 
         // Play the selected move
         return playingMove;
