@@ -73,7 +73,7 @@ export interface IBoard {
     *       [Array(8), Array(8), Array(8), Array(8), Array(8), Array(8), Array(8), Array(8)]
     *   ```
     */
-    readonly game : IPiece[][];
+    //game : IPiece[][];
        
     /*
     *   **makeMove()** 
@@ -206,6 +206,8 @@ export interface IBoard {
     *   ```
     */
     getPieceAtPosition(position : move) : IPiece | null;
+
+
 
 
     /*
