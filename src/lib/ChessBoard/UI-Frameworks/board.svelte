@@ -87,6 +87,7 @@
     
     onMount(() => {
         Board = new ChessBoard();
+        Board.startGame(playstyle);
         Chess_API_Visuals.RenderAllSquares(Board);
     }) 
 </script>
