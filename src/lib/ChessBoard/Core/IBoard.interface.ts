@@ -73,7 +73,7 @@ export interface IBoard {
     *       [Array(8), Array(8), Array(8), Array(8), Array(8), Array(8), Array(8), Array(8)]
     *   ```
     */
-    //game : IPiece[][];
+    game : IPiece[][];
        
     /*
     *   **makeMove()** 
@@ -94,7 +94,7 @@ export interface IBoard {
     *       >> "moved Virtual `A2` to `A4` "
     *   ```
     */
-    makeMove() : void;
+    makeMove(playingMove : playedMoves) : void;
 
     /*
     *   **undoMove()** 
@@ -115,7 +115,7 @@ export interface IBoard {
     *      >> "undo Virtual move `A2` to `A4` "
     *   ```
     */
-    undoMove() : void;
+    undoMove(playingMove : playedMoves, capturedPiece : IPiece | null) : void;
 
     /*
     *   **playMove()** 
