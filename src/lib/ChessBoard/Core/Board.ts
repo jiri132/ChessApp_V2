@@ -35,6 +35,7 @@ class ChessBoard implements IBoard {
     public readonly playedMoves : playedMoves[] = new Proxy<playedMoves[]>([], {
         set: (target: playedMoves[], property : string, value: number) => {
             if (property === "length") {
+                if (value === 0) {return Reflect.set(target, property, 0);}
                 // Handle length property change (e.g., push)
                 // You can also add further checks if needed
         
@@ -42,13 +43,14 @@ class ChessBoard implements IBoard {
                 Chess_API_Visuals.RenderPlayedMoves(this);
                 Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
             }
+            
 
             return Reflect.set(target, property, value);
         },
     }) as playedMoves[]; // Cast the proxy to the desired type (playedMoves[])
     
     public isWhiteToMove: boolean = true;
-    public readonly game : IPiece[][] = [
+    public game : IPiece[][] = [
         [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E8"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
         [new Pawn(colorTable.black, "A7"),new Pawn(colorTable.black, "B7"),new Pawn(colorTable.black, "C7"),new Pawn(colorTable.black, "D7"),new Pawn(colorTable.black, "E7"),new Pawn(colorTable.black, "F7"),new Pawn(colorTable.black, "G7"),new Pawn(colorTable.black, "H7")],
         [null!, null!, null!, null!, null!, null!, null!, null!],
@@ -58,15 +60,27 @@ class ChessBoard implements IBoard {
         [new Pawn(colorTable.white, "A2"),new Pawn(colorTable.white, "B2"),new Pawn(colorTable.white, "C2"),new Pawn(colorTable.white, "D2"),new Pawn(colorTable.white, "E2"),new Pawn(colorTable.white, "F2"),new Pawn(colorTable.white, "G2"),new Pawn(colorTable.white, "H2")],
         [new Rook(colorTable.white,"A1"), new Knight(colorTable.white,"B1"), new Bishop(colorTable.white,"C1"), new Queen(colorTable.white, "D1"), new King(colorTable.white, "E1"), new Bishop(colorTable.white, "F1"),new Knight(colorTable.white, "G1"),new Rook(colorTable.white,"H1")]
     ]
-    constructor(playstyle : playStyles) {
-        Chess_API_Visuals.RenderNewPLayedMovesContainer();
-        this.startGame(playstyle);
-    }
+
 
     public startGame(playstyle : playStyles) : void {
         function getRandomInteger(min : number, max: number) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
+        Chess_API_Visuals.RenderNewPLayedMovesContainer();
+        this.playedMoves.length = 0;
+
+        this.game = [
+            [new Rook(colorTable.black,"A8"),new Knight(colorTable.black, "B8"), new Bishop(colorTable.black, "C8"), new Queen(colorTable.black, "D8"), new King(colorTable.black, "E8"), new Bishop(colorTable.black, "F8"),new Knight(colorTable.black, "G8"),new Rook(colorTable.black,"H8")],
+            [new Pawn(colorTable.black, "A7"),new Pawn(colorTable.black, "B7"),new Pawn(colorTable.black, "C7"),new Pawn(colorTable.black, "D7"),new Pawn(colorTable.black, "E7"),new Pawn(colorTable.black, "F7"),new Pawn(colorTable.black, "G7"),new Pawn(colorTable.black, "H7")],
+            [null!, null!, null!, null!, null!, null!, null!, null!],
+            [null!, null!, null!, null!, null!, null!, null!, null!],
+            [null!, null!, null!, null!, null!, null!, null!, null!],
+            [null!, null!, null!, null!, null!, null!, null!, null!],
+            [new Pawn(colorTable.white, "A2"),new Pawn(colorTable.white, "B2"),new Pawn(colorTable.white, "C2"),new Pawn(colorTable.white, "D2"),new Pawn(colorTable.white, "E2"),new Pawn(colorTable.white, "F2"),new Pawn(colorTable.white, "G2"),new Pawn(colorTable.white, "H2")],
+            [new Rook(colorTable.white,"A1"), new Knight(colorTable.white,"B1"), new Bishop(colorTable.white,"C1"), new Queen(colorTable.white, "D1"), new King(colorTable.white, "E1"), new Bishop(colorTable.white, "F1"),new Knight(colorTable.white, "G1"),new Rook(colorTable.white,"H1")]
+        ];
+
+        Chess_API_Visuals.RenderAllSquares(this);
 
         this.playstyle = playstyle;
 
@@ -218,7 +232,7 @@ class ChessBoard implements IBoard {
                 } else if (!this.isWhiteToMove && piece.pieceColor === "0"){
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
-                    
+
                     if (piece.pieceData === pieceTable.Pawn) {
                         const _piece : Pawn = piece as Pawn;
                         moves = _piece.attackingSquares(this);

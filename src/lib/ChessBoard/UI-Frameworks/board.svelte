@@ -82,15 +82,15 @@
     }
     function setPlayStyle(newPlayStyle : playStyles) {
         playstyle = newPlayStyle;
-        Board = new ChessBoard(playstyle);
-        Chess_API_Visuals.RenderAllSquares(Board);
+        Board.startGame(playstyle);
     }
     
     onMount(() => {
-        Board = new ChessBoard(playstyle);
+        Board = new ChessBoard();
         Chess_API_Visuals.RenderAllSquares(Board);
     }) 
 </script>
+
 
 <div class="visualContainer">
     <div class="infoStack">
