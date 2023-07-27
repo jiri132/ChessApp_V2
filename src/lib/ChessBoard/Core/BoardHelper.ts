@@ -24,7 +24,7 @@ class BoardHelper {
         return false;
     }
 
-    static isNextMoveCheck(board : ChessBoard, move : playedMoves) : boolean {
+    static isNextMoveInCheck(board : ChessBoard, move : playedMoves) : boolean {
         const king : IPiece = board.game.flat().find((piece) => {
             if (board.isWhiteToMove) {
                 return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.white;
@@ -33,8 +33,13 @@ class BoardHelper {
             return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.black;
         }) as IPiece;
 
-        
+        const capturedPiece : IPiece | null = board.makeMove(move);
+        const isInCheck : boolean = BoardHelper.isInCheck(board);
+        board.undoMove(move, capturedPiece)
 
+        if (isInCheck) {
+            return true;
+        }
 
         return false;
     }
