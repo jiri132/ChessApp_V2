@@ -148,11 +148,13 @@ class ChessBoard implements IBoard {
         const from : move = playingMove.substring(2,4) as move;
         const to : move = playingMove.substring(0,2) as move;
 
-        this.movePiece(to,from);
-        
-        const [file,rank] : [number, number] = this.getIndexFileRank(to);
-        this.game[file][rank] = capturedPiece!;
-        
+        this.movePiece(from,to);
+
+        if (capturedPiece) { 
+            const [file,rank] : [number, number] = this.getIndexFileRank(from);
+            this.game[file][rank] = capturedPiece!;
+        }
+        console.log(this.game)
     }
     playMove(playingMove : playedMoves):void {
         const position : move = playingMove.substring(0, 2) as move;
@@ -171,7 +173,7 @@ class ChessBoard implements IBoard {
             // Separate the playingMove into position and to
             
             this.movePiece(position,to);
-
+            this.playedMoves.push((position+to) as playedMoves);
             
 
             if (!this.isWhiteToMove) {
@@ -202,6 +204,7 @@ class ChessBoard implements IBoard {
         // Implement logic to find and return the piece at the specified position.
         // If no piece is found, return null.
         const [file, rank] = this.getIndexFileRank(position);
+        console.log(file,rank)
 
         // Get the piece at the specified position
         const piece = this.game[rank][file];
@@ -273,9 +276,9 @@ class ChessBoard implements IBoard {
 
             const isInCheck : boolean = BoardHelper.isInCheck(this); 
 
-            if (isInCheck) {
-                console.log("in check on")
-            };
+            // if (isInCheck) {
+            //     console.log("in check on")
+            // };
 
             rankPieces.forEach((piece : IPiece, index : number) => {
                 // -1. get number ot letter so that you can create the location of the piece
@@ -291,7 +294,7 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                     
                     moves.forEach((move : move) => {
-                        const movePreventsCheck = BoardHelper.isNextMoveCheck(this, (file+rank+move) as playedMoves);
+                        const moveIsInCheck = BoardHelper.isNextMoveInCheck(this, (file+rank+move) as playedMoves);
 
                         //1. If ihe is not in check
                         //2. If the next move doesn't set the king in check
@@ -303,7 +306,7 @@ class ChessBoard implements IBoard {
                         //1. the king is in check
                         //2. the move prevents check
                         //3. push 
-                        if (movePreventsCheck) {
+                        if (!moveIsInCheck) {
                             allMoves.push((file + rank + move) as playedMoves);  
                         }
 
@@ -315,7 +318,21 @@ class ChessBoard implements IBoard {
                     let moves : move[] = piece.legalMoves(this);
                                         
                     moves.forEach((move : string) => {
-                        allMoves.push((file + rank + move) as playedMoves);    
+                        const moveIsInCheck = BoardHelper.isNextMoveInCheck(this, (file+rank+move) as playedMoves);
+
+                        //1. If ihe is not in check
+                        //2. If the next move doesn't set the king in check
+                        //3. push
+                        if (!isInCheck) {
+                            allMoves.push((file + rank + move) as playedMoves)
+                        }
+
+                        //1. the king is in check
+                        //2. the move prevents check
+                        //3. push 
+                        if (!moveIsInCheck) {
+                            allMoves.push((file + rank + move) as playedMoves);  
+                        }  
                     });
                 }
 
@@ -383,27 +400,25 @@ class ChessBoard implements IBoard {
 
         // error if the virtual board doesn't have a piece there
         if (!piece) {
-            throw new Error("No piece found at the specified position");
+            //console.warn("No piece found at the specified position")
+            // throw new Error("No piece found at the specified position");
+            return;
         }
 
 
-        // if (piece.isLegalMove(this, toPosition)) {
-            // Move the piece internally
-            const [fromFile, fromRank] = this.getIndexFileRank(fromPosition);
-            const [toFile, toRank] = this.getIndexFileRank(toPosition);
+        // Move the piece internally
+        const [fromFile, fromRank] = this.getIndexFileRank(fromPosition);
+        const [toFile, toRank] = this.getIndexFileRank(toPosition);
 
-            // Remove the piece from the original position and place it at the new position
-            this.game[fromRank][fromFile] = null!;
-            this.game[toRank][toFile] = piece;
+        // Remove the piece from the original position and place it at the new position
+        this.game[fromRank][fromFile] = null!;
+        this.game[toRank][toFile] = piece;
 
-            this.playedMoves.push((fromPosition+toPosition) as playedMoves);
+            
 
-            // Update the piece's location
-            piece.location = toPosition;
-        // } else {
-            // If move is invalid return null
-            // throw new Error("Invalid Move");
-        // }
+        // Update the piece's location
+        piece.location = toPosition;
+        
     }
     
 
