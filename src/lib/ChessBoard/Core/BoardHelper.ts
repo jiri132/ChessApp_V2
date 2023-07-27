@@ -9,13 +9,24 @@ class BoardHelper {
 
     static isInCheck(board : ChessBoard) : boolean {
 
-        const king : IPiece = board.game.flat().find((piece) => {
-            if (board.isWhiteToMove) {
-                return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.white;
-            }
+        const king : IPiece = board.game.flat().find((piece : IPiece) => {
 
-            return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.black;
+
+            if (piece !== null) {
+                // console.log(piece);
+
+                if (board.isWhiteToMove) {
+                    return piece.pieceData === pieceTable.King && piece.pieceColor === colorTable.white;
+                }
+    
+                return piece.pieceData === pieceTable.King && piece.pieceColor === colorTable.black;
+            }
+            return undefined;
         }) as IPiece;
+
+        if (king === undefined) {
+            throw new Error("There is a missing KING!");
+        }
 
         // When the king is on an attacked square return it as a check
         if (board.isAttackedSquare(king.location)) {return true;}
@@ -33,9 +44,10 @@ class BoardHelper {
             return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.black;
         }) as IPiece;
 
+        
         const capturedPiece : IPiece | null = board.makeMove(move);
         const isInCheck : boolean = BoardHelper.isInCheck(board);
-        board.undoMove(move, capturedPiece)
+        board.undoMove(move, capturedPiece);
 
         if (isInCheck) {
             return true;
