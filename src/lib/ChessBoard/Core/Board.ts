@@ -1,6 +1,4 @@
-// import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import { colorTable } from "./Piece/enum/Color.table.enum";
-// import Bitboard from "$lib/BitArray/Extensions/BitBoard";
 import Rook from "./Piece/Pieces/Piece.Rook";
 import Pawn from "./Piece/Pieces/Piece.Pawn";
 import Knight from "./Piece/Pieces/Piece.Knight";
@@ -15,7 +13,6 @@ import type { IPiece } from "./Piece/IPiece";
 import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
 import myBot from "$lib/ChessEngine/devBot";
 import type { ImyBot } from "$lib/ChessEngine/ImyBot";
-import type Chess_API_Humans from "../API/Interactions/Board.API.humans";
 import { playStyles } from "./PlayStyles/Board.PlayStyles.enum";
 import devBot from "$lib/ChessEngine/devBot";
 import BoardHelper from "./BoardHelper";
@@ -133,11 +130,29 @@ class ChessBoard implements IBoard {
         }
     }
 
-    makeMove(): void {
-        throw new Error("Method not implemented.");
+    makeMove(playingMove : playedMoves): IPiece | null  {
+        // get the playing sets
+        const from : move = playingMove.substring(0,2) as move;
+        const to : move = playingMove.substring(2,4) as move;
+        
+        // check the capturing piece
+        const capturingPiece : IPiece | null = this.getPieceAtPosition(to);
+
+        // move to the new square
+        this.movePiece(to,from);
+
+        // return the captured piece
+        return capturingPiece;
     }
-    undoMove() : void {
-        throw new Error("Method not implemented.");
+    undoMove(playingMove : playedMoves, capturedPiece : IPiece | null) : void {
+        const from : move = playingMove.substring(2,4) as move;
+        const to : move = playingMove.substring(0,2) as move;
+
+        this.movePiece(to,from);
+        
+        const [file,rank] : [number, number] = this.getIndexFileRank(to);
+        this.game[file][rank] = capturedPiece!;
+        
     }
     playMove(playingMove : playedMoves):void {
         const position : move = playingMove.substring(0, 2) as move;
@@ -256,7 +271,11 @@ class ChessBoard implements IBoard {
             const rankPieces = this.game[i];
             const rank = 8 - i;
 
-            BoardHelper.isInCheck(this);
+            const isInCheck : boolean = BoardHelper.isInCheck(this); 
+
+            if (isInCheck) {
+                console.log("in check on")
+            };
 
             rankPieces.forEach((piece : IPiece, index : number) => {
                 // -1. get number ot letter so that you can create the location of the piece
@@ -271,8 +290,24 @@ class ChessBoard implements IBoard {
                     // 2. Move on to getting the legal moves
                     let moves : move[] = piece.legalMoves(this);
                     
-                    moves.forEach((move : string) => {
-                        allMoves.push((file + rank + move) as playedMoves);    
+                    moves.forEach((move : move) => {
+                        const movePreventsCheck = BoardHelper.isNextMoveCheck(this, (file+rank+move) as playedMoves);
+
+                        //1. If ihe is not in check
+                        //2. If the next move doesn't set the king in check
+                        //3. push
+                        if (!isInCheck) {
+                            allMoves.push((file + rank + move) as playedMoves)
+                        }
+
+                        //1. the king is in check
+                        //2. the move prevents check
+                        //3. push 
+                        if (movePreventsCheck) {
+                            allMoves.push((file + rank + move) as playedMoves);  
+                        }
+
+                        // if not any of there criteria don't ever push
                     });
 
                 } else if (!this.isWhiteToMove && piece.pieceColor === "1"){
