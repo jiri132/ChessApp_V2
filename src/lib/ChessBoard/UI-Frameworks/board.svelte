@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import ChessBoard from "../Core/[V2]/ChessBoard";
     import BoardHelper from "../Core/[V2]/Helpers/BoardHelper";
+    import BoardVisualHelper from "../Core/[V2]/Helpers/BoardVisualHelper";
 
     let Board : ChessBoard;
     
@@ -86,6 +88,10 @@
     $: {
         Board = new ChessBoard();
     }
+
+    onMount(() => {
+        BoardVisualHelper.RenderAllTiles(Board.Board);
+    })
 </script>
 
 
@@ -96,10 +102,10 @@
         <button on:click={(e) => {}}>MyBot vs DevBot</button>
     </div>
     <div class="ChessBoard">
-        {#each Board.Board.tiles as tile, index}
+        {#each Board.Board.tiles as tile}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div id={BoardHelper.indexToBoardLocation(index)} class="card" style="background-image: url(/src/lib/assets/{tile.piece?.data}.png)"
+            <div id={tile.name} class="card"
                 on:click={(e) => {
                     onClickLogic(e);
                 }}
