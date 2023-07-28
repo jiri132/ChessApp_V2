@@ -1,6 +1,6 @@
-import { error } from "@sveltejs/kit";
 import type ChessBoard from "../ChessBoard";
 import type Move from "../Move/Move";
+import type { BoardLocation } from "../Types/Location/Location.type";
 
 class BoardVisualHelper {
 
@@ -49,7 +49,7 @@ class BoardVisualHelper {
     // }
 
     /*  This feature is probably going to get removed  */
-    static RenderPlayedMove(API : ChessBoard) : void {
+    static RenderPlayedMove(API : ChessBoard, move : Move) : void {
         throw new Error("Function not implemented");
     }
     // static RenderPlayedMove(playedMove : playedMoves, API:ChessBoard) : void {
@@ -60,7 +60,7 @@ class BoardVisualHelper {
     //     this.RenderSingleSquare(to, API);
     // }
 
-    static RenderSingleTile(API : ChessBoard) : void {
+    static RenderSingleTile(API : ChessBoard, square : BoardLocation) : void {
         throw new Error("Function not implemented");
     }
     // static RenderSingleSquare(square : move, API : ChessBoard) : void {
@@ -103,7 +103,7 @@ class BoardVisualHelper {
     //     webElement.appendChild(newElement);
     // }
 
-    static RenderEmptyPlayedMovesContainer(API : ChessBoard) : void {
+    static RenderEmptyPlayedMovesContainer() : void {
         throw new Error("Function not implemented");
     }
     // static RenderNewPLayedMovesContainer() : void{
