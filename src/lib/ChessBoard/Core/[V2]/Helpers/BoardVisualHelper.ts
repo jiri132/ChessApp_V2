@@ -1,6 +1,10 @@
+import type Board from "../Board/Board";
+import type Tile from "../Board/Tile/Tile";
 import type ChessBoard from "../ChessBoard";
+import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
 import type { BoardLocation } from "../Types/Location/Location.type";
+import BoardHelper from "./BoardHelper";
 
 class BoardVisualHelper {
 
@@ -34,19 +38,12 @@ class BoardVisualHelper {
 
 
     
-    static RenderAllTiles(API : ChessBoard) : void {
-        throw new Error("Function not implemented");
+    static RenderAllTiles(API : Board) : void {
+        API.tiles.forEach((tile : Tile) => {
+            this.RenderSingleTile(API, tile.name);
+        })
     }
-    // static RenderAllSquares(API : ChessBoard) : void {
-    //     // Get 1 array
-    //     API.game.forEach((pieceArray : IPiece[], file : number) => {
-    //         // Get 1 element that array
-    //         pieceArray.forEach((piece : IPiece, rank) => {
-    //             const square : move =  String.fromCharCode(65 + rank) + (8-file).toString() as move;
-    //             this.RenderSingleSquare(square, API);
-    //         })
-    //     })
-    // }
+    
 
     /*  This feature is probably going to get removed  */
     static RenderPlayedMove(API : ChessBoard, move : Move) : void {
@@ -60,20 +57,21 @@ class BoardVisualHelper {
     //     this.RenderSingleSquare(to, API);
     // }
 
-    static RenderSingleTile(API : ChessBoard, square : BoardLocation) : void {
-        throw new Error("Function not implemented");
+    static RenderSingleTile(API : Board, square : BoardLocation) : void {
+        const index = BoardHelper.boardLocationToIndex(square)
+        const piece : IPiece | undefined  = API.tiles[index].piece
+        const webElement = document.getElementById(square);
+        
+        console.log(index);
+
+        if (!webElement)  {return;}
+                        
+        let url = "";
+        if (piece) { url = `/src/lib/assets/${piece.data}.png` }
+
+        webElement.style.backgroundImage = `url(${url})`;
     }
-    // static RenderSingleSquare(square : move, API : ChessBoard) : void {
-    //     const piece : IPiece | null  = API.getPieceAtPosition(square);
-    //     const webElement = document.getElementById(square);
-
-    //     if (!webElement)  {return;}
-                    
-    //     let url = "";
-    //     if (piece) { url = `/src/lib/assets/${piece.pieceColor+piece.pieceData}.png` }
-
-    //     webElement.style.backgroundImage = `url(${url})`;
-    // }
+    
 
     /*  New static function to render the container of an existing game  */
     static RenderFullPlayedMovesContainer(API : ChessBoard) : void {
