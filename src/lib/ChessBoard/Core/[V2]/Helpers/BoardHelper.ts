@@ -1,4 +1,5 @@
 
+import type Board from "../Board/Board";
 import type ChessBoard from "../ChessBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type { BoardLocation } from "../Types/Location/Location.type";
@@ -48,8 +49,8 @@ class BoardHelper {
     }
 
     //Returns the piece at the given location
-    static findPieceAt(API : ChessBoard, Location : BoardLocation) : IPiece {
-        throw new Error("Function not implemented")
+    static findPieceAt(API : Board, index : number) : IPiece | undefined {
+        return API.tiles[index].piece;
     }
 
     // Returns if you are in check
