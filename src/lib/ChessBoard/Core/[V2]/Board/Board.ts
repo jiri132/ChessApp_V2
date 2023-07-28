@@ -76,7 +76,7 @@ class Board implements IBoard {
                     piece = new Pawn(BoardLocation, color);
                 }
 
-                const tile : Tile = new Tile(BoardLocation)
+                const tile : Tile = new Tile(BoardLocation, piece)
 
                 this.tiles.push(tile);
             }
