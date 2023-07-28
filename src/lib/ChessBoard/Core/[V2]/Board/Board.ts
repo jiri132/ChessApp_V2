@@ -1,5 +1,6 @@
 import type { BinaryDigit } from "$lib/BitArray/Core/Types/Binary/BinaryDigit.type";
 import BoardHelper from "../Helpers/BoardHelper";
+import BoardVisualHelper from "../Helpers/BoardVisualHelper";
 import type { IBoard } from "../Interfaces/Board/IBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
@@ -12,7 +13,24 @@ import Rook from "./Pieces/Piece.rook";
 import Tile from "./Tile/Tile";
 
 class Board implements IBoard {
-    public readonly tiles: Tile[] = [];
+    public readonly tiles: Tile[] = new Proxy<Tile[]>([], {
+        set: (target: Tile[], property : string, value: number) => {
+            if (property === "length") {
+                // Handle length property change (e.g., push)
+                // You can also add further checks if needed
+        
+                // Call the RenderPlayedMove function passing the value and the current ChessBoard API
+                // TODO: Change it from Deprecated visual API to BoardVisualHelper.
+                //Chess_API_Visuals.RenderPlayedMoves(this);
+                //Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
+                BoardVisualHelper.RenderSingleTile(this,target[value-1].name);
+            }
+            
+
+            return Reflect.set(target, property, value);
+        },
+    }) as Tile[]; // Cast the proxy to the desired type (playedMoves[]);;
+
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
         set: (target: Move[], property : string, value: number) => {
             if (property === "length") {
@@ -36,7 +54,7 @@ class Board implements IBoard {
 
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
-                const color : BinaryDigit = (i === 1 || i === 2) ? "0" : "1";
+                const color : BinaryDigit = (i === 0 || i === 1) ? "1" : "0";
                 const index : number = i * j;
                 const BoardLocation = BoardHelper.indexToBoardLocation(index);
                 
