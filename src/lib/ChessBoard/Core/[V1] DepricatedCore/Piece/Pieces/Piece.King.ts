@@ -51,11 +51,6 @@ class King implements IPiece {
                 const tile : move = String.fromCharCode(currentFile + 65) + currentRank.toString();
                 const pieceAtPosition = board.getPieceAtPosition(tile);
 
-                
-
-                // console.log(tile)
-                if (board.isAttackedSquare(tile)) {continue;}
-
                 if (!pieceAtPosition || pieceAtPosition.pieceColor !== this.pieceColor ) {
                     // Empty square or enemy piece, add it to valid moves
                     // @ts-ignore

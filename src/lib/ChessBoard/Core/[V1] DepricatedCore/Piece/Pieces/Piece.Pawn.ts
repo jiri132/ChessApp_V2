@@ -24,7 +24,7 @@ class Pawn implements IPiece {
         }       
     }
 
-    public attackingSquares(board : ChessBoard) : move[] {
+    public attackingSquares() : move[] {
         const attackingSquares : move[] = [];
         const [file, rank] = this.location;
 
@@ -33,18 +33,19 @@ class Pawn implements IPiece {
         const direction = this.pieceColor === colorTable.white ? 1 : -1;
 
         // Check the single square in front of the pawn
-        const nextRank = String.fromCharCode(rank.charCodeAt(0) + direction);
+        const nextRank = parseInt(rank) + direction;
         
-        const captureMoves: move[] = [
-            String.fromCharCode(file.charCodeAt(0) + 1) + nextRank as move, 
-            String.fromCharCode(file.charCodeAt(0) - 1) + nextRank as move,
-        ];
-
-        for (const move of captureMoves) {
-            attackingSquares.push(move);
+        if (nextRank > 0 && nextRank <= 8) {
+            const captureMoves: move[] = [
+                String.fromCharCode(file.charCodeAt(0) + 1) + nextRank as move, 
+                String.fromCharCode(file.charCodeAt(0) - 1) + nextRank as move,
+            ];
+    
+            for (const move of captureMoves) {
+                attackingSquares.push(move);
+            }
         }
-        
-        
+
         return attackingSquares;
     }
     legalMoves(board : ChessBoard): move[] {
@@ -55,9 +56,13 @@ class Pawn implements IPiece {
         const direction = this.pieceColor === colorTable.white ? 1 : -1;
 
         // Check the single square in front of the pawn
-        const nextRank = String.fromCharCode(rank.charCodeAt(0) + direction);
-        
+        const nextRank = parseInt(rank) + direction;
         const nextSquare : move= `${file}${nextRank}` as move;
+        // return empty array when the next rank is outside of the area
+        if (nextRank === 0 || nextRank > 8) {
+            return [];
+        }
+
         if (!board.getPieceAtPosition(nextSquare)) {
             legalMoves.push(nextSquare);
         }
@@ -72,6 +77,7 @@ class Pawn implements IPiece {
             }
         }
 
+
         // Check captures diagonally
         const captureMoves: move[] = [
             String.fromCharCode(file.charCodeAt(0) + 1) + nextRank as move, 
@@ -79,8 +85,12 @@ class Pawn implements IPiece {
         ];
 
         for (const move of captureMoves) {
+            if (move.charAt(0) === "@" || move.charAt(0) === "I") {
+                continue;
+            }
+
             const pieceAtCaptureSquare = board.getPieceAtPosition(move);
-            if (pieceAtCaptureSquare && pieceAtCaptureSquare.pieceColor !== this.pieceColor) {
+            if (pieceAtCaptureSquare !== null && pieceAtCaptureSquare.pieceColor !== this.pieceColor) {
                 legalMoves.push(move);
             }
         }

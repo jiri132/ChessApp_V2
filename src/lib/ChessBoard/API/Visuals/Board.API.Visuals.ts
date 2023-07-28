@@ -1,6 +1,6 @@
 import type ChessBoard from "$lib/ChessBoard/Core/Board";
-import type { move } from "$lib/ChessBoard/Core/Moves/move.type";
-import type { playedMoves } from "$lib/ChessBoard/Core/Moves/playedMoves.type";
+import type { move } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/move.type";
+import type { playedMoves } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/playedMoves.type";
 import type { IPiece } from "$lib/ChessBoard/Core/Piece/IPiece";
 
 class Chess_API_Visuals {

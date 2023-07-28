@@ -10,11 +10,7 @@ class BoardHelper {
     static isInCheck(board : ChessBoard) : boolean {
 
         const king : IPiece = board.game.flat().find((piece : IPiece) => {
-
-
             if (piece !== null) {
-                // console.log(piece);
-
                 if (board.isWhiteToMove) {
                     return piece.pieceData === pieceTable.King && piece.pieceColor === colorTable.white;
                 }
@@ -25,6 +21,7 @@ class BoardHelper {
         }) as IPiece;
 
         if (king === undefined) {
+            console.table(board.game)
             throw new Error("There is a missing KING!");
         }
 
@@ -36,18 +33,11 @@ class BoardHelper {
     }
 
     static isNextMoveInCheck(board : ChessBoard, move : playedMoves) : boolean {
-        const king : IPiece = board.game.flat().find((piece) => {
-            if (board.isWhiteToMove) {
-                return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.white;
-            }
-
-            return piece?.pieceData === pieceTable.King && piece?.pieceColor === colorTable.black;
-        }) as IPiece;
-
-        
         const capturedPiece : IPiece | null = board.makeMove(move);
         const isInCheck : boolean = BoardHelper.isInCheck(board);
         board.undoMove(move, capturedPiece);
+
+        // console.log(board.game);
 
         if (isInCheck) {
             return true;

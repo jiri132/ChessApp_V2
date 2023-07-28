@@ -8,12 +8,12 @@
     import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
     import { playStyles } from "../Core/PlayStyles/Board.PlayStyles.enum";
 
+    let Board : ChessBoard;
     
     let movingPiece : IPiece;
     let possibleMoves : move[] = [];
     let playstyle : playStyles = playStyles.Human_vs_MyBot;
 
-    let Board : ChessBoard = new ChessBoard(playstyle);
 
     function SelectedOwnPiece(piece : IPiece) : boolean {
         if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
@@ -85,8 +85,13 @@
         Board.startGame(playstyle);
     }
     
-    onMount(() => {
+    // When the class gets instantiated
+    $: {
         Board = new ChessBoard();
+    }
+
+    // When the class is done loading
+    onMount(() => {
         Board.startGame(playstyle);
         Chess_API_Visuals.RenderAllSquares(Board);
     }) 
