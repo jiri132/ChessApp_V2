@@ -1,4 +1,4 @@
-import Chess_API_Bots from "$lib/ChessBoard/API/Interactions/Board.API.bot";
+import Chess_API_Bots from "$lib/ChessBoard/API/[V1]/Interactions/Board.API.bot";
 import type { playedMoves } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/playedMoves.type";
 import type { ImyBot } from "./ImyBot";
 
