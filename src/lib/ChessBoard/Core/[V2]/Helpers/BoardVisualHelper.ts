@@ -36,7 +36,6 @@ class BoardVisualHelper {
     //     });
     // }
 
-
     
     static RenderAllTiles(API : Board) : void {
         API.tiles.forEach((tile : Tile) => {
@@ -62,12 +61,10 @@ class BoardVisualHelper {
         const piece : IPiece | undefined  = API.tiles[index].piece
         const webElement = document.getElementById(square);
         
-        console.log(index);
-
         if (!webElement)  {return;}
                         
         let url = "";
-        if (piece) { url = `/src/lib/assets/${piece.data}.png` }
+        if (piece) { url = `/src/lib/assets/${piece?.data}.png` }
 
         webElement.style.backgroundImage = `url(${url})`;
     }
