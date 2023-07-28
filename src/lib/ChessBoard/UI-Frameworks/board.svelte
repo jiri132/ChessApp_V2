@@ -1,121 +1,110 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import ChessBoard from "../Core/Board";
-    import type { move } from "../Core/Moves/move.type";
-    import type { playedMoves } from "../Core/Moves/playedMoves.type";
-    import type { IPiece } from "../Core/Piece/IPiece";
-    import { colorTable } from "../Core/Piece/enum/Color.table.enum";
-    import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
-    import { playStyles } from "../Core/PlayStyles/Board.PlayStyles.enum";
+    import ChessBoard from "../Core/[V2]/ChessBoard";
+    import BoardHelper from "../Core/[V2]/Helpers/BoardHelper";
 
     let Board : ChessBoard;
     
-    let movingPiece : IPiece;
-    let possibleMoves : move[] = [];
-    let playstyle : playStyles = playStyles.Human_vs_MyBot;
+    //let movingPiece : IPiece;
+    //let possibleMoves : move[] = [];
+    //let playstyle : playStyles = playStyles.Human_vs_MyBot;
 
 
-    function SelectedOwnPiece(piece : IPiece) : boolean {
-        if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
-            (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
-            // Remove coloring
-            Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
+    // function SelectedOwnPiece(piece : IPiece) : boolean {
+    //     if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
+    //         (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
+    //         // Remove coloring
+    //         Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
 
-            // Assign pieces and moves
-            movingPiece = piece; 
-            possibleMoves = piece.legalMoves(Board);
+    //         // Assign pieces and moves
+    //         movingPiece = piece; 
+    //         possibleMoves = piece.legalMoves(Board);
 
-            // Highlight possible moves again
-            Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
+    //         // Highlight possible moves again
+    //         Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
 
-            return true;
-        }
-        return false;
-    }
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
-    function movePiece(square : move) {
-        if (!possibleMoves.includes(square)) {return;}
+    // function movePiece(square : move) {
+    //     if (!possibleMoves.includes(square)) {return;}
 
-        // Move the piece and change turn
-        const PieceSquare : move = movingPiece.location;
-        const playingMove : playedMoves = (PieceSquare+square) as playedMoves;
+    //     // Move the piece and change turn
+    //     const PieceSquare : move = movingPiece.location;
+    //     const playingMove : playedMoves = (PieceSquare+square) as playedMoves;
 
-        // Play the move
-        Board.playMove(playingMove);
+    //     // Play the move
+    //     Board.playMove(playingMove);
 
-        // Render Squares 
-        Chess_API_Visuals.RenderPlayedMove(playingMove, Board);
-    }
+    //     // Render Squares 
+    //     Chess_API_Visuals.RenderPlayedMove(playingMove, Board);
+    // }
 
+        function onClickLogic(e : any) {}
 
-    function onClickLogic(e : any) {
-        //@ts-ignore
-        const id : move = e.target.id as move;
-        const piece : IPiece | null = Board.getPieceAtPosition(id);
+    // function onClickLogic(e : any) {
+    //     //@ts-ignore
+    //     const id : move = e.target.id as move;
+    //     const piece : IPiece | null = Board.getPieceAtPosition(id);
         
-        if (piece) {
-            // Set Piece and legalMoves
-            if (!SelectedOwnPiece(piece)) {
-                // Play the  move if it is possible and otherwise remove selection and highlights
-                movePiece(id);
+    //     if (piece) {
+    //         // Set Piece and legalMoves
+    //         if (!SelectedOwnPiece(piece)) {
+    //             // Play the  move if it is possible and otherwise remove selection and highlights
+    //             movePiece(id);
 
-                reset();
+    //             reset();
 
-                return;
-            }
+    //             return;
+    //         }
 
-            movingPiece = piece;
-            possibleMoves = piece.legalMoves(Board);
+    //         movingPiece = piece;
+    //         possibleMoves = piece.legalMoves(Board);
 
-            Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
-        }else {
-            movePiece(id);
+    //         Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
+    //     }else {
+    //         movePiece(id);
             
-            reset();
-        }
-    }
-    function reset() {
-        Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
+    //         reset();
+    //     }
+    // }
 
-        movingPiece = null!;
-        possibleMoves = [];
-    }
-    function setPlayStyle(newPlayStyle : playStyles) {
-        playstyle = newPlayStyle;
-        Board.startGame(playstyle);
+    // function reset() {
+    //     Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
+
+    //     movingPiece = null!;
+    //     possibleMoves = [];
+    // }
+
+    function setPlayStyle() {
+        //playstyle = newPlayStyle;
+        //Board.startGame(playstyle);
     }
     
     // When the class gets instantiated
     $: {
         Board = new ChessBoard();
     }
-
-    // When the class is done loading
-    onMount(() => {
-        Board.startGame(playstyle);
-        Chess_API_Visuals.RenderAllSquares(Board);
-    }) 
 </script>
 
 
 <div class="visualContainer">
     <div class="infoStack">
-        <button on:click={(e) => {setPlayStyle(playStyles.Human_vs_MyBot);}}>Human vs MyBot</button>
-        <button on:click={(e) => {setPlayStyle(playStyles.MyBot_vs_MyBot);}}>MyBot vs MyBot</button>
-        <button on:click={(e) => {setPlayStyle(playStyles.MyBot_vs_DevBot);}}>MyBot vs DevBot</button>
+        <button on:click={(e) => {}}>Human vs MyBot</button>
+        <button on:click={(e) => {}}>MyBot vs MyBot</button>
+        <button on:click={(e) => {}}>MyBot vs DevBot</button>
     </div>
     <div class="ChessBoard">
-        {#each Board.game as row, file}
-                {#each Board.game[file] as piece, rank}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <div id={String.fromCharCode(65 + rank) + (8-file).toString()} class="card"
-                        on:click={(e) => {
-                            onClickLogic(e);
-                        }}
-                        >
-                    </div>
-                {/each}
+        {#each Board.Board.tiles as tile, index}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div id={BoardHelper.indexToBoardLocation(index)} class="card" style="background-image: url(/src/lib/assets/{tile.piece?.data}.png)"
+                on:click={(e) => {
+                    onClickLogic(e);
+                }}
+            >
+            </div>
         {/each}
     </div>
     <div class="infoStack">
