@@ -5,10 +5,12 @@ export interface IMove {
     // Which piece is getting moved to where
     movingPiece : IPiece;
     to : BoardLocation;
+    from : BoardLocation;
 
     // the captured piece
-    capturedPiece : IPiece;
+    capturedPiece : IPiece | undefined;
 
     // the index of the `to` positions
-    index : number; 
+    to_index : number; 
+    from_index : number;
 }
