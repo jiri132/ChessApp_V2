@@ -9,32 +9,28 @@ import BoardHelper from "./BoardHelper";
 class BoardVisualHelper {
 
     static HighlightPossibleMoves(possibleMoves : Move[]) : void {
-        throw new Error("Function not implemented");
-    }
-    // static highlightPossibleMoves(possibleMoves : move[]) : void {
-    //     // give the color to the squares
-    //     possibleMoves.forEach((move : move) => {
-    //          const webElement : HTMLElement | null = document.getElementById(move);
+        possibleMoves.forEach((move : Move) => {
+            //  We use the move.to location because all the locations from that piece that can be made will be stored inside of this
+             const webElement : HTMLElement | null = document.getElementById(move.to);
              
-    //          if (!webElement) {return;}
+             if (!webElement) {return;}
 
-    //          webElement.style.backgroundColor = '#FF00007F';
-    //     });
-    // }
+             webElement.style.backgroundColor = '#FF00007F';
+        });
+    }
+    
 
     static RemoveHighlightPossibleMoves(possibleMoves : Move[]) : void {
-        throw new Error("Function not implemented");
-    }
-    // static removeHighlightsPossibleMoves(possibleMoves : move[]) : void {
-    //     // give the color to the squares
-    //     possibleMoves.forEach((move : move) => {
-    //          const webElement : HTMLElement | null = document.getElementById(move);
+        possibleMoves.forEach((move : Move) => {
+            //  We use the move.to location because all the locations from that piece that can be made will be stored inside of this
+             const webElement : HTMLElement | null = document.getElementById(move.to);
              
-    //          if (!webElement) {return;}
+             if (!webElement) {return;}
 
-    //          webElement.style.backgroundColor = '#FF000000';
-    //     });
-    // }
+             webElement.style.backgroundColor = '#FF00007F';
+        });
+    }
+   
 
     
     static RenderAllTiles(API : Board) : void {
