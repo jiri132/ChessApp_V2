@@ -13,8 +13,11 @@ import Rook from "./Pieces/Piece.rook";
 import Tile from "./Tile/Tile";
 
 class Board implements IBoard {
-    public readonly tiles: Tile[] = [];
 
+    public isWhiteToMove : boolean = true;
+
+
+    public readonly tiles: Tile[] = [];
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
         set: (target: Move[], property : string, value: number) => {
             if (property === "length") {
@@ -23,15 +26,15 @@ class Board implements IBoard {
         
                 // Call the RenderPlayedMove function passing the value and the current ChessBoard API
                 // TODO: Change it from Deprecated visual API to BoardVisualHelper.
-                //Chess_API_Visuals.RenderPlayedMoves(this);
                 //Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
             }
             
 
             return Reflect.set(target, property, value);
         },
-    }) as Move[]; // Cast the proxy to the desired type (playedMoves[]);
+    }) as Move[]; // Cast the proxy to the desired type (Moves[]);
     
+
     constructor() {
         const width : number = 8;
         const height : number = 8;
@@ -82,7 +85,21 @@ class Board implements IBoard {
                 this.tiles.push(tile);
             }
         }
-    }    
+    } 
+
+
+    getLegalMoves(): void {
+        throw new Error("Method not implemented.");
+    }
+    playMove(): void {
+        throw new Error("Method not implemented.");
+    }
+    makeMove(): void {
+        throw new Error("Method not implemented.");
+    }
+    undoMove(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export default Board;
