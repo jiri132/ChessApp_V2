@@ -16,6 +16,8 @@ class Board implements IBoard {
 
     public isWhiteToMove : boolean = true;
 
+    public readonly collectionWhite: IPiece[] = [];
+    public readonly collectionBlack: IPiece[] = [];
 
     public readonly tiles: Tile[] = [];
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
@@ -81,15 +83,38 @@ class Board implements IBoard {
                     piece = new Pawn(BoardLocation, color);
                 }
 
+                if (piece) {
+                    if (piece.color === "0") {
+                        this.collectionWhite.push(piece);
+                    }else {
+                        this.collectionBlack.push(piece);
+                    }
+                }
+
                 const tile : Tile = new Tile(BoardLocation, piece)
                 this.tiles.push(tile);
             }
         }
     } 
 
+    getLegalMoves(): Move[] {
+        const legalMoves : Move[] = [];
 
-    getLegalMoves(): void {
-        throw new Error("Method not implemented.");
+        if (this.isWhiteToMove) {
+            this.collectionWhite.forEach((piece : IPiece) => {
+                piece.getLegalMoves(this).forEach((move : Move) => {
+                    legalMoves.push(move)
+                })
+            });
+        }else {
+            this.collectionBlack.forEach((piece : IPiece) => {
+                piece.getLegalMoves(this).forEach((move : Move) => {
+                    legalMoves.push(move)
+                })
+            });
+        }
+
+        return legalMoves;
     }
     playMove(): void {
         throw new Error("Method not implemented.");
