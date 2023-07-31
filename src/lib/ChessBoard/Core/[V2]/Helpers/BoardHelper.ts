@@ -49,7 +49,12 @@ class BoardHelper {
     }
 
     //Returns the piece at the given location
-    static findPieceAt(API : Board, index : number) : IPiece | undefined {
+    static findPieceAtIndex(API : Board, index : number) : IPiece | undefined {
+        return API.tiles[index].piece;
+    }
+    static findPieceAtLocation(API : Board, location : BoardLocation) : IPiece | undefined {
+        const index = this.boardLocationToIndex(location);
+
         return API.tiles[index].piece;
     }
 

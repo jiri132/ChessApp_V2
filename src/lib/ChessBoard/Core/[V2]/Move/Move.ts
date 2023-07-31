@@ -27,7 +27,7 @@ class Move implements IMove {
         this.from_index = BoardHelper.boardLocationToIndex(this.from);
         this.to_index = BoardHelper.boardLocationToIndex(this.to);
 
-        this.capturedPiece = BoardHelper.findPieceAt(board, this.to_index);
+        this.capturedPiece = BoardHelper.findPieceAtIndex(board, this.to_index);
 
         this.algebraic_notation = this.getAlgebraicNotation();
     }
