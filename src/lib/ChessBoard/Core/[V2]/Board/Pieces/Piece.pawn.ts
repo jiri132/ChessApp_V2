@@ -19,7 +19,7 @@ class Pawn implements IPiece {
         this.piece = "000";
         this.data = (this.color + this.piece) as BinaryGroup<4>;
     }
-    public PieceLegalMoves(API : Board): Move[] {
+    public getLegalMoves(API : Board): Move[] {
         const [file, rank] = this.location;
         const legalMoves: Move[] = [];
 

@@ -14,5 +14,5 @@ export interface IPiece {
     // 000 to 111     
     readonly piece : BinaryGroup<3>;
 
-    PieceLegalMoves(API : Board) : Move[];
+    getLegalMoves(API : Board) : Move[];
 }

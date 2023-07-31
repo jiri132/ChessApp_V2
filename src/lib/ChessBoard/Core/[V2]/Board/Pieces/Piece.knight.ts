@@ -20,7 +20,7 @@ class Knight implements IPiece {
         this.data = (this.color + this.piece) as BinaryGroup<4>;
     }
 
-    public PieceLegalMoves(API : Board): Move[] {
+    public getLegalMoves(API : Board): Move[] {
         const [file, rank] = this.location;
         const validMoves: Move[] = [];
     

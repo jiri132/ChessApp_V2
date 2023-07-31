@@ -18,8 +18,10 @@ class King implements IPiece {
         this.data = (this.color + this.piece) as BinaryGroup<4>;
     }
 
-    public PieceLegalMoves(): Move[] {
-        throw new Error("Method not implemented.");
+    public getLegalMoves(): Move[] {
+        const legalMoves : Move[] = [];
+
+        return legalMoves;
     }
 }
 
