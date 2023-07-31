@@ -1,5 +1,6 @@
 import type { BinaryDigit } from "$lib/BitArray/Core/Types/Binary/BinaryDigit.type";
 import type { BinaryGroup } from "$lib/BitArray/Core/Types/Binary/BinaryGroup.type";
+import type Board from "../../../Board/Board";
 import type Move from "../../../Move/Move";
 import type { BoardLocation } from "../../../Types/Location/Location.type";
 
@@ -13,5 +14,5 @@ export interface IPiece {
     // 000 to 111     
     readonly piece : BinaryGroup<3>;
 
-    PieceLegalMoves() : Move[];
+    PieceLegalMoves(API : Board) : Move[];
 }
