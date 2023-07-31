@@ -15,6 +15,10 @@ class Move implements IMove {
     public readonly from: BoardLocation;
     public readonly from_index: number
     
+    // Notations
+    public readonly algebraic_notation: string;
+
+
     constructor(movingPiece : IPiece, to : BoardLocation, board : Board) {
         this.movingPiece = movingPiece;
         this.from = movingPiece.location;
@@ -24,6 +28,37 @@ class Move implements IMove {
         this.to_index = BoardHelper.boardLocationToIndex(this.to);
 
         this.capturedPiece = BoardHelper.findPieceAt(board, this.to_index);
+
+        this.algebraic_notation = this.getAlgebraicNotation();
+    }
+
+    private getAlgebraicNotation() : string {
+        let notation = "";
+
+        // get the letter of the moving place
+        switch (this.movingPiece.piece) {
+            case "001":
+                notation += "B"
+                break;
+            case "010":
+                notation += "K"
+                break;
+            case "011":
+                notation += "R"
+                break;
+            case "100":
+                notation += "Q"
+                break;
+            case "101":
+                notation += "K"
+                break;
+        }
+
+        if (this.capturedPiece) {notation += "x"}
+
+        notation += this.to.toLowerCase();
+
+        return notation;
     }
 }
 

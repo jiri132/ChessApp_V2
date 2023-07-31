@@ -3,14 +3,17 @@ import type { IPiece } from "../Board/Pieces/IPieces";
 
 export interface IMove {
     // Which piece is getting moved to where
-    movingPiece : IPiece;
-    to : BoardLocation;
-    from : BoardLocation;
+    readonly movingPiece : IPiece;
+    readonly to : BoardLocation;
+    readonly from : BoardLocation;
 
     // the captured piece
-    capturedPiece : IPiece | undefined;
+    readonly capturedPiece : IPiece | undefined;
 
     // the index of the `to` positions
-    to_index : number; 
-    from_index : number;
+    readonly to_index : number; 
+    readonly from_index : number;
+
+    // Notations
+    readonly algebraic_notation : string;
 }
