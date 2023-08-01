@@ -97,7 +97,7 @@ class Board implements IBoard {
         }
     } 
 
-    getLegalMoves(): Move[] {
+    public getLegalMoves(): Move[] {
         const legalMoves : Move[] = [];
 
         if (this.isWhiteToMove) {
@@ -116,14 +116,39 @@ class Board implements IBoard {
 
         return legalMoves;
     }
-    playMove(): void {
+
+    public playMove(move : Move): void {
+        // find if the move is in the possible moves list
+        const foundMove : Move | undefined = this.getLegalMoves().find((item : Move) => item.from === move.from && item.to === move.to) 
+        
+        // if tit is not found then return the function
+        if (foundMove === undefined) {return;}
+
+
+        // else move everything and swap the to playing black
+        this.movePiece(move);
+        this.isWhiteToMove = !this.isWhiteToMove
+    }
+    
+    makeMove(move : Move): void {
         throw new Error("Method not implemented.");
     }
-    makeMove(): void {
+    undoMove(move : Move): void {
         throw new Error("Method not implemented.");
     }
-    undoMove(): void {
-        throw new Error("Method not implemented.");
+
+    private movePiece(move : Move) : void {
+        // Get the 2 tiles that are being used
+        const from_tile : Tile = this.tiles[move.from_index];
+        const to_tile : Tile = this.tiles[move.to_index];
+
+        // Set the from location to undefined
+        from_tile.piece = undefined;
+        // Set the new piece on the to tile
+        to_tile.piece = move.movingPiece;
+        
+        // Set th moving piece his location to the new location
+        move.movingPiece.location = move.to;
     }
 }
 
