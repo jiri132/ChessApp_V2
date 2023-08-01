@@ -23,8 +23,8 @@ class Board implements IBoard {
     public readonly playerTypeWhite : PlayerType = PlayerType.Human;
     public readonly playerTypeBlack : PlayerType = PlayerType.Human;
 
-    public readonly bot1? : ImyBot;
-    public readonly bot2? : ImyBot;
+    public readonly whiteBot? : ImyBot;
+    public readonly blackBot? : ImyBot;
 
     public readonly collectionWhite: IPiece[] = [];
     public readonly collectionBlack: IPiece[] = [];
@@ -114,22 +114,33 @@ class Board implements IBoard {
                 this.playerTypeWhite = PlayerType.Bot
 
                 // Set the bot scripts
-                if (!bot1 || !bot2) {throw new Error("sshjd")}
+                if (!bot1 || !bot2) {throw new Error("select 2 bot")}
 
-                this.bot1 = bot1;
-                this.bot2 = bot2;
+                
 
                 if (bot1IsWhite) {
-                    this.playMove(bot1.Think());
+                    this.whiteBot = bot1;
+                    this.blackBot = bot2;
+                    this.playMove(this.whiteBot.Think());
+                }else {
+                    this.whiteBot = bot2;
+                    this.blackBot = bot1;
+                    this.playMove(this.blackBot.Think());
                 }
 
                 break;
             case GameType.Human_VS_Bot:
                 const humanIsWhite : boolean = Random.getRandomBoolean();
-
+                
+                if (!bot1) {throw new Error("select one bot")}
+                
                 if (humanIsWhite) {
                     this.playerTypeBlack =  PlayerType.Bot;
-                    this.bot1 = bot1;
+                    this.blackBot = bot1;
+                }else {
+                    this.playerTypeWhite =  PlayerType.Bot;
+                    this.whiteBot = bot1;
+                    this.playMove(this.whiteBot.Think());
                 }
                 
                 break;
