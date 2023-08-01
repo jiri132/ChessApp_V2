@@ -1,6 +1,6 @@
-import Chess_API_Bots from "$lib/ChessBoard/API/[V1]/Interactions/Board.API.bot";
-import type { move } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/move.type";
-import type { playedMoves } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/playedMoves.type";
+import Chess_API_Bots from "$lib/ChessBoard/API/[V2]/Board.API.bot";
+import type Move from "$lib/ChessBoard/Core/[V2]/Move/Move";
+import Random from "$lib/Random/Random";
 import type { ImyBot } from "./ImyBot";
 
 
@@ -9,23 +9,23 @@ class devBot extends Chess_API_Bots implements ImyBot {
     
     readonly values : number[] = [100,300,300,500,900,10000]
 
-    Think(): playedMoves {
-        const allMoves : playedMoves[]  = this.API.getYourLegalMoves();
-        const randomNum = getRandomInteger(0,this.API.getYourLegalMoves().length - 1);
+    Think(): Move {
+        const allMoves : Move[]  = this.API.getLegalMoves();
+        const randomNum = Random.getRandomInteger(0,allMoves.length - 1);
 
-        let playingMove : playedMoves;
+        let playingMove : Move;
         let captureValue : number = 0; 
 
         playingMove = allMoves[randomNum];
 
-        allMoves.forEach((move : playedMoves) => {
-            const from : move = move.substring(0,2) as move;
-            const to : move = move.substring(2,4) as move;
+        allMoves.forEach((move : Move) => {
+            if (!move.capturedPiece) { return; }
 
-            let value : number = this.values[parseInt(this.API.getPieceAtPosition(to)?.pieceData as string,2)];
+            const pieceToNumber : number = parseInt(move.capturedPiece?.piece,2)
+            let value : number = this.values[pieceToNumber];
 
             if (value > captureValue) {
-                playingMove = (from+to).toString() as playedMoves;
+                playingMove = move;
                 captureValue = value;
             }
         })
@@ -34,8 +34,6 @@ class devBot extends Chess_API_Bots implements ImyBot {
     }
 }
 
-function getRandomInteger(min : number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+
 
 export default devBot;

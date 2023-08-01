@@ -1,5 +1,5 @@
-import type { playedMoves } from "$lib/ChessBoard/Core/[V1] DepricatedCore/Moves/playedMoves.type";
+import type Move from "$lib/ChessBoard/Core/[V2]/Move/Move";
 
 export interface ImyBot {
-    Think() : playedMoves
+    Think() : Move
 }
