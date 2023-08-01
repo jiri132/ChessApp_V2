@@ -20,17 +20,11 @@
 
             BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves);
 
-            movingPiece = piece; 
-            possibleMoves = piece.getLegalMoves(Board.Board);
-
             BoardVisualHelper.HighlightPossibleMoves(possibleMoves);
 
             return true;
         } else if (!Board.Board.isWhiteToMove && piece.color === "1") {
             BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves);
-
-            movingPiece = piece; 
-            possibleMoves = piece.getLegalMoves(Board.Board);
 
             BoardVisualHelper.HighlightPossibleMoves(possibleMoves);
 
@@ -46,17 +40,15 @@
 
         // Play the move
         Board.Board.playMove(foundMove);
-
-        // Render Squares 
-        BoardVisualHelper.RenderPlayedMove(Board,foundMove)
     }
 
     function onClickLogic(e : any) {
         //@ts-ignore
         const id : BoardLocation = e.target.id as BoardLocation;
         const piece : IPiece | undefined = BoardHelper.findPieceAtLocation(Board.Board,id);
-        
-        if (piece) {
+        const boardMoves : Move[] = Board.Board.getLegalMoves();
+
+        if (piece !== undefined) {
             if (!SelectedOwnPiece(piece)) {
                 // Play the  move if it is possible and otherwise remove selection and highlights
                 if (movingPiece) {
@@ -66,10 +58,17 @@
                 reset();
                 return;
             }
-
+            BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves)
             movingPiece = piece;
-            possibleMoves = piece.getLegalMoves(Board.Board);
-
+            const pieceMoves : Move[] = piece.getLegalMoves(Board.Board);
+            boardMoves.forEach((legalMove : Move) => {
+                pieceMoves.forEach((pMoves : Move) => {
+                    if (pMoves.from === legalMove.from && pMoves.to === legalMove.to) {
+                        possibleMoves.push(pMoves);
+                    }
+                });
+            });
+            BoardVisualHelper.HighlightPossibleMoves(possibleMoves);
         }else {
             if (movingPiece) {
                 const move : Move = new Move(movingPiece,id,Board.Board);
@@ -123,7 +122,7 @@
     </div>
     <div class="infoStack">
         <div style="color: black;">Played Moves</div>
-        <div id="moves" class="moves">
+        <div id="movesContainer" class="moves">
 
         </div>
     </div>
