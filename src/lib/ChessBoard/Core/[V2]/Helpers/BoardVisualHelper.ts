@@ -27,7 +27,7 @@ class BoardVisualHelper {
              
              if (!webElement) {return;}
 
-             webElement.style.backgroundColor = '#FF00007F';
+             webElement.style.backgroundColor = '#FF000000';
         });
     }
    
@@ -40,17 +40,10 @@ class BoardVisualHelper {
     }
     
 
-    /*  This feature is probably going to get removed  */
     static RenderPlayedMove(API : ChessBoard, move : Move) : void {
-        throw new Error("Function not implemented");
+        this.RenderSingleTile(API.Board,move.from);
+        this.RenderSingleTile(API.Board, move.to);
     }
-    // static RenderPlayedMove(playedMove : playedMoves, API:ChessBoard) : void {
-    //     const position : move = playedMove.substring(0, 2) as move;
-    //     const to : move = playedMove.substring(2, 4) as move;
-
-    //     this.RenderSingleSquare(position, API);
-    //     this.RenderSingleSquare(to, API);
-    // }
 
     static RenderSingleTile(API : Board, square : BoardLocation) : void {
         const index = BoardHelper.boardLocationToIndex(square)
