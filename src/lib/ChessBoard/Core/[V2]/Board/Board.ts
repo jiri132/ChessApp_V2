@@ -1,9 +1,13 @@
 import type { BinaryDigit } from "$lib/BitArray/Core/Types/Binary/BinaryDigit.type";
+import type { ImyBot } from "$lib/ChessEngine/ImyBot";
+import Random from "$lib/Random/Random";
 import BoardHelper from "../Helpers/BoardHelper";
 import BoardVisualHelper from "../Helpers/BoardVisualHelper";
 import type { IBoard } from "../Interfaces/Board/IBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
+import { GameType } from "../Types/Game/game.type";
+import { PlayerType } from "../Types/Players/Player.enum";
 import Bishop from "./Pieces/Piece.bishop";
 import King from "./Pieces/Piece.king";
 import Knight from "./Pieces/Piece.knight";
@@ -15,6 +19,12 @@ import Tile from "./Tile/Tile";
 class Board implements IBoard {
 
     public isWhiteToMove : boolean = true;
+
+    public readonly playerTypeWhite : PlayerType = PlayerType.Human;
+    public readonly playerTypeBlack : PlayerType = PlayerType.Human;
+
+    public readonly bot1? : ImyBot;
+    public readonly bot2? : ImyBot;
 
     public readonly collectionWhite: IPiece[] = [];
     public readonly collectionBlack: IPiece[] = [];
@@ -36,7 +46,7 @@ class Board implements IBoard {
     }) as Move[]; // Cast the proxy to the desired type (Moves[]);
     
 
-    constructor() {
+    constructor(gameType : GameType = GameType.Human_VS_Human, bot1? : ImyBot, bot2? : ImyBot) {
         const width : number = 8;
         const height : number = 8;
 
@@ -94,6 +104,40 @@ class Board implements IBoard {
                 this.tiles.push(tile);
             }
         }
+
+        switch (gameType) {
+            case GameType.Bot_VS_Bot:
+                const bot1IsWhite : boolean = Random.getRandomBoolean();
+
+                // Set the player types
+                this.playerTypeBlack = PlayerType.Bot;  
+                this.playerTypeWhite = PlayerType.Bot
+
+                // Set the bot scripts
+                if (!bot1 || !bot2) {throw new Error("sshjd")}
+
+                this.bot1 = bot1;
+                this.bot2 = bot2;
+
+                if (bot1IsWhite) {
+                    this.playMove(bot1.Think());
+                }
+
+                break;
+            case GameType.Human_VS_Bot:
+                const humanIsWhite : boolean = Random.getRandomBoolean();
+
+                if (humanIsWhite) {
+                    this.playerTypeBlack =  PlayerType.Bot;
+                    this.bot1 = bot1;
+                }
+                
+                break;
+            case GameType.Human_VS_Human:
+                break;
+        }
+ 
+
     } 
 
     public getAllMoves() : Move[] {
@@ -146,12 +190,12 @@ class Board implements IBoard {
         this.isWhiteToMove = !this.isWhiteToMove
     }
     
-    makeMove(move : Move): void {
+    public makeMove(move : Move): void {
         // else move everything and swap the to playing black
         this.movePiece(move);
         this.isWhiteToMove = !this.isWhiteToMove
     }
-    undoMove(move : Move): void {
+    public undoMove(move : Move): void {
         const from_tile : Tile = this.tiles[move.from_index];
         const to_tile : Tile = this.tiles[move.to_index];
 
