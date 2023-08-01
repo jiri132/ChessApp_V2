@@ -21,6 +21,8 @@ class Pawn implements IPiece {
     }
 
     public getLegalMoves(API : Board): Move[] {
+        if (this.location === null) {return [];}
+
         const [file, rank] = this.location;
         const legalMoves: Move[] = [];
 

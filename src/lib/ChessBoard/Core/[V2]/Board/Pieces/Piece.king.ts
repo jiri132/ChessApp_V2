@@ -19,6 +19,7 @@ class King implements IPiece {
     }
 
     public getLegalMoves(): Move[] {
+        if (this.location === null) {return [];}
         const legalMoves : Move[] = [];
 
         return legalMoves;

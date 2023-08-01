@@ -21,6 +21,8 @@ class Knight implements IPiece {
     }
 
     public getLegalMoves(API : Board): Move[] {
+      if (this.location === null) {return [];}
+
         const [file, rank] = this.location;
         const validMoves: Move[] = [];
     
