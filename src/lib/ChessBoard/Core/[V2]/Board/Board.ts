@@ -26,11 +26,10 @@ class Board implements IBoard {
                 // Handle length property change (e.g., push)
                 // You can also add further checks if needed
         
-                // Call the RenderPlayedMove function passing the value and the current ChessBoard API
-                // TODO: Change it from Deprecated visual API to BoardVisualHelper.
-                //Chess_API_Visuals.RenderPlayedMove(target[value-1], this);
+                // Call the RenderPlayedMove & singleContainerItem function passing the value and the current ChessBoard API
+                BoardVisualHelper.RenderSinglePlayedMoveInContainer(this)
+                BoardVisualHelper.RenderPlayedMove(this,target[value-1] )
             }
-            
 
             return Reflect.set(target, property, value);
         },
@@ -97,19 +96,43 @@ class Board implements IBoard {
         }
     } 
 
+    public getAllMoves() : Move[] {
+        const allMoves : Move[] = [];
+
+        if (this.isWhiteToMove) {
+            this.collectionWhite.forEach((piece : IPiece) => {
+                piece.getLegalMoves(this).forEach((move : Move) => {
+                    allMoves.push(move)
+                })
+            });
+        }else {
+            this.collectionBlack.forEach((piece : IPiece) => {
+                piece.getLegalMoves(this).forEach((move : Move) => {
+                    allMoves.push(move)
+                })
+            });
+        }
+
+        return allMoves;
+    }
+
     public getLegalMoves(): Move[] {
         const legalMoves : Move[] = [];
 
         if (this.isWhiteToMove) {
             this.collectionWhite.forEach((piece : IPiece) => {
                 piece.getLegalMoves(this).forEach((move : Move) => {
+                    // Check if the move is in check or not else don't use this 
+                    if (BoardHelper.isNextMoveInCheck(this,move)) {return;}
                     legalMoves.push(move)
                 })
             });
         }else {
             this.collectionBlack.forEach((piece : IPiece) => {
                 piece.getLegalMoves(this).forEach((move : Move) => {
-                    legalMoves.push(move)
+                    // Check if the move is in check or not else don't use this 
+                    if (BoardHelper.isNextMoveInCheck(this,move)) {return;}
+                    legalMoves.push(move) 
                 })
             });
         }
@@ -118,23 +141,29 @@ class Board implements IBoard {
     }
 
     public playMove(move : Move): void {
-        // find if the move is in the possible moves list
-        const foundMove : Move | undefined = this.getLegalMoves().find((item : Move) => item.from === move.from && item.to === move.to) 
-        
-        // if tit is not found then return the function
-        if (foundMove === undefined) {return;}
-
-
-        // else move everything and swap the to playing black
         this.movePiece(move);
+        this.playedMoves.push(move);
         this.isWhiteToMove = !this.isWhiteToMove
     }
     
     makeMove(move : Move): void {
-        throw new Error("Method not implemented.");
+        // else move everything and swap the to playing black
+        this.movePiece(move);
+        this.isWhiteToMove = !this.isWhiteToMove
     }
     undoMove(move : Move): void {
-        throw new Error("Method not implemented.");
+        const from_tile : Tile = this.tiles[move.from_index];
+        const to_tile : Tile = this.tiles[move.to_index];
+
+        to_tile.piece = move.capturedPiece;
+        from_tile.piece = move.movingPiece;
+ 
+        move.movingPiece.location = move.from;
+        if (move.capturedPiece) {
+            move.capturedPiece.location = move.to;
+        }
+
+        this.isWhiteToMove = !this.isWhiteToMove;
     }
 
     private movePiece(move : Move) : void {
@@ -146,7 +175,11 @@ class Board implements IBoard {
         from_tile.piece = undefined;
         // Set the new piece on the to tile
         to_tile.piece = move.movingPiece;
-        
+
+        if (move.capturedPiece) {
+            move.capturedPiece.location = null!
+        }
+
         // Set th moving piece his location to the new location
         move.movingPiece.location = move.to;
     }
