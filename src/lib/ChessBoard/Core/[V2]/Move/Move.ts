@@ -7,17 +7,16 @@ import type { BoardLocation } from "../Types/Location/Location.type";
 
 class Move implements IMove {
     public readonly movingPiece: IPiece;
-    public readonly to: BoardLocation;
-    public readonly to_index: number;
-    public readonly capturedPiece: IPiece | undefined;
-
-    // Are these 2 really needed? 
     public readonly from: BoardLocation;
     public readonly from_index: number
+    public readonly to: BoardLocation;
+    public readonly to_index: number;
     
     // Notations
     public readonly algebraic_notation: string;
 
+    // Flags
+    public readonly capturedPiece: IPiece | undefined;
 
     constructor(movingPiece : IPiece, to : BoardLocation, board : Board) {
         this.movingPiece = movingPiece;
@@ -41,7 +40,7 @@ class Move implements IMove {
                 notation += "B"
                 break;
             case "010":
-                notation += "K"
+                notation += "N"
                 break;
             case "011":
                 notation += "R"
