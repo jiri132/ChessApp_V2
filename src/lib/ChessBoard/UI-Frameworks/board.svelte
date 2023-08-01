@@ -107,6 +107,7 @@
         <button on:click={(e) => {}}>Human vs MyBot</button>
         <button on:click={(e) => {}}>MyBot vs MyBot</button>
         <button on:click={(e) => {}}>MyBot vs DevBot</button>
+        <button on:click={(e) => {Board.newGame()}}>new game</button>
     </div>
     <div class="ChessBoard">
         {#each Board.Board.tiles as tile}
@@ -148,6 +149,10 @@
             max-height: 480px;
             padding: 5px;
             text-align: center;
+
+            button {
+                width: 100%;
+            }
         }
         
         .moves {
