@@ -40,9 +40,9 @@ class BoardVisualHelper {
     }
     
 
-    static RenderPlayedMove(API : ChessBoard, move : Move) : void {
-        this.RenderSingleTile(API.Board,move.from);
-        this.RenderSingleTile(API.Board, move.to);
+    static RenderPlayedMove(API : Board, move : Move) : void {
+        this.RenderSingleTile(API,move.from);
+        this.RenderSingleTile(API, move.to);
     }
 
     static RenderSingleTile(API : Board, square : BoardLocation) : void {
@@ -65,38 +65,32 @@ class BoardVisualHelper {
     }
 
 
-    static RenderSinglePlayedMoveInContainer(API : ChessBoard) : void {
-        throw new Error("Function not implemented")
+    static RenderSinglePlayedMoveInContainer(API : Board) : void {
+        const playedMoves : Move[] = API.playedMoves;
+        const webElement = document.getElementById("movesContainer");
+
+        if (!webElement) {return;}
+
+        const newElement = document.createElement('div')
+
+        if (playedMoves.length % 2 === 1) {
+            const numElement = document.createElement('div');
+
+            numElement.innerText = (playedMoves.length / 2 + 0.5).toString();
+            webElement.appendChild(numElement);
+        }
+
+        newElement.innerHTML = playedMoves[playedMoves.length-1].algebraic_notation;
+        webElement.appendChild(newElement);
     }
-    // static RenderPlayedMoves(API : ChessBoard) : void {
-    //     const playedMoves = API.playedMoves;
-    //     const webElement = document.getElementById("moves");
-
-    //     if (!webElement) {return;}
-
-    //     const newElement = document.createElement('div')
-
-    //     if (playedMoves.length % 2 === 1) {
-    //         const numElement = document.createElement('div');
-
-    //         numElement.innerText = (playedMoves.length / 2 + 0.5).toString();
-    //         webElement.appendChild(numElement);
-    //     }
-
-    //     newElement.innerHTML = playedMoves[playedMoves.length-1];
-    //     webElement.appendChild(newElement);
-    // }
 
     static RenderEmptyPlayedMovesContainer() : void {
-        throw new Error("Function not implemented");
+        const webElement  = document.getElementById("movesContainer");
+
+        if (!webElement) {return;}
+
+        webElement.innerHTML = "";
     }
-    // static RenderNewPLayedMovesContainer() : void{
-    //     const webElement  = document.getElementById("moves");
-
-    //     if (!webElement) {return;}
-
-    //     webElement.innerHTML = "";
-    // }
 }
 
 export default BoardVisualHelper;
