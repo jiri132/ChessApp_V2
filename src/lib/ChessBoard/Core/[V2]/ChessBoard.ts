@@ -2,6 +2,7 @@ import { bounceIn } from "svelte/easing";
 import Board from "./Board/Board";
 import type { IChessBoard } from "./Interfaces/IChessBoard";
 import PlayedGames from "./PlayedGames/PlayedGames";
+import BoardVisualHelper from "./Helpers/BoardVisualHelper";
 
 class ChessBoard implements IChessBoard {
 
@@ -27,6 +28,7 @@ class ChessBoard implements IChessBoard {
         }
 
         // Create new board
+        BoardVisualHelper.RenderEmptyPlayedMovesContainer();
         this.Board = new Board();
     }
 }
