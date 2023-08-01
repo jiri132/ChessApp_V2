@@ -72,12 +72,7 @@ class BoardHelper {
         }else {
             foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "1101")
         }
-        // Get all legal moves
-        // Find if there is a move where the captured piece is the same as youre king
          
-        console.log(foundLocation)
-
-        
         // If there is one found then you are in check
         if (foundLocation) {
             isInCheck = true;

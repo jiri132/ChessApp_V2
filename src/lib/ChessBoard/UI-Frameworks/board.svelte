@@ -156,11 +156,14 @@
             display: grid;
             grid-template-rows: repeat(2, 0fr);
             grid-template-columns: repeat(3,1fr);
-            justify-items: center;
+            text-align:end;
+            padding-right: 10px;
+            //justify-items: center;
         }
         .moves::-webkit-scrollbar {
             width: 0px;
         }
+        
 
         .ChessBoard {
             display: grid;
