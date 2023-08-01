@@ -3,81 +3,88 @@
     import ChessBoard from "../Core/[V2]/ChessBoard";
     import BoardHelper from "../Core/[V2]/Helpers/BoardHelper";
     import BoardVisualHelper from "../Core/[V2]/Helpers/BoardVisualHelper";
+    import type { BoardLocation } from "../Core/[V2]/Types/Location/Location.type";
+    import type { IPiece } from "../Core/[V2]/Interfaces/Board/Pieces/IPieces";
+    import Move from "../Core/[V2]/Move/Move";
 
     let Board : ChessBoard;
     
-    //let movingPiece : IPiece;
-    //let possibleMoves : move[] = [];
+    let movingPiece : IPiece;
+    let possibleMoves : Move[] = [];
     //let playstyle : playStyles = playStyles.Human_vs_MyBot;
 
 
-    // function SelectedOwnPiece(piece : IPiece) : boolean {
-    //     if ((piece.pieceColor === colorTable.white && Board.isWhiteToMove) || 
-    //         (piece.pieceColor === colorTable.black && !Board.isWhiteToMove)) {
-    //         // Remove coloring
-    //         Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
+    function SelectedOwnPiece(piece : IPiece) : boolean {
 
-    //         // Assign pieces and moves
-    //         movingPiece = piece; 
-    //         possibleMoves = piece.legalMoves(Board);
+        if (Board.Board.isWhiteToMove && piece.color === "0") {
 
-    //         // Highlight possible moves again
-    //         Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
+            BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves);
 
-    //         return true;
-    //     }
-    //     return false;
-    // }
+            movingPiece = piece; 
+            possibleMoves = piece.getLegalMoves(Board.Board);
 
-    // function movePiece(square : move) {
-    //     if (!possibleMoves.includes(square)) {return;}
+            BoardVisualHelper.HighlightPossibleMoves(possibleMoves);
 
-    //     // Move the piece and change turn
-    //     const PieceSquare : move = movingPiece.location;
-    //     const playingMove : playedMoves = (PieceSquare+square) as playedMoves;
+            return true;
+        } else if (!Board.Board.isWhiteToMove && piece.color === "1") {
+            BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves);
 
-    //     // Play the move
-    //     Board.playMove(playingMove);
+            movingPiece = piece; 
+            possibleMoves = piece.getLegalMoves(Board.Board);
 
-    //     // Render Squares 
-    //     Chess_API_Visuals.RenderPlayedMove(playingMove, Board);
-    // }
+            BoardVisualHelper.HighlightPossibleMoves(possibleMoves);
 
-        function onClickLogic(e : any) {}
-
-    // function onClickLogic(e : any) {
-    //     //@ts-ignore
-    //     const id : move = e.target.id as move;
-    //     const piece : IPiece | null = Board.getPieceAtPosition(id);
+            return true;
+        }
         
-    //     if (piece) {
-    //         // Set Piece and legalMoves
-    //         if (!SelectedOwnPiece(piece)) {
-    //             // Play the  move if it is possible and otherwise remove selection and highlights
-    //             movePiece(id);
+        return false;
+    }
 
-    //             reset();
+    function movePiece(move : Move) {
+        const foundMove : Move | undefined = possibleMoves.find((item : Move) => item.from === move.from && item.to === move.to)
+        if (!foundMove) {return;}
 
-    //             return;
-    //         }
+        // Play the move
+        Board.Board.playMove(foundMove);
 
-    //         movingPiece = piece;
-    //         possibleMoves = piece.legalMoves(Board);
+        // Render Squares 
+        BoardVisualHelper.RenderPlayedMove(Board,foundMove)
+    }
 
-    //         Chess_API_Visuals.highlightPossibleMoves(possibleMoves);
-    //     }else {
-    //         movePiece(id);
+    function onClickLogic(e : any) {
+        //@ts-ignore
+        const id : BoardLocation = e.target.id as BoardLocation;
+        const piece : IPiece | undefined = BoardHelper.findPieceAtLocation(Board.Board,id);
+        
+        if (piece) {
+            if (!SelectedOwnPiece(piece)) {
+                // Play the  move if it is possible and otherwise remove selection and highlights
+                if (movingPiece) {
+                    const move : Move = new Move(movingPiece,id,Board.Board);
+                    movePiece(move);
+                }
+                reset();
+                return;
+            }
+
+            movingPiece = piece;
+            possibleMoves = piece.getLegalMoves(Board.Board);
+
+        }else {
+            if (movingPiece) {
+                const move : Move = new Move(movingPiece,id,Board.Board);
+                movePiece(move);
+            }
             
-    //         reset();
-    //     }
-    // }
+            reset();
+        }
+    }
 
-    // function reset() {
-    //     Chess_API_Visuals.removeHighlightsPossibleMoves(possibleMoves);
-
-    //     movingPiece = null!;
-    //     possibleMoves = [];
-    // }
+    function reset() {
+        BoardVisualHelper.RemoveHighlightPossibleMoves(possibleMoves);
+        movingPiece = null!;
+        possibleMoves = [];
+    }
 
     function setPlayStyle() {
         //playstyle = newPlayStyle;
@@ -89,6 +96,7 @@
         Board = new ChessBoard();
     }
 
+    // When the class is done loading
     onMount(() => {
         BoardVisualHelper.RenderAllTiles(Board.Board);
     })
