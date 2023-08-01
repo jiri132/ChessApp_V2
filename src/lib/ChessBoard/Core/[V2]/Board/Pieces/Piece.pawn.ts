@@ -19,6 +19,7 @@ class Pawn implements IPiece {
         this.piece = "000";
         this.data = (this.color + this.piece) as BinaryGroup<4>;
     }
+
     public getLegalMoves(API : Board): Move[] {
         const [file, rank] = this.location;
         const legalMoves: Move[] = [];
@@ -29,9 +30,6 @@ class Pawn implements IPiece {
         // Check the single square in front of the pawn
         const nextRank = parseInt(rank) + direction;
         const nextSquare : BoardLocation = `${file}${nextRank}` as BoardLocation;
-
-        
-
 
         // return empty array when the next rank is outside of the area
         if (nextRank === 0 || nextRank > 8) {
@@ -66,11 +64,11 @@ class Pawn implements IPiece {
             }
 
             const _move : Move = new Move(this,move,API);
-
             // Push when it is not undefined
-            if (_move.capturedPiece === undefined) { break; }
+            if (_move.capturedPiece === undefined) { continue; }
+
             // break if same color
-            if (_move.capturedPiece.color === this.color) { break; }   
+            if (_move.capturedPiece.color === this.color) { continue; }   
             
             legalMoves.push(_move);
         }
