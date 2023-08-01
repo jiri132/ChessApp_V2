@@ -1,7 +1,9 @@
 
 import type Board from "../Board/Board";
+import type King from "../Board/Pieces/Piece.king";
 import type ChessBoard from "../ChessBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
+import type Move from "../Move/Move";
 import type { BoardLocation } from "../Types/Location/Location.type";
 import type { file } from "../Types/Location/file.type";
 import type { rank } from "../Types/Location/rank.type";
@@ -59,8 +61,43 @@ class BoardHelper {
     }
 
     // Returns if you are in check
-    static isInCheck(API:ChessBoard) : boolean {
-        throw new Error("Function not implemented")
+    static isInCheck(API:Board) : boolean {
+        let isInCheck : boolean = false;
+        let foundLocation : Move | undefined;
+        const legalMoves : Move[] = API.getAllMoves();
+
+        // Get the opponents King color
+        if (!API.isWhiteToMove) {
+            foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "0101")
+        }else {
+            foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "1101")
+        }
+        // Get all legal moves
+        // Find if there is a move where the captured piece is the same as youre king
+         
+        console.log(foundLocation)
+
+        
+        // If there is one found then you are in check
+        if (foundLocation) {
+            isInCheck = true;
+        }
+
+        return isInCheck;
+    }
+
+    static isNextMoveInCheck(API : Board, move : Move) : boolean {
+        // Make the simulated move
+        API.makeMove(move);
+
+        // Check if the simulated moves makes you in check
+        const isInCheck : boolean = this.isInCheck(API);
+
+        // undo the simulated move
+        API.undoMove(move);
+
+        // return the simulated move check
+        return isInCheck;
     }
 }
 
