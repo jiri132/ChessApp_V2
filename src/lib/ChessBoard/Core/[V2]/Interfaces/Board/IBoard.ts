@@ -13,11 +13,11 @@ export interface IBoard {
     getLegalMoves() : Move[];
 
     // The move you want to play definitly
-    playMove() : void;
+    playMove(move : Move) : void;
 
     // Move players that will play the move but wont register it as a real move
     // Used for searching and deep searching
-    makeMove() : void;
-    undoMove() : void;
+    makeMove(move : Move) : void;
+    undoMove(move : Move) : void;
 
 }
