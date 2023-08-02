@@ -1,3 +1,4 @@
+import type BitArray from "$lib/BitArray/Core/BitArray";
 import type { BinaryDigit } from "$lib/BitArray/Core/Types/Binary/BinaryDigit.type";
 import type { ImyBot } from "$lib/ChessEngine/ImyBot";
 import Random from "$lib/Random/Random";
@@ -23,11 +24,8 @@ class Board implements IBoard {
     public readonly playerTypeWhite : PlayerType = PlayerType.Human;
     public readonly playerTypeBlack : PlayerType = PlayerType.Human;
 
-    public readonly whiteBot? : ImyBot;
-    public readonly blackBot? : ImyBot;
-
-    //public readonly collectionWhite: IPiece[] = [];
-    //public readonly collectionBlack: IPiece[] = [];
+    public whiteBot? : ImyBot;
+    public blackBot? : ImyBot;
 
     public readonly tiles: Tile[] = [];
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
@@ -46,7 +44,7 @@ class Board implements IBoard {
     }) as Move[]; // Cast the proxy to the desired type (Moves[]);
     
 
-    constructor(gameType : GameType = GameType.Human_VS_Human, bot1? : ImyBot, bot2? : ImyBot) {
+    constructor(gameType : GameType = GameType.Human_VS_Human, bot1? : string, bot2? : string) {
         const width : number = 8;
         const height : number = 8;
 
@@ -94,19 +92,11 @@ class Board implements IBoard {
                     piece = new Pawn(BoardLocation, color);
                 }
 
-                // if (piece) {
-                //     if (piece.color === "0") {
-                //         this.collectionWhite.push(piece);
-                //     }else if (piece.color === "1") {
-                //         this.collectionBlack.push(piece);
-                //     }
-                // }
-
                 const tile : Tile = new Tile(BoardLocation, piece)
                 this.tiles.push(tile);
             }
         }
-
+        
         switch (gameType) {
             case GameType.Bot_VS_Bot:
                 const bot1IsWhite : boolean = Random.getRandomBoolean();
@@ -118,16 +108,13 @@ class Board implements IBoard {
                 // Set the bot scripts
                 if (!bot1 || !bot2) {throw new Error("select 2 bots")}
 
-                
-
                 if (bot1IsWhite) {
-                    this.whiteBot = bot1;
-                    this.blackBot = bot2;
+                    this.setBot(bot1, "0")
+                    this.setBot(bot2, "1")
                 }else {
-                    this.whiteBot = bot2;
-                    this.blackBot = bot1;
+                    this.setBot(bot1, "1")
+                    this.setBot(bot2, "0")
                 }
-                this.playMove(this.whiteBot.Think())
 
                 break;
             case GameType.Human_VS_Bot:
@@ -137,20 +124,53 @@ class Board implements IBoard {
                 
                 if (humanIsWhite) {
                     this.playerTypeBlack =  PlayerType.Bot;
-                    this.blackBot = bot1;
+                    this.setBot(bot1, "1")
                 }else {
                     this.playerTypeWhite =  PlayerType.Bot;
-                    this.whiteBot = bot1;
-                    this.playMove(this.whiteBot.Think())
+                    this.setBot(bot1, "0");
                 }
                 
+                console.log(this.blackBot, this.whiteBot)
+
                 break;
             case GameType.Human_VS_Human:
                 break;
+            default: 
+                console.log("defaulted switch", gameType)
+                break;
         }
- 
-
     } 
+
+    private async setBot(botName : string, color : BinaryDigit) : Promise<boolean> {
+        try {
+            // Dynamically import the selected bot class based on its name
+            console.log(botName);
+            const BotClassModule = await import(`../../../../ChessEngine/bots/${botName}`);
+        
+            // Assuming that the bot class is the default export of the module
+            const BotClass = BotClassModule.default;
+        
+            // Perform any additional setup if needed
+            // For example, you might want to set the board or other parameters for the bot
+            console.log(`Selected bot: ${botName}`);
+        
+            // Create an instance of the selected bot class
+            if (color === "0") {
+              this.whiteBot = new BotClass(this) as ImyBot;
+              console.log(this.whiteBot);
+              this.playMove(this.whiteBot.Think())
+            } else {
+              this.blackBot = new BotClass(this) as ImyBot;
+              console.log(this.blackBot);
+            }
+        
+            return true;
+          } catch (error) {
+            console.error('Error loading selected bot:', error);
+            return false;
+          }
+       
+    }
 
     public getAllMoves() : Move[] {
         const allMoves : Move[] = [];
