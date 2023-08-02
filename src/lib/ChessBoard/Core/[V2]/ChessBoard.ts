@@ -25,7 +25,7 @@ class ChessBoard implements IChessBoard {
 
         if (this.Board.playedMoves.length > 0) {
             // create a played games object
-            const playedGame : PlayedGames = new PlayedGames(this.Board.playedMoves,PlayedGames.length);
+            const playedGame : PlayedGames = new PlayedGames(this.Board.playedMoves,PlayedGames.length,this.Board.playerTypeWhite,this.Board.playerTypeBlack,this.Board.outcome);
 
             //put everything into the list
             this.PlayedGames.push(playedGame);
