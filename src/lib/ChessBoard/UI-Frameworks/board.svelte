@@ -58,7 +58,6 @@
                 if (movingPiece) {
                     const move : Move = new Move(movingPiece,id,Board.Board);
                     movePiece(move);
-                    console.log(Board.Board.tiles)
                 }
                 reset();
                 return;
@@ -78,7 +77,6 @@
             if (movingPiece) {
                 const move : Move = new Move(movingPiece,id,Board.Board);
                 movePiece(move);
-                console.log(Board.Board.tiles)
             }
             
             reset();
