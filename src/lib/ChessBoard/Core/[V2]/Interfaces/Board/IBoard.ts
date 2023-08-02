@@ -1,14 +1,22 @@
+import type { ImyBot } from "$lib/ChessEngine/ImyBot";
 import type Tile from "../../Board/Tile/Tile";
 import type Move from "../../Move/Move";
+import type { PlayerType } from "../../Types/Players/Player.enum";
 import type { IPiece } from "./Pieces/IPieces";
 
 export interface IBoard {
     isWhiteToMove : boolean;
     
+    whiteBot? : ImyBot;
+    blackBot? : ImyBot;
+
     readonly tiles : Tile[];
     readonly playedMoves : Move[];
-    readonly collectionWhite : IPiece[];
-    readonly collectionBlack : IPiece[];
+
+    readonly playerTypeWhite : PlayerType;
+    readonly playerTypeBlack : PlayerType;
+
+    
     // Get you're legal moves on the board
     getLegalMoves() : Move[];
 
