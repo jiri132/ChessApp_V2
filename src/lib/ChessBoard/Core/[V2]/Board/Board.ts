@@ -213,6 +213,22 @@ class Board implements IBoard {
 
         return legalMoves;
     }
+    public getAllOpponentsMoves() : Move[] {
+        const allMoves : Move[] = [];
+        const color : BinaryDigit = this.isWhiteToMove ? "1" : "0"
+        
+        this.tiles.forEach((tile : Tile) => {
+            if (!tile.piece) { return;}
+
+            if (tile.piece.color !== color) {return;}
+
+            tile.piece.getLegalMoves(this).forEach((move : Move) => {
+                allMoves.push(move);
+            })
+        })
+
+        return allMoves;
+    }
 
     public playMove(move : Move): void {
         const allMoves : Move[] = this.getAllMoves();
@@ -225,18 +241,13 @@ class Board implements IBoard {
 
         this.playedMoves.push(move);
 
-        if (outcome === undefined) {
-            console.log("x");
-            
-            
-        }
         setTimeout(() => {
             let move : Move;
 
-            if (this.isWhiteToMove && this.whiteBot !== undefined) {
+            if (this.isWhiteToMove && this.whiteBot !== undefined && outcome === undefined) {
                 move = this.whiteBot.Think();
                 this.playMove(move);
-            } else if (!this.isWhiteToMove && this.blackBot !== undefined) {
+            } else if (!this.isWhiteToMove && this.blackBot !== undefined && outcome === undefined) {
                 move = this.blackBot.Think();
                 this.playMove(move);
             }     
