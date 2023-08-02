@@ -3,7 +3,7 @@
     import { GameType } from "../Core/[V2]/Types/Game/game.type";
     import { writable, type Writable } from 'svelte/store';
 
-    export let Board : ChessBoard;
+    export let board : ChessBoard;
 
     const gameTypesArray = Object.keys(GameType)
 
@@ -19,31 +19,55 @@
     function updateSelectedGameType(event : any) {
         const newSelectedType = event.target.value;
         selectedGameType.set(newSelectedType);
+
+        // Add the new front end selection
+        switch(selectedType) {
+            case GameType.Human_VS_Human:
+            case GameType.Human_VS_Bot:
+            case GameType.Bot_VS_Bot:
+        }
     }
 
 </script>
 
 <div id="settings" class="infoStack">
-    <select id="playStyleSelection" on:change={updateSelectedGameType}>
-        {#each gameTypesArray as type}
-            <option value={type}>{type.replaceAll("_", " ")}</option> 
-        {/each}
-    </select>
-
-    {#if (selectedType === GameType.Human_VS_Bot)} 
-        <select id="bot1Selection">
-            {#each Board.baseBotFileNames as botNames}
+    <div>
+        style:
+        <select id="playStyleSelection" on:change={updateSelectedGameType}>
+            {#each gameTypesArray as type}
+                <option value={type.replaceAll("_", " ")}>{type.replaceAll("_", " ")}</option> 
+            {/each}
+        </select>
+    </div>
+    <div>
+        bot 1: 
+        <select id="bot1Selection" bind:value={selectedBot1}>
+            {#each board.baseBotFileNames as botNames}
                 <option value={botNames}>{botNames}</option> 
             {/each}
         </select>
-    {/if}
-
-    <p>Selected Game Type: {selectedType}</p>
+    </div>
+    <div>
+        bot 2: 
+        <select id="bot2Selection" bind:value={selectedBot2}>
+            {#each board.baseBotFileNames as botNames}
+                <option value={botNames}>{botNames}</option> 
+            {/each}
+        </select>
+    </div>
+    
     
 
-    <button on:click={(e) => {Board.newGame(selectedType)}}>new game</button>
+    <button on:click={(e) => {board.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
 </div>
 
 <style lang="scss">
-
+    #settings {
+        color: black;
+        justify-content: center;
+        width: 120%;
+        select {
+            max-width: fit-content;
+        }
+    }
 </style>
