@@ -91,10 +91,6 @@
         possibleMoves = [];
     }
 
-    function setPlayStyle(gameType : GameType, bot1? : ImyBot, bot2? : ImyBot) {
-        Board.newGame(gameType, bot1,bot2)
-    }
-
 
     
     // When the class gets instantiated
@@ -109,7 +105,7 @@
 
 
 <div class="visualContainer">
-    <Settings Board={Board} />
+    <Settings board={Board} />
     <div class="ChessBoard">
         {#each Board.Board.tiles as tile}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
