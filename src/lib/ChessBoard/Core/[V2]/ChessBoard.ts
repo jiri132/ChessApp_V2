@@ -4,7 +4,7 @@ import PlayedGames from "./PlayedGames/PlayedGames";
 import BoardVisualHelper from "./Helpers/BoardVisualHelper";
 import type { IPlayedGames } from "./Interfaces/PlayedGames/IPlayedGames";
 import type { ImyBot } from "$lib/ChessEngine/ImyBot";
-import { GameType } from "./Types/Game/game.type";
+import { GameType } from "./Types/Game/game.enum";
 
 class ChessBoard implements IChessBoard {
 

@@ -9,7 +9,7 @@
     import DisplayMoves from "./displayMoves.svelte";
     import Settings from "./settings.svelte";
     import type { ImyBot } from "$lib/ChessEngine/ImyBot";
-    import type { GameType } from "../Core/[V2]/Types/Game/game.type";
+    import type { GameType } from "../Core/[V2]/Types/Game/game.enum";
 
     let Board : ChessBoard;
     

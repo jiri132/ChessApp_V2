@@ -7,7 +7,7 @@ import BoardVisualHelper from "../Helpers/BoardVisualHelper";
 import type { IBoard } from "../Interfaces/Board/IBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
-import { GameType } from "../Types/Game/game.type";
+import { GameType } from "../Types/Game/game.enum";
 import { PlayerType } from "../Types/Players/Player.enum";
 import Bishop from "./Pieces/Piece.bishop";
 import King from "./Pieces/Piece.king";
@@ -145,7 +145,7 @@ class Board implements IBoard {
         try {
             // Dynamically import the selected bot class based on its name
             console.log(botName);
-            const BotClassModule = await import(`../../../../ChessEngine/bots/${botName}`);
+            const BotClassModule = await import( `../../../../ChessEngine/bots/${botName}` /* @vite-ignore */);
         
             // Assuming that the bot class is the default export of the module
             const BotClass = BotClassModule.default;
@@ -247,7 +247,7 @@ class Board implements IBoard {
                 this.playMove(move);
             }     
 
-        }, 1000);
+        }, 50);
         
     }
     

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type ChessBoard from "../Core/[V2]/ChessBoard";
-    import { GameType } from "../Core/[V2]/Types/Game/game.type";
+    import { GameType } from "../Core/[V2]/Types/Game/game.enum";
     import { writable, type Writable } from 'svelte/store';
 
     export let board : ChessBoard;
