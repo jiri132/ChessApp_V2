@@ -1,29 +1,28 @@
-import { bounceIn } from "svelte/easing";
 import Board from "./Board/Board";
 import type { IChessBoard } from "./Interfaces/IChessBoard";
 import PlayedGames from "./PlayedGames/PlayedGames";
 import BoardVisualHelper from "./Helpers/BoardVisualHelper";
-import { json } from "@sveltejs/kit";
 import type { IPlayedGames } from "./Interfaces/PlayedGames/IPlayedGames";
+import type { ImyBot } from "$lib/ChessEngine/ImyBot";
+import { GameType } from "./Types/Game/game.type";
 
 class ChessBoard implements IChessBoard {
 
 
     public Board: Board = new Board();
-    
 
+    public baseBotFileNames : string[] = ['devBot', 'myBot'];
 
     public readonly PlayedGames : PlayedGames[] = [];
 
 
-
     constructor() {
         this.PlayedGames = this.GetPreviousGamesFromLocalStorage();
-        console.log(this.PlayedGames)
-        this.newGame();
     }
 
-    public newGame() {
+    public newGame(gameType : GameType = GameType.Human_VS_Human, bot1? : string, bot2? : string) {
+        console.log("started new game type:" ,gameType)
+
         if (this.Board.playedMoves.length > 0) {
             // create a played games object
             const playedGame : PlayedGames = new PlayedGames(this.Board.playedMoves,PlayedGames.length);
@@ -34,10 +33,10 @@ class ChessBoard implements IChessBoard {
         }
 
         // Create new board
-        this.Board = new Board();
+        this.Board = new Board(gameType, bot1,bot2);
 
-        BoardVisualHelper.RenderEmptyPlayedMovesContainer();
         BoardVisualHelper.RenderAllTiles(this.Board);
+        BoardVisualHelper.RenderEmptyPlayedMovesContainer();
     }
 
     private SaveToLocalStorage() : void {
