@@ -191,7 +191,27 @@ class BoardHelper {
     // }
 
     static SolveOutCome(API: Board) : outcome {
-        
+        function InCheck(API:Board) : boolean {
+            let isInCheck : boolean = false;
+            let foundLocation : Move | undefined;
+            const legalMoves : Move[] = API.getAllOpponentsMoves();
+    
+            // Get the opponents King color
+            if (API.isWhiteToMove) {
+                foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "0101")
+            }else {
+                foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "1101")
+            }
+             
+            // If there is one found then you are in check
+            if (foundLocation) {
+                isInCheck = true;
+            }
+    
+            return isInCheck;
+        }
+
+
         // When you do not have sufficient pieces it is automatically a draw
         if (!this.hasSufficientPieces(API)) {
             return outcome.InsufficientMaterial;
@@ -207,15 +227,14 @@ class BoardHelper {
         //     return outcome.ThreeFoldRepetition;
         // }
 
-        console.log(this.isInCheck(API));
 
         // When you don't have any moves to prevent the check then the game ends in an checkmate
-        if (this.isInCheck(API) && API.getLegalMoves().length === 0) {
+        if (InCheck(API) && API.getLegalMoves().length === 0) {
             return outcome.Checkmate;
         }
 
         // When you don't have any available moves and you are not in check it is a stalemate
-        if (!this.isInCheck(API) && API.getLegalMoves().length === 0) {
+        if (!InCheck(API) && API.getLegalMoves().length === 0) {
             return outcome.Stalemate;
         }
     
