@@ -6,6 +6,10 @@
     import type { BoardLocation } from "../Core/[V2]/Types/Location/Location.type";
     import type { IPiece } from "../Core/[V2]/Interfaces/Board/Pieces/IPieces";
     import Move from "../Core/[V2]/Move/Move";
+    import DisplayMoves from "./displayMoves.svelte";
+    import Settings from "./settings.svelte";
+    import type { ImyBot } from "$lib/ChessEngine/ImyBot";
+    import type { GameType } from "../Core/[V2]/Types/Game/game.type";
 
     let Board : ChessBoard;
     
@@ -54,6 +58,7 @@
                 if (movingPiece) {
                     const move : Move = new Move(movingPiece,id,Board.Board);
                     movePiece(move);
+                    console.log(Board.Board.tiles)
                 }
                 reset();
                 return;
@@ -73,6 +78,7 @@
             if (movingPiece) {
                 const move : Move = new Move(movingPiece,id,Board.Board);
                 movePiece(move);
+                console.log(Board.Board.tiles)
             }
             
             reset();
@@ -85,16 +91,16 @@
         possibleMoves = [];
     }
 
-    function setPlayStyle() {
-        //playstyle = newPlayStyle;
-        //Board.startGame(playstyle);
+    function setPlayStyle(gameType : GameType, bot1? : ImyBot, bot2? : ImyBot) {
+        Board.newGame(gameType, bot1,bot2)
     }
+
+
     
     // When the class gets instantiated
     $: {
         Board = new ChessBoard();
     }
-
     // When the class is done loading
     onMount(() => {
         BoardVisualHelper.RenderAllTiles(Board.Board);
@@ -103,12 +109,7 @@
 
 
 <div class="visualContainer">
-    <div class="infoStack">
-        <button on:click={(e) => {}}>Human vs MyBot</button>
-        <button on:click={(e) => {}}>MyBot vs MyBot</button>
-        <button on:click={(e) => {}}>MyBot vs DevBot</button>
-        <button on:click={(e) => {Board.newGame()}}>new game</button>
-    </div>
+    <Settings Board={Board} />
     <div class="ChessBoard">
         {#each Board.Board.tiles as tile}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -121,12 +122,7 @@
             </div>
         {/each}
     </div>
-    <div class="infoStack">
-        <div style="color: black;">Played Moves</div>
-        <div id="movesContainer" class="moves">
-
-        </div>
-    </div>
+    <DisplayMoves />
 </div>
 <style lang="scss">
     
@@ -139,35 +135,9 @@
         border-radius: 10px;
         width: 100%;
         max-width: 900px;
-        .infoStack {
-            width: 100%;
-            border-radius: 10px;
-            background-color: rgb(197, 197, 197);
-            display: flex;
-            flex-direction: column;
-            row-gap: 10px;
-            max-height: 480px;
-            padding: 5px;
-            text-align: center;
-
-            button {
-                width: 100%;
-            }
-        }
+       
         
-        .moves {
-            color: black;
-            overflow-y: scroll;
-            display: grid;
-            grid-template-rows: repeat(2, 0fr);
-            grid-template-columns: repeat(3,1fr);
-            text-align:end;
-            padding-right: 10px;
-            //justify-items: center;
-        }
-        .moves::-webkit-scrollbar {
-            width: 0px;
-        }
+        
         
 
         .ChessBoard {
