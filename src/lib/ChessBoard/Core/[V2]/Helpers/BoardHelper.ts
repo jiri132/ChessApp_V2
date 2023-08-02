@@ -70,10 +70,10 @@ class BoardHelper {
         const legalMoves : Move[] = API.getAllMoves();
 
         // Get the opponents King color
-        if (!API.isWhiteToMove) {
-            foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "0101")
-        }else {
+        if (API.isWhiteToMove) {
             foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "1101")
+        }else {
+            foundLocation = legalMoves.find((item : Move) => item.capturedPiece?.data === "0101")
         }
          
         // If there is one found then you are in check
@@ -99,21 +99,33 @@ class BoardHelper {
     }
 
     static hasSufficientPieces(API : Board) : boolean {
-        const pieces : IPiece[] = [];
+        const whitePieces : IPiece[] = [];
+        const blackPieces : IPiece[] = [];
 
-        // Push all pieces into the array 
+        // Push all pieces into the array sorted on color 
         API.tiles.forEach((tile : Tile) => {
             if (!tile.piece) { return;}
 
-            // Push the pieces that belong to the player who is currently playing
-            if (API.isWhiteToMove && tile.piece.color === "0") {
-                pieces.push(tile.piece);
-            } else if (!API.isWhiteToMove && tile.piece.color === "1") {
-                pieces.push(tile.piece);
-            }   
+            if(tile.piece.color === "0") {
+                whitePieces.push(tile.piece)
+            }else {
+                blackPieces.push(tile.piece)
+            }
         })
 
-        
+        // Calculate all the sufficient pieces
+        const whiteSufficient : boolean = this.solveSufficientPieces(whitePieces);
+        const blackSufficient : boolean = this.solveSufficientPieces(blackPieces);
+
+        // Return true if one of them is sufficient of delivering checkmate
+        if (whiteSufficient || blackSufficient) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static solveSufficientPieces(pieces : IPiece[]) : boolean {
         const pieceCounts: Record<BinaryGroup<3>, number> = {
             "000": 0, // Pawn
             "001": 0, // Bishop
@@ -135,7 +147,7 @@ class BoardHelper {
         if ((pieceCounts["101"] === 1 && pieceCounts["100"] >= 1) ||                            // King + Queen
             (pieceCounts["101"] === 1 && pieceCounts["011"] >= 1) ||                            // King + Rook
             (pieceCounts["101"] === 1 && pieceCounts["001"] >= 2) ||                            // King + 2 Bishops
-            (pieceCounts["010"] === 1 && pieceCounts["010"] >= 3) ||                            // King + 3 Knights 
+            (pieceCounts["101"] === 1 && pieceCounts["010"] >= 3) ||                            // King + 3 Knights 
             (pieceCounts["101"] === 1 && pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1)    // King + Bishop + Knight
             ) {
             return true;
@@ -144,6 +156,7 @@ class BoardHelper {
 
         return false;
     }
+
     static FiftyMovesPast(API : Board) : boolean {
 
         // Find the last pawn move
@@ -193,6 +206,8 @@ class BoardHelper {
         // if (this.ThreeFoldRepetition(API)) {
         //     return outcome.ThreeFoldRepetition;
         // }
+
+        console.log(this.isInCheck(API));
 
         // When you don't have any moves to prevent the check then the game ends in an checkmate
         if (this.isInCheck(API) && API.getLegalMoves().length === 0) {
