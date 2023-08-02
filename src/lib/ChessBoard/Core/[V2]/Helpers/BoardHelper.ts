@@ -1,9 +1,12 @@
 
+import type { BinaryGroup } from "$lib/BitArray/Core/Types/Binary/BinaryGroup.type";
 import type Board from "../Board/Board";
 import type King from "../Board/Pieces/Piece.king";
+import type Tile from "../Board/Tile/Tile";
 import type ChessBoard from "../ChessBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
+import { outcome } from "../Types/Game/outcome.enum";
 import type { BoardLocation } from "../Types/Location/Location.type";
 import type { file } from "../Types/Location/file.type";
 import type { rank } from "../Types/Location/rank.type";
@@ -94,6 +97,116 @@ class BoardHelper {
         // return the simulated move check
         return isInCheck;
     }
+
+    static hasSufficientPieces(API : Board) : boolean {
+        const pieces : IPiece[] = [];
+
+        // Push all pieces into the array 
+        API.tiles.forEach((tile : Tile) => {
+            if (!tile.piece) { return;}
+
+            // Push the pieces that belong to the player who is currently playing
+            if (API.isWhiteToMove && tile.piece.color === "0") {
+                pieces.push(tile.piece);
+            } else if (!API.isWhiteToMove && tile.piece.color === "1") {
+                pieces.push(tile.piece);
+            }   
+        })
+
+        
+        const pieceCounts: Record<BinaryGroup<3>, number> = {
+            "000": 0, // Pawn
+            "001": 0, // Bishop
+            "010": 0, // Knight
+            "011": 0, // Rook
+            "100": 0, // Queen
+            "101": 0, // King
+            "110": 0, // Nothing value needs to exist because of type
+            "111": 0  // Nothing value needs to exist because of type
+        };
+
+        // Count the occurrences of each piece
+        pieces.forEach((piece) => {
+            pieceCounts[piece.piece]++;
+        });
+
+        // Check if there is sufficient material based on your conditions
+        // For example, you might consider that having at least one King and one other piece (e.g., Queen) is sufficient material
+        if ((pieceCounts["101"] === 1 && pieceCounts["100"] >= 1) ||                            // King + Queen
+            (pieceCounts["101"] === 1 && pieceCounts["011"] >= 1) ||                            // King + Rook
+            (pieceCounts["101"] === 1 && pieceCounts["001"] >= 2) ||                            // King + 2 Bishops
+            (pieceCounts["010"] === 1 && pieceCounts["010"] >= 3) ||                            // King + 3 Knights 
+            (pieceCounts["101"] === 1 && pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1)    // King + Bishop + Knight
+            ) {
+            return true;
+        }
+
+
+        return false;
+    }
+    static FiftyMovesPast(API : Board) : boolean {
+
+        // Find the last pawn move
+        let lastMovedPawn : number | undefined = API.playedMoves.findLastIndex((item : Move) => item.movingPiece.piece === "000");
+        if (!lastMovedPawn) {lastMovedPawn = 0;}
+
+        // Calculate the difference between PlayedMoves and pawnMove
+        const movesBetween : number =  API.playedMoves.length - lastMovedPawn;
+
+        // Check if it is above the 50 moves threshold and return true or false
+        if (movesBetween >= 50) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // TODO: Implement threeFoldRepetition
+    // static ThreeFoldRepetition(API : Board) : boolean {
+    //     const playedMoves : Move[] = API.playedMoves;
+
+    //     if (playedMoves.length < 3) {
+    //         // Not enough moves for threefold repetition
+    //         return false;
+    //       }
+      
+    //       // Compare the last move with the previous two moves
+    //       const lastMove = playedMoves[playedMoves.length - 1];
+    //       const secondLastMove = playedMoves[playedMoves.length - 2];
+    //       const thirdLastMove = playedMoves[playedMoves.length - 3];
+      
+    // }
+
+    static SolveOutCome(API: Board) : outcome {
+        
+        // When you do not have sufficient pieces it is automatically a draw
+        if (!this.hasSufficientPieces(API)) {
+            return outcome.InsufficientMaterial;
+        }
+
+        // When there hasn't bee a pawn move in 50 moves this will get fired
+        if (this.FiftyMovesPast(API)) {
+            return outcome.FiftyMoveRule;
+        }
+
+        // TODO: Implement threeFoldRepetition
+        // if (this.ThreeFoldRepetition(API)) {
+        //     return outcome.ThreeFoldRepetition;
+        // }
+
+        // When you don't have any moves to prevent the check then the game ends in an checkmate
+        if (this.isInCheck(API) && API.getLegalMoves().length === 0) {
+            return outcome.Checkmate;
+        }
+
+        // When you don't have any available moves and you are not in check it is a stalemate
+        if (!this.isInCheck(API) && API.getLegalMoves().length === 0) {
+            return outcome.Stalemate;
+        }
+    
+
+        return undefined!;
+    } 
 }
 
 export default BoardHelper;
