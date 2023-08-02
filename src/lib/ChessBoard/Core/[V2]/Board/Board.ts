@@ -1,4 +1,3 @@
-import type BitArray from "$lib/BitArray/Core/BitArray";
 import type { BinaryDigit } from "$lib/BitArray/Core/Types/Binary/BinaryDigit.type";
 import type { ImyBot } from "$lib/ChessEngine/ImyBot";
 import Random from "$lib/Random/Random";
@@ -8,6 +7,7 @@ import type { IBoard } from "../Interfaces/Board/IBoard";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
 import type Move from "../Move/Move";
 import { GameType } from "../Types/Game/game.enum";
+import { outcome } from "../Types/Game/outcome.enum";
 import { PlayerType } from "../Types/Players/Player.enum";
 import Bishop from "./Pieces/Piece.bishop";
 import King from "./Pieces/Piece.king";
@@ -21,11 +21,13 @@ class Board implements IBoard {
 
     public isWhiteToMove : boolean = true;
 
-    public readonly playerTypeWhite : PlayerType = PlayerType.Human;
-    public readonly playerTypeBlack : PlayerType = PlayerType.Human;
-
     public whiteBot? : ImyBot;
     public blackBot? : ImyBot;
+
+    public outcome : outcome = undefined!;
+
+    public readonly playerTypeWhite : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
+    public readonly playerTypeBlack : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
 
     public readonly tiles: Tile[] = [];
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
@@ -37,6 +39,10 @@ class Board implements IBoard {
                 // Call the RenderPlayedMove & singleContainerItem function passing the value and the current ChessBoard API
                 BoardVisualHelper.RenderSinglePlayedMoveInContainer(this)
                 BoardVisualHelper.RenderPlayedMove(this,target[value-1] )
+
+                // Call the SolveOutcome form the board helper to check if the game is done
+                this.outcome = BoardHelper.SolveOutCome(this);
+                if (outcome) {console.log(this.outcome)}
             }
 
             return Reflect.set(target, property, value);
@@ -102,8 +108,8 @@ class Board implements IBoard {
                 const bot1IsWhite : boolean = Random.getRandomBoolean();
 
                 // Set the player types
-                this.playerTypeBlack = PlayerType.Bot;  
-                this.playerTypeWhite = PlayerType.Bot
+                this.playerTypeBlack = `${PlayerType.Bot} ${bot1}`;  
+                this.playerTypeWhite = `${PlayerType.Bot} ${bot2}`;
 
                 // Set the bot scripts
                 if (!bot1 || !bot2) {throw new Error("select 2 bots")}
@@ -123,10 +129,10 @@ class Board implements IBoard {
                 if (!bot1) {throw new Error("select a bot")}
                 
                 if (humanIsWhite) {
-                    this.playerTypeBlack =  PlayerType.Bot;
+                    this.playerTypeBlack =  `${PlayerType.Bot} ${bot1}`;
                     this.setBot(bot1, "1")
                 }else {
-                    this.playerTypeWhite =  PlayerType.Bot;
+                    this.playerTypeWhite =  `${PlayerType.Bot} ${bot1}`;
                     this.setBot(bot1, "0");
                 }
                 
@@ -211,32 +217,20 @@ class Board implements IBoard {
     public playMove(move : Move): void {
         const allMoves : Move[] = this.getAllMoves();
         const foundMove : Move | undefined = allMoves.find((item : Move) => item.from === move.from && item.to === move.to);
-        console.log(allMoves)
-        //console.log(this.tiles)
-        console.log(foundMove, move)
         if (foundMove === undefined) {throw new Error("Played illegal move")}
 
         this.isWhiteToMove = !this.isWhiteToMove
 
-        const from_tile : Tile = this.tiles[move.from_index];
-        const to_tile : Tile = this.tiles[move.to_index];
-
-        // Set the from location to undefined
-        from_tile.piece = undefined;
-        // Set the new piece on the to tile
-        to_tile.piece = move.movingPiece;
-       
-        if (move.capturedPiece) {
-            move.capturedPiece.location = null!
-        }
-
-        // Set th moving piece his location to the new location
-        move.movingPiece.location = move.to;
+        this.movePiece(move);
 
         this.playedMoves.push(move);
 
+        if (outcome === undefined) {
+            console.log("x");
+            
+            
+        }
         setTimeout(() => {
-            console.log(this.isWhiteToMove)
             let move : Move;
 
             if (this.isWhiteToMove && this.whiteBot !== undefined) {
@@ -248,6 +242,7 @@ class Board implements IBoard {
             }     
 
         }, 50);
+        
         
     }
     

@@ -13,8 +13,8 @@ export interface IBoard {
     readonly tiles : Tile[];
     readonly playedMoves : Move[];
 
-    readonly playerTypeWhite : PlayerType;
-    readonly playerTypeBlack : PlayerType;
+    readonly playerTypeWhite : `${PlayerType} ${string}`;
+    readonly playerTypeBlack : `${PlayerType} ${string}`;
 
     
     // Get you're legal moves on the board
