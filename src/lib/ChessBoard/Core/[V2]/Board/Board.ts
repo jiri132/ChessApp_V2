@@ -26,8 +26,8 @@ class Board implements IBoard {
     public readonly whiteBot? : ImyBot;
     public readonly blackBot? : ImyBot;
 
-    public readonly collectionWhite: IPiece[] = [];
-    public readonly collectionBlack: IPiece[] = [];
+    //public readonly collectionWhite: IPiece[] = [];
+    //public readonly collectionBlack: IPiece[] = [];
 
     public readonly tiles: Tile[] = [];
     public readonly playedMoves: Move[] = new Proxy<Move[]>([], {
@@ -49,6 +49,8 @@ class Board implements IBoard {
     constructor(gameType : GameType = GameType.Human_VS_Human, bot1? : ImyBot, bot2? : ImyBot) {
         const width : number = 8;
         const height : number = 8;
+
+        this.isWhiteToMove = true;
 
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
@@ -92,13 +94,13 @@ class Board implements IBoard {
                     piece = new Pawn(BoardLocation, color);
                 }
 
-                if (piece) {
-                    if (piece.color === "0") {
-                        this.collectionWhite.push(piece);
-                    }else {
-                        this.collectionBlack.push(piece);
-                    }
-                }
+                // if (piece) {
+                //     if (piece.color === "0") {
+                //         this.collectionWhite.push(piece);
+                //     }else if (piece.color === "1") {
+                //         this.collectionBlack.push(piece);
+                //     }
+                // }
 
                 const tile : Tile = new Tile(BoardLocation, piece)
                 this.tiles.push(tile);
@@ -114,25 +116,24 @@ class Board implements IBoard {
                 this.playerTypeWhite = PlayerType.Bot
 
                 // Set the bot scripts
-                if (!bot1 || !bot2) {throw new Error("select 2 bot")}
+                if (!bot1 || !bot2) {throw new Error("select 2 bots")}
 
                 
 
                 if (bot1IsWhite) {
                     this.whiteBot = bot1;
                     this.blackBot = bot2;
-                    this.playMove(this.whiteBot.Think());
                 }else {
                     this.whiteBot = bot2;
                     this.blackBot = bot1;
-                    this.playMove(this.blackBot.Think());
                 }
+                this.playMove(this.whiteBot.Think())
 
                 break;
             case GameType.Human_VS_Bot:
                 const humanIsWhite : boolean = Random.getRandomBoolean();
                 
-                if (!bot1) {throw new Error("select one bot")}
+                if (!bot1) {throw new Error("select a bot")}
                 
                 if (humanIsWhite) {
                     this.playerTypeBlack =  PlayerType.Bot;
@@ -140,7 +141,7 @@ class Board implements IBoard {
                 }else {
                     this.playerTypeWhite =  PlayerType.Bot;
                     this.whiteBot = bot1;
-                    this.playMove(this.whiteBot.Think());
+                    this.playMove(this.whiteBot.Think())
                 }
                 
                 break;
@@ -153,60 +154,92 @@ class Board implements IBoard {
 
     public getAllMoves() : Move[] {
         const allMoves : Move[] = [];
+        const color : BinaryDigit = this.isWhiteToMove ? "0" : "1"
+        
+        this.tiles.forEach((tile : Tile) => {
+            if (!tile.piece) { return;}
 
-        if (this.isWhiteToMove) {
-            this.collectionWhite.forEach((piece : IPiece) => {
-                piece.getLegalMoves(this).forEach((move : Move) => {
-                    allMoves.push(move)
-                })
-            });
-        }else {
-            this.collectionBlack.forEach((piece : IPiece) => {
-                piece.getLegalMoves(this).forEach((move : Move) => {
-                    allMoves.push(move)
-                })
-            });
-        }
+            if (tile.piece.color !== color) {return;}
+
+            tile.piece.getLegalMoves(this).forEach((move : Move) => {
+                allMoves.push(move);
+            })
+        })
 
         return allMoves;
     }
 
     public getLegalMoves(): Move[] {
         const legalMoves : Move[] = [];
+        const color : BinaryDigit = this.isWhiteToMove ? "0" : "1"
+        
+        this.tiles.forEach((tile : Tile) => {
+            if (!tile.piece) { return;}
 
-        if (this.isWhiteToMove) {
-            this.collectionWhite.forEach((piece : IPiece) => {
-                piece.getLegalMoves(this).forEach((move : Move) => {
-                    // Check if the move is in check or not else don't use this 
-                    if (BoardHelper.isNextMoveInCheck(this,move)) {return;}
-                    legalMoves.push(move)
-                })
-            });
-        }else {
-            this.collectionBlack.forEach((piece : IPiece) => {
-                piece.getLegalMoves(this).forEach((move : Move) => {
-                    // Check if the move is in check or not else don't use this 
-                    if (BoardHelper.isNextMoveInCheck(this,move)) {return;}
-                    legalMoves.push(move) 
-                })
-            });
-        }
+            if (tile.piece.color !== color) {return;}
+
+            tile.piece.getLegalMoves(this).forEach((move : Move) => {
+                if (BoardHelper.isNextMoveInCheck(this,move)) {return;}
+                legalMoves.push(move);
+            })
+        })
+        
 
         return legalMoves;
     }
 
     public playMove(move : Move): void {
-        this.movePiece(move);
-        this.playedMoves.push(move);
+        const allMoves : Move[] = this.getAllMoves();
+        const foundMove : Move | undefined = allMoves.find((item : Move) => item.from === move.from && item.to === move.to);
+        console.log(allMoves)
+        //console.log(this.tiles)
+        console.log(foundMove, move)
+        if (foundMove === undefined) {throw new Error("Played illegal move")}
+
         this.isWhiteToMove = !this.isWhiteToMove
+
+        const from_tile : Tile = this.tiles[move.from_index];
+        const to_tile : Tile = this.tiles[move.to_index];
+
+        // Set the from location to undefined
+        from_tile.piece = undefined;
+        // Set the new piece on the to tile
+        to_tile.piece = move.movingPiece;
+       
+        if (move.capturedPiece) {
+            move.capturedPiece.location = null!
+        }
+
+        // Set th moving piece his location to the new location
+        move.movingPiece.location = move.to;
+
+        this.playedMoves.push(move);
+
+        setTimeout(() => {
+            console.log(this.isWhiteToMove)
+            let move : Move;
+
+            if (this.isWhiteToMove && this.whiteBot !== undefined) {
+                move = this.whiteBot.Think();
+                this.playMove(move);
+            } else if (!this.isWhiteToMove && this.blackBot !== undefined) {
+                move = this.blackBot.Think();
+                this.playMove(move);
+            }     
+
+        }, 1000);
+        
     }
     
     public makeMove(move : Move): void {
         // else move everything and swap the to playing black
-        this.movePiece(move);
         this.isWhiteToMove = !this.isWhiteToMove
+        
+        this.movePiece(move);
     }
     public undoMove(move : Move): void {
+        this.isWhiteToMove = !this.isWhiteToMove;
+        
         const from_tile : Tile = this.tiles[move.from_index];
         const to_tile : Tile = this.tiles[move.to_index];
 
@@ -214,11 +247,8 @@ class Board implements IBoard {
         from_tile.piece = move.movingPiece;
  
         move.movingPiece.location = move.from;
-        if (move.capturedPiece) {
-            move.capturedPiece.location = move.to;
-        }
 
-        this.isWhiteToMove = !this.isWhiteToMove;
+        
     }
 
     private movePiece(move : Move) : void {
@@ -230,10 +260,6 @@ class Board implements IBoard {
         from_tile.piece = undefined;
         // Set the new piece on the to tile
         to_tile.piece = move.movingPiece;
-
-        if (move.capturedPiece) {
-            move.capturedPiece.location = null!
-        }
 
         // Set th moving piece his location to the new location
         move.movingPiece.location = move.to;
