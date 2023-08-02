@@ -1,14 +1,16 @@
 import type { IPlayedGames } from "../Interfaces/PlayedGames/IPlayedGames";
 import type Move from "../Move/Move";
+import type { outcome } from "../Types/Game/outcome.enum";
+import type { PlayerType } from "../Types/Players/Player.enum";
 
 class PlayedGames implements IPlayedGames {
     public readonly Game_PlayedMoves: Move[] = [];
     public readonly Game_ID: number = 0;
-    public readonly Game_WhitePlayer: undefined;
-    public readonly Game_BlackPlayer: undefined;
-    public readonly Game_Outcome: undefined;
+    public readonly Game_WhitePlayer: string;
+    public readonly Game_BlackPlayer: string;
+    public readonly Game_Outcome: outcome;
 
-    constructor(PlayedMoves : Move[], ID  :number, whitePlayer? : undefined, blackPlayer? : undefined, outcome? :undefined) {
+    constructor(PlayedMoves : Move[], ID  :number, whitePlayer : string, blackPlayer : string, outcome : outcome) {
         this.Game_PlayedMoves = PlayedMoves;
         this.Game_ID = ID;
         
