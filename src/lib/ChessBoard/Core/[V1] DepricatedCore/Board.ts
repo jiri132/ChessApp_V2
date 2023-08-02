@@ -11,10 +11,10 @@ import type { playedMoves } from "./Moves/playedMoves.type";
 import { pieceTable } from "./Piece/enum/Pieces.table.enum";
 import type { IPiece } from "./Piece/IPiece";
 import Chess_API_Visuals from "../API/Visuals/Board.API.Visuals";
-import myBot from "$lib/ChessEngine/devBot";
+import myBot from "$lib/ChessEngine/bots/devBot";
 import type { ImyBot } from "$lib/ChessEngine/ImyBot";
 import { playStyles } from "./PlayStyles/Board.PlayStyles.enum";
-import devBot from "$lib/ChessEngine/devBot";
+import devBot from "$lib/ChessEngine/bots/devBot";
 import BoardHelper from "./BoardHelper";
 
 class ChessBoard implements IBoard {
