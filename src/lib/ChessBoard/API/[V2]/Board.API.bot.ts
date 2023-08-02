@@ -1,11 +1,13 @@
 import type Board from "$lib/ChessBoard/Core/[V2]/Board/Board";
+import type Move from "$lib/ChessBoard/Core/[V2]/Move/Move";
 
-class Chess_API_Bots {
+abstract class Chess_API_Bots {
     public readonly API : Board;
-
     constructor(board : Board) {
         this.API = board;
     }
+
+    abstract Think() : Move;
 }
 
 
