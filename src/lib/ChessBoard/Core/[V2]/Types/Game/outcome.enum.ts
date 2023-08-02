@@ -1,7 +1,7 @@
 export enum outcome {
-    Checkmate,
-    Stalemate,
-    ThreeFoldRepetition,
-    FiftyMoveRule,
-    InsufficientMaterial,
+    Checkmate = "Checkmate",
+    Stalemate = "Stalemate",
+    ThreeFoldRepetition = "Three fold repetition",
+    FiftyMoveRule = "Fifty move rule",
+    InsufficientMaterial = "Insufficient pieces",
 }

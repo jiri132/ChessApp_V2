@@ -1,4 +1,4 @@
 export enum PlayerType {
-    Human,
-    Bot
+    Human = "Human",
+    Bot = "Bot"
 }
