@@ -35,7 +35,7 @@ class Move implements IMove {
 
 
         // When the piece is a pawn and gets to the opposite side of it create a queen
-        if (movingPiece.data === "0000" && to.includes("8") || movingPiece.data === "1000" && to.includes("0")) {
+        if (movingPiece.data === "0000" && to.includes("8") || movingPiece.data === "1000" && to.includes("1")) {
             // create a promotion piece
             this.promotionType = new Queen(to,movingPiece.color);
 
