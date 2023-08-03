@@ -13,8 +13,6 @@ class devBot extends Chess_API_Bots implements ImyBot {
         const allMoves : Move[]  = this.API.getLegalMoves();
         const randomNum = Random.getRandomInteger(0,allMoves.length - 1);
 
-        console.log(allMoves) 
-
         let playingMove : Move;
         let captureValue : number = 0; 
 

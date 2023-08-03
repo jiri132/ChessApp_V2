@@ -13,8 +13,7 @@ class myBot extends Chess_API_Bots implements ImyBot {
         // Variable that gets given back
         let playingMove : Move;
         let allMoves : Move[] = this.API.getLegalMoves();
-        console.log(this.API.isWhiteToMove)
-        console.log(allMoves) 
+
         // Get a random number between 0 and the possibler moves
         let randomNum = Random.getRandomInteger(0, allMoves.length -1 )
         
