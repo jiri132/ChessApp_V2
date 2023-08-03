@@ -13,7 +13,7 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
+    justify-content: center;
     /* padding: 160px 24px 160px 24px; */
     margin: 0;
     overflow-x: hidden;
@@ -72,7 +72,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-  max-height: 480px;
+  max-height: 650px;
   padding: 5px;
   text-align: center;
 }
