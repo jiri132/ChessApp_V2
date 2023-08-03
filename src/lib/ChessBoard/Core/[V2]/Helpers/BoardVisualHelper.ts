@@ -76,7 +76,7 @@ class BoardVisualHelper {
         if (playedMoves.length % 2 === 1) {
             const numElement = document.createElement('div');
 
-            numElement.innerText = (playedMoves.length / 2 + 0.5).toString();
+            numElement.innerText = (playedMoves.length / 2 + 0.5).toString() + ".";
             webElement.appendChild(numElement);
         }
 

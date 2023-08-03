@@ -1,4 +1,5 @@
 import type Board from "../Board/Board";
+import Queen from "../Board/Pieces/Piece.queen";
 import type ChessBoard from "../ChessBoard";
 import BoardHelper from "../Helpers/BoardHelper";
 import type { IPiece } from "../Interfaces/Board/Pieces/IPieces";
@@ -17,6 +18,10 @@ class Move implements IMove {
 
     // Flags
     public readonly capturedPiece: IPiece | undefined;
+    public readonly promotionType: IPiece | undefined;
+    public readonly isInCheck : boolean;
+    public readonly isCheckMate: boolean;
+
 
     constructor(movingPiece : IPiece, to : BoardLocation, board : Board) {
         this.movingPiece = movingPiece;
@@ -28,35 +33,64 @@ class Move implements IMove {
 
         this.capturedPiece = BoardHelper.findPieceAtIndex(board, this.to_index);
 
+
+        // When the piece is a pawn and gets to the opposite side of it create a queen
+        if (movingPiece.data === "0000" && to.includes("8") || movingPiece.data === "1000" && to.includes("0")) {
+            // create a promotion piece
+            this.promotionType = new Queen(to,movingPiece.color);
+
+            // apply the piece onto the board
+            //board.tiles[this.to_index].piece = this.promotionType;
+        } 
+        
+        
         this.algebraic_notation = this.getAlgebraicNotation();
     }
 
     private getAlgebraicNotation() : string {
+        function getPieceLetter(Piece : IPiece) : string {
+            let notation = "";
+
+            switch (Piece.piece) {
+                case "001":
+                    notation = "B"
+                    break;
+                case "010":
+                    notation = "N"
+                    break;
+                case "011":
+                    notation = "R"
+                    break;
+                case "100":
+                    notation = "Q"
+                    break;
+                case "101":
+                    notation = "K"
+                    break;
+            }
+            return notation;
+        }
+        
         let notation = "";
 
-        // get the letter of the moving place
-        switch (this.movingPiece.piece) {
-            case "001":
-                notation += "B"
-                break;
-            case "010":
-                notation += "N"
-                break;
-            case "011":
-                notation += "R"
-                break;
-            case "100":
-                notation += "Q"
-                break;
-            case "101":
-                notation += "K"
-                break;
+        // Get the letter of the moving place
+        notation += getPieceLetter(this.movingPiece);
+
+        // When you capture an piece mark with "x"
+        if (this.capturedPiece) {
+            if (this.movingPiece.piece === "000") {
+                notation += this.from.charAt(0).toLowerCase();
+            }
+            notation += "x"
         }
 
-        if (this.capturedPiece) {notation += "x"}
-
+        // Set the played move into the notation in lowercase
         notation += this.to.toLowerCase();
 
+        // Get the letter of the promotion piece
+        if (this.promotionType) {notation += "=" + getPieceLetter(this.promotionType)}
+
+        // Return the full notation 
         return notation;
     }
 }
