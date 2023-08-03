@@ -147,15 +147,13 @@ class BoardHelper {
 
         // Check if there is sufficient material based on your conditions
         // For example, you might consider that having at least one King and one other piece (e.g., Queen) is sufficient material
-        if ( pieceCounts["100"] >= 1 ||                            //  Queen
-             pieceCounts["011"] >= 1 ||                            //  Rook
-             pieceCounts["000"] >= 1 ||                            //  Pawn
-             pieceCounts["001"] >= 2 ||                            //  2 Bishops
-             pieceCounts["010"] >= 3 ||                            //  3 Knights 
-            (pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1)   //  Bishop + Knight     
-            ) {
-            return true;
-        }
+        // Credits to @Manthee1 for making it more readable
+        if ( pieceCounts["100"] >= 1) return true //  Queen
+        if ( pieceCounts["011"] >= 1) return true //  Rook
+        if ( pieceCounts["000"] >= 1) return true //  Pawn
+        if ( pieceCounts["001"] >= 2) return true //  2 Bishops
+        if ( pieceCounts["010"] >= 3) return true //  3 Knights 
+        if ( pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1) return true  //  Bishop + Knight   
 
         return false;
     }
