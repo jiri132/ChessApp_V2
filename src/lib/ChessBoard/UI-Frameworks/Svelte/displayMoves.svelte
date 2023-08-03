@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type ChessBoard from "../Core/[V2]/ChessBoard";
+    import type ChessBoard from "../../Core/[V2]/ChessBoard";
 
     
 
