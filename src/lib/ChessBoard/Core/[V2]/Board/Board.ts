@@ -24,7 +24,7 @@ class Board implements IBoard {
     public whiteBot? : ImyBot;
     public blackBot? : ImyBot;
 
-    public outcome : outcome = undefined!;
+    public outcome? : outcome;
 
     public readonly playerTypeWhite : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
     public readonly playerTypeBlack : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
@@ -241,18 +241,22 @@ class Board implements IBoard {
 
         this.playedMoves.push(move);
 
-        setTimeout(() => {
-            let move : Move;
-
-            if (this.isWhiteToMove && this.whiteBot !== undefined && outcome === undefined) {
-                move = this.whiteBot.Think();
-                this.playMove(move);
-            } else if (!this.isWhiteToMove && this.blackBot !== undefined && outcome === undefined) {
-                move = this.blackBot.Think();
-                this.playMove(move);
-            }     
-
-        }, 50);
+        if (this.outcome === undefined) {
+            console.log("x");
+            setTimeout(() => {
+                let move : Move;
+    
+                if (this.isWhiteToMove && this.whiteBot !== undefined) {
+                    move = this.whiteBot.Think();
+                    this.playMove(move);
+                } else if (!this.isWhiteToMove && this.blackBot !== undefined) {
+                    move = this.blackBot.Think();
+                    this.playMove(move);
+                }     
+    
+            }, 50);
+        }
+        
         
         
     }
