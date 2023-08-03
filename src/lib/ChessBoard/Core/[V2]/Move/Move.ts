@@ -19,9 +19,6 @@ class Move implements IMove {
     // Flags
     public readonly capturedPiece: IPiece | undefined;
     public readonly promotionType: IPiece | undefined;
-    public readonly isInCheck : boolean;
-    public readonly isCheckMate: boolean;
-
 
     constructor(movingPiece : IPiece, to : BoardLocation, board : Board) {
         this.movingPiece = movingPiece;
@@ -33,16 +30,11 @@ class Move implements IMove {
 
         this.capturedPiece = BoardHelper.findPieceAtIndex(board, this.to_index);
 
-
         // When the piece is a pawn and gets to the opposite side of it create a queen
         if (movingPiece.data === "0000" && to.includes("8") || movingPiece.data === "1000" && to.includes("1")) {
             // create a promotion piece
             this.promotionType = new Queen(to,movingPiece.color);
-
-            // apply the piece onto the board
-            //board.tiles[this.to_index].piece = this.promotionType;
         } 
-        
         
         this.algebraic_notation = this.getAlgebraicNotation();
     }
