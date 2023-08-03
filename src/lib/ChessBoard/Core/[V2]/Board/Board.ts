@@ -150,7 +150,6 @@ class Board implements IBoard {
     private async setBot(botName : string, color : BinaryDigit) : Promise<boolean> {
         try {
             // Dynamically import the selected bot class based on its name
-            console.log(botName);
             const BotClassModule = await import( `../../../../ChessEngine/bots/${botName}` /* @vite-ignore */);
         
             // Assuming that the bot class is the default export of the module
@@ -158,16 +157,13 @@ class Board implements IBoard {
         
             // Perform any additional setup if needed
             // For example, you might want to set the board or other parameters for the bot
-            console.log(`Selected bot: ${botName}`);
         
             // Create an instance of the selected bot class
             if (color === "0") {
               this.whiteBot = new BotClass(this) as ImyBot;
-              console.log(this.whiteBot);
               this.playMove(this.whiteBot.Think())
             } else {
               this.blackBot = new BotClass(this) as ImyBot;
-              console.log(this.blackBot);
             }
         
             return true;
@@ -242,7 +238,6 @@ class Board implements IBoard {
         this.playedMoves.push(move);
 
         if (this.outcome === undefined) {
-            console.log("x");
             setTimeout(() => {
                 let move : Move;
     
@@ -255,10 +250,7 @@ class Board implements IBoard {
                 }     
     
             }, 50);
-        }
-        
-        
-        
+        }  
     }
     
     public makeMove(move : Move): void {
@@ -277,8 +269,6 @@ class Board implements IBoard {
         from_tile.piece = move.movingPiece;
  
         move.movingPiece.location = move.from;
-
-        
     }
 
     private movePiece(move : Move) : void {
