@@ -4,6 +4,7 @@ import PlayedGames from "./PlayedGames/PlayedGames";
 import BoardVisualHelper from "./Helpers/BoardVisualHelper";
 import type { IPlayedGames } from "./Interfaces/PlayedGames/IPlayedGames";
 import { GameType } from "./Types/Game/game.enum";
+import { BoardStore } from "$lib/ChessBoard/UI-Frameworks/Svelte/Store";
 
 class ChessBoard implements IChessBoard {
 
@@ -33,6 +34,8 @@ class ChessBoard implements IChessBoard {
 
         // Create new board
         this.Board = new Board(gameType, bot1,bot2);
+
+        BoardStore.set(this.Board);
 
         BoardVisualHelper.RenderAllTiles(this.Board);
         BoardVisualHelper.RenderEmptyPlayedMovesContainer();
