@@ -98,24 +98,41 @@
     onMount(() => {
         BoardVisualHelper.RenderAllTiles(Board.Board);
     })
+
+    const width = Array.from({ length: 8 }, (_, index) => index + 1);
+    const height = Array.from({ length: 8 }, (_, index) => index + 1);
+
+    console.log(width)
 </script>
 
 
 <div class="visualContainer">
     <Settings ChessBoard={Board} />
-    <div class="ChessBoardContainer">
+    <div id="play-area" class="ChessBoardContainer">
         <Player color="1" />
-        <div class="ChessBoard">
-            {#each Board.Board.tiles as tile}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div id="board" class="ChessBoard">
+            {#each height as _y ,y }
+                <div class="row">
+                    {#each width as _x, x }
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <div id={BoardHelper.indexToBoardLocation(y * 8  + x ) } class="card"
+                            on:click={(e) => {
+                                onClickLogic(e);
+                            }}
+                        ></div>
+                    {/each}
+                </div>
+            {/each}
+            <!-- {#each Board.Board.tiles as tile}
+                
                 <div id={tile.name} class="card"
                     on:click={(e) => {
                         onClickLogic(e);
                     }}
                 >
                 </div>
-            {/each}
+            {/each} -->
         </div>
         <Player color="0" />
     </div>
@@ -146,15 +163,21 @@
             justify-content:space-between;
             .ChessBoard {
 
-                display: grid;
-                grid-template-rows: repeat(8, 0fr);
-                grid-template-columns: repeat(8, 0fr);
+                display: flex;
+                flex-direction: column;
+                //grid-template-rows: repeat(8, 0fr);
+                //grid-template-columns: repeat(8, 0fr);
+                min-width: calc(60px * 8);
+                min-height: calc(60px * 8);
                 max-width: calc(60px * 8);
                 max-height: calc(60px * 8);
                 background-image: url("/src/lib/assets/board.png");
                 background-size: calc(60px * 8);
                 background-repeat: no-repeat;
-                
+
+                .row {
+                    display: flex;
+                }
                 .card {
                     display: flex;
                     justify-content: center;
