@@ -103,7 +103,7 @@
 
 
 <div class="visualContainer">
-    <Settings board={Board} />
+    <Settings ChessBoard={Board} />
     <div class="ChessBoard">
         {#each Board.Board.tiles as tile}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -116,7 +116,7 @@
             </div>
         {/each}
     </div>
-    <DisplayMoves />
+    <DisplayMoves ChessBoard={Board}/>
 </div>
 <style lang="scss">
     

@@ -3,7 +3,7 @@
     import { GameType } from "../Core/[V2]/Types/Game/game.enum";
     import { writable, type Writable } from 'svelte/store';
 
-    export let board : ChessBoard;
+    export let ChessBoard : ChessBoard;
 
     const gameTypesArray = Object.keys(GameType)
 
@@ -42,7 +42,7 @@
     <div>
         bot 1: 
         <select id="bot1Selection" bind:value={selectedBot1}>
-            {#each board.baseBotFileNames as botNames}
+            {#each ChessBoard.baseBotFileNames as botNames}
                 <option value={botNames}>{botNames}</option> 
             {/each}
         </select>
@@ -50,7 +50,7 @@
     <div>
         bot 2: 
         <select id="bot2Selection" bind:value={selectedBot2}>
-            {#each board.baseBotFileNames as botNames}
+            {#each ChessBoard.baseBotFileNames as botNames}
                 <option value={botNames}>{botNames}</option> 
             {/each}
         </select>
@@ -58,7 +58,7 @@
     
     
 
-    <button on:click={(e) => {board.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
+    <button on:click={(e) => {ChessBoard.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
 </div>
 
 <style lang="scss">
