@@ -5,6 +5,20 @@ import { outcome } from "$lib/ChessBoard/Core/[V2]/Types/Game/outcome.enum";
 import Random from "$lib/Random/Random";
 import type { ImyBot } from "../ImyBot";
 
+/*----------------Improvements Log-------------------
+ *  
+ *  Version 0.1         <27 - 7 - 2023>
+ *      -bot was the same as default myBot.ts
+ * 
+ *  Version 0.2         <27 - 7 - 2023>
+ *      -bot made decisions on the highest capturing piece
+ * 
+ *  Version 0.3         < 3 - 8 - 2023>
+ *      -bot can find mate in 1
+ *      -bot removes all stalemate moves
+ *
+ */
+
 
 
 class devBot extends Chess_API_Bots implements ImyBot {
