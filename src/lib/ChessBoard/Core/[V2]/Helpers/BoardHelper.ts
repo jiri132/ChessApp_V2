@@ -146,9 +146,10 @@ class BoardHelper {
         // For example, you might consider that having at least one King and one other piece (e.g., Queen) is sufficient material
         if ((pieceCounts["101"] === 1 && pieceCounts["100"] >= 1) ||                            // King + Queen
             (pieceCounts["101"] === 1 && pieceCounts["011"] >= 1) ||                            // King + Rook
+            (pieceCounts["101"] === 1 && pieceCounts["000"] >= 1) ||                            // King + Pawn
             (pieceCounts["101"] === 1 && pieceCounts["001"] >= 2) ||                            // King + 2 Bishops
             (pieceCounts["101"] === 1 && pieceCounts["010"] >= 3) ||                            // King + 3 Knights 
-            (pieceCounts["101"] === 1 && pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1)    // King + Bishop + Knight
+            (pieceCounts["101"] === 1 && pieceCounts["001"] >= 1 && pieceCounts["010"] >= 1)    // King + Bishop + Knight     
             ) {
             return true;
         }
