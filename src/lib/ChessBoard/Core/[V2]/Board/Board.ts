@@ -26,6 +26,8 @@ class Board implements IBoard {
 
     public outcome? : outcome;
 
+    public aborted : boolean = false;
+
     public readonly playerTypeWhite : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
     public readonly playerTypeBlack : `${PlayerType} ${string}` = `${PlayerType.Human} ${""}`;
 
@@ -236,6 +238,8 @@ class Board implements IBoard {
         this.movePiece(move);
 
         this.playedMoves.push(move);
+
+        if (this.aborted) {return;}
 
         if (this.outcome === undefined) {
             setTimeout(() => {
