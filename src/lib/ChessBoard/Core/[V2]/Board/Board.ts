@@ -290,6 +290,7 @@ class Board implements IBoard {
         from_tile.piece = undefined;
         // Set the new piece on the to tile
         to_tile.piece = move.movingPiece;
+        if (move.promotionType) {to_tile.piece = move.promotionType}
 
         // Set th moving piece his location to the new location
         move.movingPiece.location = move.to;
