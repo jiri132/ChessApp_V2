@@ -70,7 +70,7 @@
 </script>
 
 
-<div class="infoStack">
+<div class="infoStack displayMoves">
     <div style="color: black;">Played Moves</div>
     <div class="movesHeightContainer">
         <div id="movesContainer" class="moves">
@@ -82,6 +82,9 @@
 </div>
 
 <style lang="scss">
+    .displayMoves {
+        background-color: gray;
+    }
     .infoStack button {
         justify-self: end;
     }
