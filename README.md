@@ -40,6 +40,7 @@
 4. [Contributing]()
 5. [License]()
 6. [Acknowledgments]()
+7. [Translations]()
 
 ## Features
 With this app, you can **program your own bot** and engage in fierce **competition** against either **my bot** or a **human player**. In the forthcoming versions, you'll be empowered to **upload** and **store bots** fashioned by other users.
