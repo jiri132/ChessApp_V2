@@ -34,6 +34,14 @@
    ```bash
    git clone https://github.com/jiri132/ChessApp_V2.git
    ```
-2. Follow the instructions at [**How-To-Run.md**](documentation/How-To-Run.md)
+2. Navigate to the backend directory: `cd src-tauri/src/` and run `cargo run` to start the Rust backend server.
+3. Open another terminal window, navigate to the frontend directory: `cd src` and run the following commands:
+    - `npm install` to install the required frontend dependencies.
+    - `npm run dev` to start the Svelte development server.
+
+The app should now be running and accessible at `http://localhost:5000`.
+
+## Contributing
+We welcome contributions to improve the Rust-Svelte Chess App! If you'd like to contribute, please follow the steps in the [**`Contribute.md`**](documentation/Contribute.md) file.
 
 <!-- Documentation end -->
