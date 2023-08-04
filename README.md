@@ -34,5 +34,6 @@
    ```bash
    git clone https://github.com/jiri132/ChessApp_V2.git
    ```
+2. Follow the instructions at [**How-To-Run.md**](documentation/How-To-Run.md)
 
 <!-- Documentation end -->
