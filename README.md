@@ -59,6 +59,6 @@ This project was inspired by the love for chess and the desire to learn and coll
 ## Translation
 This guide is also available in other languages:
 <!-- Languages start -->
-- [**🇩🇪 German**]()
+- [**🇩🇪 German**](documentation/translation/README_de.md)
 <!-- Languages end -->
 <!-- Documentation end -->
