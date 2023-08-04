@@ -54,7 +54,7 @@ With this app, you can **program your own bot** and engage in fierce **competiti
 ## Getting Started
 ### Prerequisites
 - [**Rust**](https://www.rust-lang.org/tools/install) installed.
-- [**Node.js**](https://nodejs.org/) and npm (Node Package Manager) installed.
+- [**Node.js**](https://nodejs.org/) and **npm** (Node Package Manager) installed.
 
 ### Installation
 1. Clone the repository:
@@ -72,7 +72,7 @@ The app should now be running and accessible at `http://localhost:5000`.
 >We welcome contributions to improve the Rust-Svelte Chess App! If you'd like to contribute, please follow the steps in the [**`Contribute.md`**](documentation/Contribute.md) file.
 
 ## License
-This project is licensed under the GNU GPLv3 license. See [**`LICENSE`**](LICENSE).
+>This project is licensed under the GNU GPLv3 license. See [**`LICENSE`**](LICENSE).
 
 ## Acknowledgments
 This project was inspired by the love for chess and the desire to learn and collaborate on new technologies.
