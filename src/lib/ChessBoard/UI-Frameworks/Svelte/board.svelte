@@ -94,6 +94,7 @@
         Board = new ChessBoard();
         BoardStore.set(Board.Board)
     }
+
     // When the class is done loading
     onMount(() => {
         BoardVisualHelper.RenderAllTiles(Board.Board);
@@ -107,7 +108,9 @@
 
 
 <div class="visualContainer">
-    <Settings ChessBoard={Board} />
+    <div class="infoStack">
+        <Settings ChessBoard={Board} />
+    </div>
     <div id="play-area" class="ChessBoardContainer">
         <Player color="1" />
         <div id="board" class="ChessBoard">

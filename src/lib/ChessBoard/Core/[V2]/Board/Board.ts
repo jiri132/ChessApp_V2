@@ -44,7 +44,9 @@ class Board implements IBoard {
 
                 // Call the SolveOutcome form the board helper to check if the game is done
                 this.outcome = BoardHelper.SolveOutCome(this);
-                if (outcome) {console.log(this.outcome)}
+                if (outcome !== undefined) {
+                    console.log(this.outcome)
+                }
             }
 
             return Reflect.set(target, property, value);
@@ -254,7 +256,7 @@ class Board implements IBoard {
                 }     
     
             }, 50);
-        }  
+        }
     }
     
     public makeMove(move : Move): void {
