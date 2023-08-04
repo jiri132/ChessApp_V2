@@ -31,6 +31,7 @@
 
 ### Installation
 1. Clone the repository:
+   
    `git clone https://github.com/jiri132/ChessApp_V2.git`
 
 <!-- Documentation end -->
