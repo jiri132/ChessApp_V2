@@ -24,4 +24,13 @@
 
 - **TypeScript**: TypeScript is used to add static typing to JavaScript, providing enhanced development tools and reducing errors.
 
+## Getting Started
+### Prerequisites
+- [**Rust**](https://www.rust-lang.org/tools/install) installed.
+- [**Node.js**](https://nodejs.org/) and npm (Node Package Manager) installed.
+
+### Installation
+1. Clone the repository:
+   `git clone https://github.com/jiri132/ChessApp_V2.git`
+
 <!-- Documentation end -->
