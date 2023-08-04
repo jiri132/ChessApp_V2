@@ -51,6 +51,14 @@ With this app, you can **program your own bot** and engage in fierce **competiti
 
 - **TypeScript**: TypeScript is used to add static typing to JavaScript, providing enhanced development tools and reducing errors.
 
+## Design
+The design is very simple, which makes it easier to overview and navigate through the app. The app consists of three windows: 
+1. The bot selection menu
+2. The chessboard where the moves are visualized
+3. The chess notation
+
+You can find screenshots from the app [**here**](documentation/Design.md).
+
 ## Getting Started
 ### Prerequisites
 - [**Rust**](https://www.rust-lang.org/tools/install) installed.
