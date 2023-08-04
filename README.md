@@ -7,15 +7,38 @@
 >**Welcome to the Rust-Svelte Chess App v2!** This is an open-source project that combines the power of Rust for the backend, Svelte for the frontend, and TypeScript for type-safe interactions. This app allows users to play chess against bots, giving them an enjoyable and interactive gaming experience.
 
 ### Table of Contents
-<!--Todo: Adding Links to headings -->
-1. Features
-2. Technologies Used
-3. Getting Started
-   - Prerequisites
-   - Installation
-4. Contributing
-5. License
-6. Acknowledgments
+<!--Todo: Adding Links to headings 
+    Hi @jiri132, you have to add in the paranthesis the links for the headings. 
+
+    The links would be:
+        1. https://github.com/jiri132/ChessApp_V2#features
+
+        2. https://github.com/jiri132/ChessApp_V2#technologies-used
+
+        3. https://github.com/jiri132/ChessApp_V2#getting-started
+
+        3.1 https://github.com/jiri132/ChessApp_V2#prerequisites
+
+        3.2 https://github.com/jiri132/ChessApp_V2#installation
+
+        4. https://github.com/jiri132/ChessApp_V2#contributing
+
+        5. https://github.com/jiri132/ChessApp_V2#license
+
+        6. https://github.com/jiri132/ChessApp_V2#acknowledgments
+
+        >if you have any questions, feel free to ask me
+        >You can find my email address on my profile:
+        >https://github.com/N3v1
+-->
+1. [Features]()
+2. [Technologies Used]()
+3. [Getting Started]()
+   - [Prerequisites]()
+   - [Installation]()
+4. [Contributing]()
+5. [License]()
+6. [Acknowledgments]()
 
 ## Features
 With this app, you can **program your own bot** and engage in fierce **competition** against either **my bot** or a **human player**. In the forthcoming versions, you'll be empowered to **upload** and **store bots** fashioned by other users.
