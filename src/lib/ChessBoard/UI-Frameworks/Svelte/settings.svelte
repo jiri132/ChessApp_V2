@@ -74,7 +74,7 @@
             </div>
         </div>
     </div>
-    <button on:click={(e) => {ChessBoard.totalRounds = rounds;  ChessBoard.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
+    <button on:click={(e) => { ChessBoard.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
 </div>
 
 <style lang="scss">

@@ -6,7 +6,7 @@
     import type { BoardLocation } from "../../Core/[V2]/Types/Location/Location.type";
     import type { IPiece } from "../../Core/[V2]/Interfaces/Board/Pieces/IPieces";
     import Move from "../../Core/[V2]/Move/Move";
-    import { BoardStore, outcomeStore } from "./Store";
+    import { BoardStore } from "./Store";
 
     import DisplayMoves from "./displayMoves.svelte";
     import Settings from "./settings.svelte";
