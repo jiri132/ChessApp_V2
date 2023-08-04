@@ -33,6 +33,7 @@
 -->
 1. [Features]()
 2. [Technologies Used]()
+3. [Design]()
 3. [Getting Started]()
    - [Prerequisites]()
    - [Installation]()
