@@ -10,6 +10,12 @@
 <!--Todo: Adding Links to headings -->
 1. Features
 2. Technologies Used
+3. Getting Started
+   - Prerequisites
+   - Installation
+4. Contributing
+5. License
+6. Acknowledgments
 
 ## Features
 - Play chess against opponents online
@@ -42,6 +48,17 @@
 The app should now be running and accessible at `http://localhost:5000`.
 
 ## Contributing
-We welcome contributions to improve the Rust-Svelte Chess App! If you'd like to contribute, please follow the steps in the [**`Contribute.md`**](documentation/Contribute.md) file.
+>We welcome contributions to improve the Rust-Svelte Chess App! If you'd like to contribute, please follow the steps in the [**`Contribute.md`**](documentation/Contribute.md) file.
 
+## License
+<!-- Todo: Add license -->
+
+## Acknowledgments
+This project was inspired by the love for chess and the desire to learn and collaborate on new technologies.
+
+## Translation
+This guide is also available in other languages:
+<!-- Languages start -->
+- [**🇩🇪 German**]()
+<!-- Languages end -->
 <!-- Documentation end -->
