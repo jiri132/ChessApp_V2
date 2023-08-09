@@ -31,16 +31,16 @@
         >You can find my email address on my profile:
         >https://github.com/N3v1
 -->
-1. [Features]()
-2. [Technologies Used]()
-3. [Design]()
-3. [Getting Started]()
-   - [Prerequisites]()
-   - [Installation]()
-4. [Contributing]()
-5. [License]()
-6. [Acknowledgments]()
-7. [Translations]()
+1. [Features](#features)
+2. [Technologies Used](#technologies-used)
+3. [Design](#design)
+3. [Getting Started](#getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+4. [Contributing](#contributing)
+5. [License](#license)
+6. [Acknowledgments](#acknowledgments)
+7. [Translations](#translation)
 
 ## Features
 With this app, you can **program your own bot** and engage in fierce **competition** against either **my bot** or a **human player**. In the forthcoming versions, you'll be empowered to **upload** and **store bots** fashioned by other users.
