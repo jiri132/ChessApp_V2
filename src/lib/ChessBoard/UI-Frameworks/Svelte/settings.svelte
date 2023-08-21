@@ -3,6 +3,8 @@
     import { GameType } from "../../Core/[V2]/Types/Game/game.enum";
     import { writable, type Writable } from 'svelte/store';
 
+    import Modal from "./Modal.svelte";
+
     export let ChessBoard : ChessBoard;
 
     const gameTypesArray = Object.keys(GameType)
@@ -10,11 +12,16 @@
     export const selectedGameType : Writable<GameType> = writable(GameType.Human_VS_Human);
     export const total_rounds : Writable<number> = writable(1)
 
-    let selectedBot1 : string = "";
-    let selectedBot2 : string = "";
+    export let selectedBot1 : string = "";
+    export let selectedBot2 : string = "";
 
-    let selectedType : GameType;
+    export let selectedType : GameType;
     let rounds : number = 1;
+
+    let modal: Modal;
+
+    
+
     /// Subscribe to the selectedGameType store
     $: {
         selectedType = $selectedGameType;
@@ -74,7 +81,13 @@
             </div>
         </div>
     </div>
-    <button on:click={(e) => { ChessBoard.newGame(selectedType, selectedBot1, selectedBot2)}}>new game</button>
+    <button on:click={(e) => { ChessBoard.newGame(selectedType, selectedBot1, selectedBot2), modal.show()}}>new game</button>
+    
+    <!-- Modal Container (popUp) -->
+    <Modal bind:this = {modal}> 
+        <span class="restart" on:click={(e) => {ChessBoard.newGame(selectedType, selectedBot1, selectedBot2), modal.show(), modal.hide() } }>Restart</span>
+    </Modal>
+        
 </div>
 
 <style lang="scss">
@@ -101,6 +114,19 @@
             padding-left: -5px;
             color: rgba(0, 0, 0, 0.37);
         }
+
+        //settings for the restart button
+
+        .restart{
+            float: right;
+            cursor: pointer;
+        }
+
+        .restart:hover{
+            font-weight: bold;
+        }
+
+
     }
     
 </style>

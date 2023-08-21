@@ -74,6 +74,7 @@
   
 <main>
   <Board />
+ 
 </main>
 
 <style>
