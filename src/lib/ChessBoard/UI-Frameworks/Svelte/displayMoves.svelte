@@ -87,6 +87,7 @@
     }
     .infoStack button {
         justify-self: end;
+        
     }
 
     .movesHeightContainer {

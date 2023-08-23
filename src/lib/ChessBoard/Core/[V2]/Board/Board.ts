@@ -16,14 +16,17 @@ import Pawn from "./Pieces/Piece.pawn";
 import Queen from "./Pieces/Piece.queen";
 import Rook from "./Pieces/Piece.rook";
 import Tile from "./Tile/Tile";
+import Modal__SvelteComponent_ from "$lib/ChessBoard/UI-Frameworks/Svelte/Modal.svelte";
 
 class Board implements IBoard {
 
+    
+
     public isWhiteToMove : boolean = true;
+
 
     public whiteBot? : ImyBot;
     public blackBot? : ImyBot;
-
     public outcome? : outcome;
 
     public aborted : boolean = false;
@@ -45,8 +48,13 @@ class Board implements IBoard {
                 // Call the SolveOutcome form the board helper to check if the game is done
                 this.outcome = BoardHelper.SolveOutCome(this);
                 if (outcome !== undefined) {
-                    console.log(this.outcome)
+                    console.log(this.outcome)     
+                    //saves the outcome of the match in localStorage
+                    localStorage.setItem("outcome",this.outcome)
+                    
+                    
                 }
+
             }
 
             return Reflect.set(target, property, value);

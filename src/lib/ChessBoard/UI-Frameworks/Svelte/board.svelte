@@ -1,4 +1,6 @@
 <script lang="ts">
+
+    import Modal from "./Modal.svelte";
     import { onMount } from "svelte";
     import ChessBoard from "../../Core/[V2]/ChessBoard";
     import BoardHelper from "../../Core/[V2]/Helpers/BoardHelper";
